@@ -6,7 +6,7 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 
 1. 기여자가 PR에 `.changeset/*.md`를 넣는다.
 2. PR이 main에 병합되면 `.github/workflows/release.yml`이 돈다.
-3. changeset이 남아 있으면 `changeset-release/main` 브랜치에 버전을 올린 커밋을 만들고 **"릴리스: Version Packages" PR**을 열거나 갱신한다.
+3. changeset이 남아 있으면 `changeset-release/main` 브랜치에 버전을 올린 커밋을 만들고 **"릴리스 (Release): Version Packages" PR**을 열거나 갱신한다.
    - 이어서 같은 워크플로가 `install-matrix.yml`을 불러(npm 배포를 켠 뒤, 즉 `NPM_PUBLISH_ENABLED`가 `'true'`일 때만), 그 브랜치의 CLI 패키지를 npm·pnpm·yarn·bun으로 전역 설치해 확인한다.
    - 이 결과는 Version Packages PR의 체크에 붙지 않고 main 커밋의 Release 실행에 붙는다. **병합 전에 Actions 탭에서 그 실행의 "설치 매트릭스" job이 통과했는지 직접 확인한다.** 병합을 자동으로 막아 주지는 않는다.
 4. 메인테이너가 Version Packages PR을 병합하면 changeset이 비고, npm에 아직 없는 버전이 생긴다. 이때 `publish` job이 대상이 된다.
