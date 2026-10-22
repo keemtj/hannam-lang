@@ -1,0 +1,87 @@
+{
+	"예? 조건문": {
+		"prefix": ["예?", "if"],
+		"body": ["예? ${1:조건} {", "\t$0", "}"],
+		"description": "if 블록"
+	},
+	"예? 아뇨아뇨아뇨아뇨 조건문": {
+		"prefix": ["예?아뇨", "ifelse"],
+		"body": ["예? ${1:조건} {", "\t$2", "} 아뇨아뇨아뇨아뇨 {", "\t$0", "}"],
+		"description": "if-else 블록"
+	},
+	"예?? 다음 조건": {
+		"prefix": ["예??", "elseif"],
+		"body": ["예?? ${1:조건} {", "\t$0", "}"],
+		"description": "else if 갈래 (예? 블록의 } 바로 뒤에 씀)"
+	},
+	"예??? 갈래": {
+		"prefix": ["예???", "switch"],
+		"body": ["예??? ${1:값} {", "\t${2:\"갈래\"} {", "\t\t$3", "\t}", "\t아뇨아뇨아뇨아뇨 {", "\t\t$0", "\t}", "}"],
+		"description": "switch (if-else 체인으로 변환, fallthrough 없음)"
+	},
+	"요이~ 반복": {
+		"prefix": ["요이~", "forof"],
+		"body": ["요이~ ${1:항목} ${2:목록} {", "\t$0", "}"],
+		"description": "for...of 반복"
+	},
+	"요이~ 범위 반복": {
+		"prefix": ["요이~범위", "fori"],
+		"body": ["요이~ ${1:i} ${2:0}..${3:끝} {", "\t$0", "}"],
+		"description": "for (let i = 0; i < 끝; i++) 반복 (끝 미포함)"
+	},
+	"요히~ 키 반복": {
+		"prefix": ["요히~", "forin"],
+		"body": ["요히~ ${1:키} ${2:객체} {", "\t$0", "}"],
+		"description": "for...in 반복"
+	},
+	"요이이이~ 반복": {
+		"prefix": ["요이이이~", "while"],
+		"body": ["요이이이~ ${1:조건} {", "\t$0", "}"],
+		"description": "while 반복"
+	},
+	"티-원 함수": {
+		"prefix": ["티-원", "function"],
+		"body": ["티-원 ${1:이름}(${2:인자}) {", "\t$0", "}"],
+		"description": "function 선언"
+	},
+	"티~원 async 함수": {
+		"prefix": ["티~원", "async"],
+		"body": ["티~원 ${1:이름}(${2:인자}) {", "\t$0", "}"],
+		"description": "async function 선언"
+	},
+	"아! 줴줴이야~ 돌려주기": {
+		"prefix": ["아!", "return"],
+		"body": ["아! 줴줴이야~ $0"],
+		"description": "return"
+	},
+	"아... 줴줴이야... 던지기": {
+		"prefix": ["아...", "throw"],
+		"body": ["아... 줴줴이야... ${0:\"에러 메시지\"}"],
+		"description": "throw (문자열이면 Error로 감쌈)"
+	},
+	"진~지? 지~랄": {
+		"prefix": ["진~지?", "try"],
+		"body": ["진~지? {", "\t$1", "} 지~랄 ${2:e} {", "\t$0", "}"],
+		"description": "try-catch 블록"
+	},
+	"오호호호호~ 클래스": {
+		"prefix": ["오호호호호~", "class"],
+		"body": ["오호호호호~ ${1:이름} {", "\tconstructor(${2}) {", "\t\t$0", "\t}", "}"],
+		"description": "class 선언"
+	},
+	"오호호호홋~ 상속 클래스": {
+		"prefix": ["오호호호홋~", "extends"],
+		"body": ["오호호호홋~ ${1:이름} ${2:부모} {", "\tconstructor(${3}) {", "\t\tsuper(${4})", "\t\t$0", "\t}", "}"],
+		"description": "class extends 선언"
+	},
+	"무슨 발언이세요? 출력": {
+		"prefix": ["무슨", "log"],
+		"body": ["무슨 발언이세요? $0"],
+		"description": "console.log"
+	},
+	"예? 무슨 발언이세요? 확인": {
+		"prefix": ["예?무슨", "confirm"],
+		"body": ["예? 무슨 발언이세요?(${1:\"질문\"})"],
+		"description": "confirm (true/false를 돌려줌)"
+	}
+}
