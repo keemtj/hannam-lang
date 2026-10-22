@@ -15,7 +15,7 @@
   "linked": [],
   "updateInternalDependencies": "patch",
   "privatePackages": {
-    "version": true,
+    "version": false,
     "tag": false
   }
 }

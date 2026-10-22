@@ -89,7 +89,7 @@ npx hnc todo.hn      # compile to todo.js
 | [`hannam-lang`](packages/hannam-lang) | The `hannam` runner, the `hnc` compiler, a Node loader hook, and a Bun plugin |
 | [`@hannam-lang/vite-plugin`](packages/vite-plugin) | Import `.hn` modules in Vite |
 | [`@hannam-lang/core`](packages/core) | The compiler API (`compile`) for building your own tools |
-| [VS Code extension](packages/vscode) | Syntax highlighting, snippets, and compile error diagnostics |
+| [VS Code extension](packages/vscode) | Syntax highlighting, snippets, and compile error diagnostics. Install it from this repository as a `.vsix` |
 
 ## How it works
 
@@ -127,7 +127,7 @@ Add a changeset for every package-facing change.
 pnpm changeset
 ```
 
-Merging to `main` creates or updates a version pull request. Merging that pull request publishes the npm packages and the VS Code extension (VS Code Marketplace and Open VSX). See [RELEASING.md](.github/RELEASING.md) (Korean) for the one-time repository setup.
+Merging to `main` creates or updates a version pull request. Merging that pull request publishes the npm packages. See [RELEASING.md](.github/RELEASING.md) (Korean) for the one-time repository setup.
 
 ## License
 

@@ -34,7 +34,7 @@ packages/
   core/          # 변환기 @hannam-lang/core (렉서, JS 출력, 소스맵, 런타임 헬퍼)
   hannam-lang/   # CLI hannam·hnc, Node 로더 훅, Bun 플러그인
   vite-plugin/   # Vite 플러그인 @hannam-lang/vite-plugin
-  vscode/        # VS Code 확장 (npm에는 올리지 않고 마켓플레이스·Open VSX에 배포)
+  vscode/        # VS Code 확장 (배포하지 않음, .vsix로 설치)
   playground/    # 문서 사이트의 Playground 컴포넌트 (배포하지 않음)
 apps/
   site/          # 소개·문서 사이트 (Next.js + Fumadocs)
@@ -70,7 +70,7 @@ bash scripts/install-matrix.sh npm bun    # 고른 것만
 
 ## changeset 작성법
 
-배포하는 패키지(npm 패키지 3개와 VS Code 확장)의 버전과 CHANGELOG는 [changesets](https://changesets.dev)로 관리합니다. 사용자에게 보이는 변경을 했다면 PR에 changeset을 하나 넣어 주세요.
+배포하는 npm 패키지 3개의 버전과 CHANGELOG는 [changesets](https://changesets.dev)로 관리합니다. 사용자에게 보이는 변경을 했다면 PR에 changeset을 하나 넣어 주세요.
 
 ```sh
 pnpm changeset
@@ -88,7 +88,7 @@ pnpm changeset
 
 - **요약은 한국어로, 사용자 입장에서 씁니다.** 그대로 CHANGELOG에 들어갑니다.
 - 버전 종류: 아직 0.x이므로 기존 코드가 깨지는 변경은 `minor`, 그 밖의 기능 추가와 수정은 `patch`로 둡니다. `major`(1.0)는 메인테이너가 정합니다.
-- changeset이 필요 없는 변경: 문서, 테스트, CI, 그리고 배포하지 않는 패키지(사이트 `apps/site`, `packages/playground`, `examples/todo`)만 바꾼 경우. VS Code 확장(`packages/vscode`)은 npm에는 올리지 않지만 마켓플레이스에 배포하므로 changeset이 필요합니다. PR 설명에 "changeset 없음"과 이유를 적어 주세요.
+- changeset이 필요 없는 변경: 문서, 테스트, CI, 그리고 배포하지 않는 패키지(사이트 `apps/site`, `packages/playground`, `packages/vscode`, `examples/todo`)만 바꾼 경우. PR 설명에 "changeset 없음"과 이유를 적어 주세요.
 - 버전 올리기와 배포는 메인테이너가 합니다. main에 병합되면 "Version Packages" PR이 자동으로 만들어집니다(`.github/RELEASING.md`).
 
 `pnpm changeset status`로 지금 쌓인 changeset과 올라갈 버전을 볼 수 있습니다.

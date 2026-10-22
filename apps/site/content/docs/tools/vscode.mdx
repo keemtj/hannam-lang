@@ -5,16 +5,6 @@ description: .hn 파일에 문법 하이라이팅, 컴파일 에러 표시, 스�
 
 VS Code 확장은 `.hn` 파일을 `hannam` 언어로 등록하고, 한남랭 키워드를 칠하고, 컴파일 에러를 에디터에 바로 보여 줍니다.
 
-## 설치
-
-VS Code 확장 보기(macOS <kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>, Windows·Linux <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>)에서 **한남랭**을 검색해 설치합니다. 명령줄로 설치할 수도 있습니다.
-
-```sh
-code --install-extension hannam-lang.hannam-lang-vscode
-```
-
-확장은 VS Code 마켓플레이스와 [Open VSX](https://open-vsx.org)에 함께 올라가 있어서, Cursor처럼 Open VSX를 쓰는 VS Code 계열 에디터에서도 같은 이름으로 찾을 수 있습니다. VS Code 1.90 이상이 필요합니다.
-
 ## 제공하는 것
 
 - **문법 하이라이팅**: 한남랭 키워드마다 별도 scope를 붙이고, 키워드가 아닌 부분은 VS Code 내장 JavaScript 문법으로 칠합니다. 이 문서 사이트의 `.hn` 코드 블록도 같은 문법 파일로 칠했습니다.
@@ -24,9 +14,9 @@ code --install-extension hannam-lang.hannam-lang-vscode
 
 자동 완성, 정의로 이동, 코드 서식 맞추기는 아직 없습니다. 확장은 편집만 돕고, 실행과 컴파일은 [`hannam`과 `hnc`](/docs/getting-started/cli)가 맡습니다.
 
-## 개발 버전 설치
+## 설치
 
-저장소의 최신 코드로 확장을 만들어 설치하려면 `.vsix` 패키지를 직접 만듭니다. [pnpm](https://pnpm.io)이 필요합니다.
+확장은 마켓플레이스에 올라가 있지 않습니다. 저장소에서 `.vsix` 패키지를 만들어 설치합니다. [pnpm](https://pnpm.io)과 VS Code 1.90 이상이 필요합니다.
 
 ```sh
 git clone https://github.com/keemtj/hannam-lang.git

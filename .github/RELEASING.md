@@ -37,21 +37,9 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 - Settings → Secrets and variables → Actions → **Secrets**에 `NPM_TOKEN`으로 저장한다. 위의 `npm` environment 시크릿으로 넣어도 된다.
 - 워크플로는 이 값을 `NODE_AUTH_TOKEN`으로 넘긴다. `id-token: write` 권한이 있으므로 provenance는 이 방식에서도 붙는다.
 
-## VS Code 확장 배포
+## VS Code 확장
 
-`packages/vscode`(확장 ID `hannam-lang.hannam-lang-vscode`)는 npm에 올리지 않고(private) VS Code 마켓플레이스와 [Open VSX](https://open-vsx.org)에 올린다. 버전은 다른 패키지처럼 changeset으로 올린다(`.changeset/config.json`의 `privatePackages.version: true`).
-
-- `publish-vscode` job은 저장소 변수 `VSCODE_PUBLISH_ENABLED`가 정확히 `'true'`일 때만 돈다. 그중에서도 확장의 `package.json` 버전이 바뀐 main push(Version Packages PR 병합)나 수동 실행(workflow_dispatch)에서만 배포한다. 버전 비교는 `vscode-version` job이 직전 커밋(`HEAD^`)과 비교해서 한다. 이미 올라간 버전은 `--skip-duplicate`로 건너뛴다.
-- 변수를 Version Packages PR 병합 **뒤에** 켰다면 다음 push로는 배포되지 않는다. Actions 탭에서 Release 워크플로를 수동 실행(Run workflow)한다.
-- job은 `vscode` environment를 쓴다. 승인자를 걸어 두면 배포 직전에 한 번 더 확인할 수 있다.
-
-켜기 전에 사람이 할 일:
-
-1. **VS Code 마켓플레이스**: [게시자 관리 페이지](https://marketplace.visualstudio.com/manage)에서 publisher `hannam-lang`을 만든다. Azure DevOps에서 Marketplace(Manage) 권한의 Personal Access Token을 만들어 시크릿 `VSCE_PAT`로 저장한다.
-2. **Open VSX**: open-vsx.org에 GitHub 계정으로 로그인하고 게시자 약관(Publisher Agreement)에 동의한다. 액세스 토큰을 만들어 시크릿 `OVSX_PAT`로 저장한 뒤, 네임스페이스를 한 번 만든다(`pnpm --filter hannam-lang-vscode exec ovsx create-namespace hannam-lang -p <토큰>`).
-3. 저장소 변수 `VSCODE_PUBLISH_ENABLED` = `true`를 추가한다.
-
-로컬에서 패키지만 만들어 보려면 `pnpm --filter @hannam-lang/core build && pnpm --filter hannam-lang-vscode package`를 실행한다. `vsce publish`·`ovsx publish`는 로컬에서 실행하지 않는다.
+`packages/vscode`는 이번 출시에 포함하지 않는다(마켓플레이스 배포 보류). npm에도 올리지 않고(private), changeset 대상도 아니다. 저장소에서 `.vsix`를 만들어 설치하는 방법은 `packages/vscode/README.md`에 있다.
 
 ## 패키지 체크리스트
 
@@ -85,4 +73,4 @@ bash scripts/install-matrix.sh # 전역 설치 매트릭스 (로컬 임시 레�
 
 changelog는 `@changesets/changelog-github`(`keemtj/hannam-lang`)로 만든다. 커밋·PR 링크를 GitHub API에서 가져오므로 `pnpm version-packages`에는 `GITHUB_TOKEN`이 필요하다. CI에서는 워크플로가 넘겨 주고, 로컬에서 직접 돌릴 때는 `GITHUB_TOKEN=$(gh auth token) pnpm version-packages`처럼 실행한다.
 
-첫 공개 버전은 `.changeset/first-public-release.md`로 `@hannam-lang/core`, `hannam-lang`, `@hannam-lang/vite-plugin`을, `.changeset/vscode-extension-release.md`로 VS Code 확장을 0.1.0으로 올린다. 사이트, Playground, 예제는 배포하지 않으므로 changeset 대상에서 뺐다(`ignore`).
+첫 공개 버전은 `.changeset/first-public-release.md`로 `@hannam-lang/core`, `hannam-lang`, `@hannam-lang/vite-plugin`을 0.1.0으로 올린다. 사이트, Playground, 예제는 배포하지 않으므로 changeset 대상에서 뺐다(`ignore`).

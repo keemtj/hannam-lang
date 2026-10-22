@@ -131,8 +131,7 @@ examples/
 ### 공개할 때 할 일
 1. npm에서 `@hannam-lang` 조직을 만들고, 패키지 이름 `hannam-lang`이 비어 있는지 다시 확인한다
 2. 저장소 변수 `NPM_PUBLISH_ENABLED=true`, 배포 인증(OIDC trusted publishing 또는 `NPM_TOKEN`) 설정 (`.github/RELEASING.md`)
-3. VS Code 확장: 마켓플레이스 publisher `hannam-lang` 생성과 `VSCE_PAT` 시크릿, Open VSX 계정·약관 동의·네임스페이스와 `OVSX_PAT` 시크릿, 저장소 변수 `VSCODE_PUBLISH_ENABLED=true` (`.github/RELEASING.md`)
-4. 열려 있는 "Version Packages" PR(0.1.0)을 병합하면 npm 패키지와 VS Code 확장이 배포된다
+3. 열려 있는 "Version Packages" PR(0.1.0)을 병합하면 npm 패키지가 배포된다
 5. 사이트 배포 위치를 정하고 배포한다, 저장소를 public으로 바꾼다
 6. 데모 GIF (이 PC에 ffmpeg가 없어 아직 못 만듦)
 
@@ -142,3 +141,6 @@ examples/
 - *Writing an Interpreter in Go* — Thorsten Ball
 - CoffeeScript, Civet (JS로 변환되는 언어 설계 참고)
 - LOLCODE, ArnoldC, Rockstar (밈·인용구 키워드 언어 참고)
+
+### 보류
+- VS Code 확장의 마켓플레이스·Open VSX 배포 (2026-10-22 보류). 확장 코드(하이라이팅, 스니펫, 에러 표시)는 저장소에 있고 `.vsix`로 설치할 수 있다

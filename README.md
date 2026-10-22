@@ -87,7 +87,7 @@ npx hnc todo.hn      # todo.js로 컴파일
 | [`hannam-lang`](packages/hannam-lang) | 실행기 `hannam`, 컴파일러 `hnc`, Node 로더 훅, Bun 플러그인 |
 | [`@hannam-lang/vite-plugin`](packages/vite-plugin) | Vite에서 `.hn`을 바로 import합니다 |
 | [`@hannam-lang/core`](packages/core) | 변환기 API(`compile`). 빌드 도구를 직접 만들 때 씁니다 |
-| [VS Code 확장](packages/vscode) | 문법 하이라이팅, 스니펫, 컴파일 에러 표시 |
+| [VS Code 확장](packages/vscode) | 문법 하이라이팅, 스니펫, 컴파일 에러 표시. 저장소에서 `.vsix`로 설치합니다 |
 
 ## 동작 방식
 
@@ -123,7 +123,7 @@ pnpm test
 pnpm changeset
 ```
 
-`main`에 병합되면 버전 PR이 만들어지거나 갱신됩니다. 버전 PR을 병합하면 npm 패키지와 VS Code 확장(VS Code 마켓플레이스, Open VSX)이 배포됩니다. 처음 한 번 필요한 저장소 설정은 [RELEASING.md](.github/RELEASING.md)에 있습니다.
+`main`에 병합되면 버전 PR이 만들어지거나 갱신됩니다. 버전 PR을 병합하면 npm 패키지가 배포됩니다. 처음 한 번 필요한 저장소 설정은 [RELEASING.md](.github/RELEASING.md)에 있습니다.
 
 ## 라이선스
 

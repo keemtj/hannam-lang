@@ -11,6 +11,17 @@
 
 자동 완성, 정의로 이동, 코드 서식 맞추기는 아직 없습니다.
 
+## 설치
+
+마켓플레이스에는 올라가 있지 않습니다. 저장소 루트에서 `.vsix`를 만들어 설치합니다.
+
+```sh
+pnpm install
+pnpm --filter @hannam-lang/core build
+pnpm --filter hannam-lang-vscode package
+code --install-extension packages/vscode/dist/hannam-lang-vscode.vsix
+```
+
 ## 쓰는 법
 
 확장을 설치하면 `.hn` 파일에 자동으로 적용됩니다. 따로 설정할 것은 없습니다.
