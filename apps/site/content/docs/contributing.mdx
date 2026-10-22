@@ -30,7 +30,11 @@ pnpm -r test        # 테스트 (vitest)
 
 ## changeset
 
-사용자에게 보이는 변경을 했다면 `pnpm changeset`으로 changeset을 하나 추가합니다. 요약은 그대로 CHANGELOG에 들어가므로 한국어로, 사용자 입장에서 씁니다. 문서·테스트·CI·예제처럼 사용자에게 보이지 않는 변경에는 필요 없습니다.
+배포하는 npm 패키지(`hannam-lang`, `@hannam-lang/core`, `@hannam-lang/vite-plugin`)에 사용자에게 보이는 변경을 했다면 `pnpm changeset`으로 changeset을 하나 추가합니다.
+
+- 요약은 그대로 CHANGELOG와 GitHub 릴리스에 들어가므로 사용자 입장에서 씁니다. **한국어 한 문단, 영어 한 문단**으로 쓰고 두 문단의 내용은 같아야 합니다. 영어가 어렵다면 한국어만 써도 되고, 메인테이너가 병합 전에 영어 문단을 채웁니다.
+- 세 패키지는 버전을 묶어서 냅니다. 실제로 바뀐 패키지만 적어도 세 패키지가 같은 버전으로 오릅니다.
+- 문서, 테스트, CI, 그리고 배포하지 않는 패키지(사이트, Playground, VS Code 확장, 예제)만 바꾼 경우에는 필요 없습니다.
 
 ## 커밋과 PR
 
