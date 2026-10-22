@@ -1,0 +1,9 @@
+# .vsix에는 확장 실행에 필요한 파일만 넣는다
+test/**
+scripts/**
+node_modules/**
+dist/**
+tsconfig.json
+.vscode/**
+**/*.map
+.omc/**
