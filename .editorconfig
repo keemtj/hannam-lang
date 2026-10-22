@@ -1,0 +1,14 @@
+# 편집기 기본 설정. 기존 코드와 같은 규칙(공백 2칸, LF, UTF-8)이다
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# 마크다운은 줄 끝 공백 두 칸이 줄바꿈이라 지우지 않는다
+[*.md]
+trim_trailing_whitespace = false
