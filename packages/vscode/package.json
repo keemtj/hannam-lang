@@ -1,0 +1,61 @@
+{
+  "name": "hannam-lang-vscode",
+  "displayName": "hannam-lang",
+  "description": "hannam-lang(.hn) 문법 하이라이팅과 스니펫",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "publisher": "hannam-lang",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "hannam",
+        "aliases": [
+          "hannam-lang",
+          "hannam"
+        ],
+        "extensions": [
+          ".hn"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "hannam",
+        "scopeName": "source.hn",
+        "path": "./syntaxes/hannam.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.line.js": "javascript"
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "hannam",
+        "path": "./snippets/hannam.code-snippets"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "package": "vsce package --no-dependencies --skip-license --allow-missing-repository --out dist/hannam-lang-vscode.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@vscode/vsce": "3.9.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11",
+    "vscode-oniguruma": "2.0.1",
+    "vscode-textmate": "9.3.2"
+  }
+}

@@ -1,0 +1,293 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture와 예제 .hn 파일 > examples/todo/server/server.hn 1`] = `
+[
+  "1 엄... → punctuation.definition.comment.hn",
+  "2 엄... → punctuation.definition.comment.hn",
+  "6 엄.. → storage.type.const.hn",
+  "7 엄.. → storage.type.const.hn",
+  "9 티~원 → storage.type.function.async.hn",
+  "10 진~지? → keyword.control.trycatch.try.hn",
+  "11 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "11 티~원! → keyword.control.flow.await.hn",
+  "12 지~랄 → keyword.control.trycatch.catch.hn",
+  "13 예? → keyword.control.conditional.if.hn",
+  "14 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "16 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "20 티~원 → storage.type.function.async.hn",
+  "21 티~원! → keyword.control.flow.await.hn",
+  "24 티~원 → storage.type.function.async.hn",
+  "25 엄. → storage.type.let.hn",
+  "29 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "32 티-원 → storage.type.function.hn",
+  "37 엄.. → storage.type.const.hn",
+  "38 엄.. → storage.type.const.hn",
+  "39 엄.. → storage.type.const.hn",
+  "40 엄.. → storage.type.const.hn",
+  "42 진~지? → keyword.control.trycatch.try.hn",
+  "43 예? → keyword.control.conditional.if.hn",
+  "44 예??? → keyword.control.conditional.switch.hn",
+  "46 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "46 티~원! → keyword.control.flow.await.hn",
+  "49 엄.. → storage.type.const.hn",
+  "49 티~원! → keyword.control.flow.await.hn",
+  "50 예? → keyword.control.conditional.if.hn",
+  "51 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "53 엄.. → storage.type.const.hn",
+  "53 티~원! → keyword.control.flow.await.hn",
+  "54 엄.. → storage.type.const.hn",
+  "56 티~원! → keyword.control.flow.await.hn",
+  "57 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "59 아뇨아뇨아뇨아뇨 → keyword.control.conditional.else.hn",
+  "60 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "63 예?? → keyword.control.conditional.else-if.hn",
+  "64 엄.. → storage.type.const.hn",
+  "64 티~원! → keyword.control.flow.await.hn",
+  "65 엄.. → storage.type.const.hn",
+  "66 예? → keyword.control.conditional.if.hn",
+  "67 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "69 예??? → keyword.control.conditional.switch.hn",
+  "72 티~원! → keyword.control.flow.await.hn",
+  "73 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "77 티~원! → keyword.control.flow.await.hn",
+  "79 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "81 아뇨아뇨아뇨아뇨 → keyword.control.conditional.else.hn",
+  "82 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "87 지~랄 → keyword.control.trycatch.catch.hn",
+  "88 무슨 발언이세요? → support.function.console.log.hn",
+  "94 무슨 발언이세요? → support.function.console.log.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > examples/todo/web/api.hn 1`] = `
+[
+  "1 엄... → punctuation.definition.comment.hn",
+  "2 엄.. → storage.type.const.hn",
+  "4 티~원 → storage.type.function.async.hn",
+  "5 엄.. → storage.type.const.hn",
+  "5 티~원! → keyword.control.flow.await.hn",
+  "9 예? → keyword.control.conditional.if.hn",
+  "10 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "12 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "12 티~원! → keyword.control.flow.await.hn",
+  "15 티~원 → storage.type.function.async.hn",
+  "16 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "16 티~원! → keyword.control.flow.await.hn",
+  "19 티~원 → storage.type.function.async.hn",
+  "20 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "20 티~원! → keyword.control.flow.await.hn",
+  "23 티~원 → storage.type.function.async.hn",
+  "24 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "24 티~원! → keyword.control.flow.await.hn",
+  "27 티~원 → storage.type.function.async.hn",
+  "28 티~원! → keyword.control.flow.await.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > examples/todo/web/main.hn 1`] = `
+[
+  "1 엄... → punctuation.definition.comment.hn",
+  "4 엄.. → storage.type.const.hn",
+  "5 엄.. → storage.type.const.hn",
+  "6 엄.. → storage.type.const.hn",
+  "7 엄.. → storage.type.const.hn",
+  "9 엄. → storage.type.let.hn",
+  "10 엄. → storage.type.let.hn",
+  "12 티-원 → storage.type.function.hn",
+  "13 엄.. → storage.type.const.hn",
+  "15 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "18 티-원 → storage.type.function.hn",
+  "19 예??? → keyword.control.conditional.switch.hn",
+  "20 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "21 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "22 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "24 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "27 티-원 → storage.type.function.hn",
+  "36 요이~ → keyword.control.loop.for-of.hn",
+  "43 엄.. → storage.type.const.hn",
+  "44 예? → keyword.control.conditional.if.hn",
+  "45 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "47 진~지? → keyword.control.trycatch.try.hn",
+  "48 티~원! → keyword.control.flow.await.hn",
+  "51 지~랄 → keyword.control.trycatch.catch.hn",
+  "52 무슨 발언이세요? → support.function.console.log.hn",
+  "57 엄.. → storage.type.const.hn",
+  "58 예? → keyword.control.conditional.if.hn",
+  "59 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "61 엄.. → storage.type.const.hn",
+  "63 진~지? → keyword.control.trycatch.try.hn",
+  "64 예? → keyword.control.conditional.if.hn",
+  "65 예? → keyword.control.conditional.if.hn",
+  "65 예? 무슨 발언이세요? → support.function.confirm.hn",
+  "66 티~원! → keyword.control.flow.await.hn",
+  "69 예?? → keyword.control.conditional.else-if.hn",
+  "70 엄.. → storage.type.const.hn",
+  "70 티~원! → keyword.control.flow.await.hn",
+  "74 지~랄 → keyword.control.trycatch.catch.hn",
+  "75 무슨 발언이세요? → support.function.console.log.hn",
+  "79 요이~ → keyword.control.loop.for-of.hn",
+  "86 진~지? → keyword.control.trycatch.try.hn",
+  "87 티~원! → keyword.control.flow.await.hn",
+  "89 지~랄 → keyword.control.trycatch.catch.hn",
+  "90 무슨 발언이세요? → support.function.console.log.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/class.hn 1`] = `
+[
+  "1 오호호호호~ → storage.type.class.hn",
+  "9 예? → keyword.control.conditional.if.hn",
+  "10 무슨 발언이세요? → support.function.console.log.hn",
+  "12 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "16 오호호호홋~ → storage.type.class.extends.hn",
+  "23 오호호호호~ → storage.type.class.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/console-confirm.hn 1`] = `
+[
+  "1 무슨 발언이세요? → support.function.console.log.hn",
+  "2 무슨 발언이세요? → support.function.console.log.hn",
+  "3 무슨 발언이세요? → support.function.console.log.hn",
+  "4 무슨 발언이세요? → support.function.console.log.hn",
+  "5 무슨 발언이세요? → support.function.console.log.hn",
+  "6 무슨 발언이세요? → support.function.console.log.hn",
+  "8 엄.. → storage.type.const.hn",
+  "8 예? 무슨 발언이세요? → support.function.confirm.hn",
+  "10 예? → keyword.control.conditional.if.hn",
+  "10 예? 무슨 발언이세요? → support.function.confirm.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/declarations.hn 1`] = `
+[
+  "1 엄... → punctuation.definition.comment.hn",
+  "2 엄.. → storage.type.const.hn",
+  "3 엄. → storage.type.let.hn",
+  "4 엄 → storage.type.var.hn",
+  "5 엄.. → storage.type.const.hn",
+  "6 엄.. → storage.type.const.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/functions.hn 1`] = `
+[
+  "1 티-원 → storage.type.function.hn",
+  "2 예? → keyword.control.conditional.if.hn",
+  "3 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "6 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "9 티-원 → storage.type.function.hn",
+  "10 예? → keyword.control.conditional.if.hn",
+  "11 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "16 티~원 → storage.type.function.async.hn",
+  "17 엄.. → storage.type.const.hn",
+  "17 티~원! → keyword.control.flow.await.hn",
+  "18 예? → keyword.control.conditional.if.hn",
+  "19 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "21 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "21 티~원! → keyword.control.flow.await.hn",
+  "24 티-원 → storage.type.function.hn",
+  "25 예? → keyword.control.conditional.if.hn",
+  "26 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "28 아... 줴줴이야... → keyword.control.flow.throw.hn",
+  "31 티-원 → storage.type.function.hn",
+  "32 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "35 티-원 → storage.type.function.hn",
+  "36 티~원 → storage.type.function.async.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/if-else.hn 1`] = `
+[
+  "1 예? → keyword.control.conditional.if.hn",
+  "2 무슨 발언이세요? → support.function.console.log.hn",
+  "3 예?? → keyword.control.conditional.else-if.hn",
+  "4 무슨 발언이세요? → support.function.console.log.hn",
+  "5 아뇨아뇨아뇨아뇨 → keyword.control.conditional.else.hn",
+  "6 무슨 발언이세요? → support.function.console.log.hn",
+  "9 예? → keyword.control.conditional.if.hn",
+  "10 무슨 발언이세요? → support.function.console.log.hn",
+  "13 예? → keyword.control.conditional.if.hn",
+  "14 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "16 무슨 발언이세요? → support.function.console.log.hn",
+  "19 예? → keyword.control.conditional.if.hn",
+  "21 무슨 발언이세요? → support.function.console.log.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/loops.hn 1`] = `
+[
+  "1 요이~ → keyword.control.loop.for-of.hn",
+  "2 예? → keyword.control.conditional.if.hn",
+  "3 아뇨 → keyword.control.loop.continue.hn",
+  "5 무슨 발언이세요? → support.function.console.log.hn",
+  "8 요이~ → keyword.control.loop.for-of.hn",
+  "9 무슨 발언이세요? → support.function.console.log.hn",
+  "12 요이~ → keyword.control.loop.for-of.hn",
+  "13 줴줴이야 → keyword.control.loop.break.hn",
+  "16 요히~ → keyword.control.loop.for-in.hn",
+  "17 무슨 발언이세요? → support.function.console.log.hn",
+  "20 요이~ → keyword.control.loop.for-of.hn",
+  "21 무슨 발언이세요? → support.function.console.log.hn",
+  "24 요이~ → keyword.control.loop.for-of.hn",
+  "25 무슨 발언이세요? → support.function.console.log.hn",
+  "28 요이~ → keyword.control.loop.for-of.hn",
+  "29 무슨 발언이세요? → support.function.console.log.hn",
+  "32 엄. → storage.type.let.hn",
+  "33 요이이이~ → keyword.control.loop.while.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/one-line-blocks.hn 1`] = `
+[
+  "1 티-원 → storage.type.function.hn",
+  "2 예??? → keyword.control.conditional.switch.hn",
+  "3 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "4 아! 줴줴이야~ → keyword.control.flow.return.hn",
+  "6 예? → keyword.control.conditional.if.hn",
+  "6 아! 줴줴이야~ → keyword.control.flow.return.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/switch.hn 1`] = `
+[
+  "1 예??? → keyword.control.conditional.switch.hn",
+  "8 아뇨아뇨아뇨아뇨 → keyword.control.conditional.else.hn",
+  "13 예??? → keyword.control.conditional.switch.hn",
+  "14 엄... → punctuation.definition.comment.hn",
+  "15 무슨 발언이세요? → support.function.console.log.hn",
+  "16 무슨 발언이세요? → support.function.console.log.hn",
+  "19 예??? → keyword.control.conditional.switch.hn",
+  "20 아뇨아뇨아뇨아뇨 → keyword.control.conditional.else.hn",
+  "21 무슨 발언이세요? → support.function.console.log.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/template-and-literals.hn 1`] = `
+[
+  "1 무슨 발언이세요? → support.function.console.log.hn",
+  "1 티~원! → keyword.control.flow.await.hn",
+  "2 무슨 발언이세요? → support.function.console.log.hn",
+  "3 엄.. → storage.type.const.hn",
+  "4 엄.. → storage.type.const.hn",
+  "7 엄.. → storage.type.const.hn",
+  "7 티~원! → keyword.control.flow.await.hn",
+  "8 엄.. → storage.type.const.hn",
+]
+`;
+
+exports[`fixture와 예제 .hn 파일 > packages/core/test/fixtures/try-catch.hn 1`] = `
+[
+  "1 진~지? → keyword.control.trycatch.try.hn",
+  "2 엄.. → storage.type.const.hn",
+  "2 티~원! → keyword.control.flow.await.hn",
+  "3 지~랄 → keyword.control.trycatch.catch.hn",
+  "4 무슨 발언이세요? → support.function.console.log.hn",
+  "7 진~지? → keyword.control.trycatch.try.hn",
+  "9 지~랄 → keyword.control.trycatch.catch.hn",
+  "10 무슨 발언이세요? → support.function.console.log.hn",
+  "15 진~지? → keyword.control.trycatch.try.hn",
+  "17 지~랄 → keyword.control.trycatch.catch.hn",
+  "18 무슨 발언이세요? → support.function.console.log.hn",
+]
+`;
