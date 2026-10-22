@@ -1,0 +1,249 @@
+---
+title: 투두 풀스택 만들기
+description: 프론트엔드와 서버를 모두 .hn으로 짠 할 일 앱을 따라 만듭니다.
+---
+
+저장소의 `examples/todo`는 화면과 서버를 모두 `.hn`으로 쓴 할 일 앱입니다. 할 일 추가, 완료 토글, 삭제(확인 창), 필터, JSON 파일 저장을 지원합니다. 이 가이드는 그 코드를 파일별로 읽어 갑니다.
+
+```txt
+examples/todo/
+  server/server.hn   node:http REST 서버, JSON 파일 저장
+  web/api.hn         fetch로 서버 API 호출
+  web/main.hn        화면: 추가, 완료 토글, 삭제(confirm), 필터
+  web/index.html     <script type="module" src="./main.hn">
+  web/vite.config.js Vite 플러그인 설정
+```
+
+## API
+
+| 메서드 | 경로 | 동작 |
+| --- | --- | --- |
+| GET | `/api/todos` | 목록 |
+| POST | `/api/todos` | 추가 (`{ "내용": "..." }`, 빈 내용은 400) |
+| PATCH | `/api/todos/:id` | 완료 토글 |
+| DELETE | `/api/todos/:id` | 삭제 (204) |
+
+## 1. 서버: `server/server.hn`
+
+Node 내장 모듈 `node:http`로 REST 서버를 만듭니다. 패키지 이름 import는 JS 그대로 씁니다.
+
+```hn title="server/server.hn"
+import http from "node:http"
+import { readFile, writeFile } from "node:fs/promises"
+
+엄.. 파일 = new URL("./todos.json", import.meta.url)
+엄.. 포트 = 3000
+```
+
+### 파일 읽고 쓰기
+
+저장 파일이 아직 없으면(`ENOENT`) 빈 목록을 돌려주고, 다른 에러는 다시 던집니다. `아... 줴줴이야... 에러`처럼 타입을 모르는 값을 던지면 런타임 헬퍼가 Error인지 확인해서 그대로 던집니다.
+
+```hn
+티~원 불러오기() {
+  진~지? {
+    아! 줴줴이야~ JSON.parse(티~원! readFile(파일, "utf8"))
+  } 지~랄 에러 {
+    예? 에러.code === "ENOENT" {
+      아! 줴줴이야~ []
+    }
+    아... 줴줴이야... 에러
+  }
+}
+
+티~원 저장하기(할일들) {
+  티~원! writeFile(파일, JSON.stringify(할일들, null, 2))
+}
+```
+
+요청 본문은 `for await`로 읽습니다. `for await`에는 밈이 없으므로 JS 그대로 씁니다.
+
+```hn
+티~원 본문읽기(req) {
+  엄. 본문 = ""
+  for await (const 조각 of req) {
+    본문 += 조각
+  }
+  아! 줴줴이야~ 본문 ? JSON.parse(본문) : {}
+}
+```
+
+### 경로와 메서드 나누기
+
+`예???`(switch)로 HTTP 메서드를 나눕니다. 갈래마다 `아! 줴줴이야~`로 응답을 돌려주고 빠져나갑니다. `http.createServer`에 넘기는 async 화살표 함수는 JS 그대로입니다.
+
+```hn
+엄.. 서버 = http.createServer(async (req, res) => {
+  엄.. { pathname } = new URL(req.url, `http://${req.headers.host}`)
+  엄.. 일치 = pathname.match(/^\/api\/todos\/(\d+)$/)
+  엄.. id = 일치 ? Number(일치[1]) : null
+
+  진~지? {
+    예? pathname === "/api/todos" {
+      예??? req.method {
+        "GET" {
+          아! 줴줴이야~ 응답(res, 200, 티~원! 불러오기())
+        }
+        "POST" {
+          엄.. { 내용 } = 티~원! 본문읽기(req)
+          예? typeof 내용 !== "string" || !내용.trim() {
+            아! 줴줴이야~ 응답(res, 400, { 에러: "빈 할 일" })
+          }
+          엄.. 할일들 = 티~원! 불러오기()
+          엄.. 새할일 = { id: Date.now(), 내용: 내용.trim(), 완료: false }
+          할일들.push(새할일)
+          티~원! 저장하기(할일들)
+          아! 줴줴이야~ 응답(res, 201, 새할일)
+        }
+        아뇨아뇨아뇨아뇨 {
+          아! 줴줴이야~ 응답(res, 405, { 에러: "지원하지 않는 메서드" })
+        }
+      }
+    } 예?? id !== null {
+      엄... PATCH, DELETE도 같은 방식으로 나눈다
+    }
+    응답(res, 404, { 에러: "없는 경로" })
+  } 지~랄 에러 {
+    무슨 발언이세요? 에러
+    응답(res, 500, { 에러: "서버 오류" })
+  }
+})
+
+서버.listen(포트, () => {
+  무슨 발언이세요? `할 일 서버: http://localhost:${포트}`
+})
+```
+
+전체 코드는 저장소의 `examples/todo/server/server.hn`에 있습니다.
+
+## 2. API 호출: `web/api.hn`
+
+화면에서 서버를 부르는 함수 모음입니다. `export 티~원`으로 async 함수를 내보냅니다.
+
+```hn title="web/api.hn"
+엄.. 주소 = "/api/todos"
+
+티~원 요청(경로, 옵션 = {}) {
+  엄.. 응답 = 티~원! fetch(경로, {
+    headers: { "Content-Type": "application/json" },
+    ...옵션,
+  })
+  예? !응답.ok {
+    아... 줴줴이야... `요청 실패 (${응답.status})`
+  }
+  아! 줴줴이야~ 응답.status === 204 ? null : 티~원! 응답.json()
+}
+
+export 티~원 목록가져오기() {
+  아! 줴줴이야~ 티~원! 요청(주소)
+}
+
+export 티~원 추가하기(내용) {
+  아! 줴줴이야~ 티~원! 요청(주소, { method: "POST", body: JSON.stringify({ 내용 }) })
+}
+```
+
+## 3. 화면: `web/main.hn`
+
+다른 `.hn`은 확장자까지 적어서 가져옵니다.
+
+```hn title="web/main.hn"
+import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.hn"
+
+엄.. 목록 = document.querySelector("#목록")
+엄. 할일들 = []
+엄. 필터 = "전체"
+```
+
+필터는 한 줄 갈래의 `예???`로 나눕니다. 갈래 안에서 `아! 줴줴이야~`로 바로 돌려줍니다.
+
+```hn
+티-원 보이는할일() {
+  예??? 필터 {
+    "전체" { 아! 줴줴이야~ 할일들 }
+    "완료" { 아! 줴줴이야~ 할일들.filter(할일 => 할일.완료) }
+    "남음" { 아! 줴줴이야~ 할일들.filter(할일 => !할일.완료) }
+  }
+  아... 줴줴이야... `예? 무슨 필터: ${필터}`
+}
+```
+
+삭제 버튼은 `예? 예? 무슨 발언이세요?(...)`로 확인을 받은 뒤 지웁니다.
+
+```hn
+목록.addEventListener("click", async (e) => {
+  엄.. 항목 = e.target.closest("li")
+  예? !항목 {
+    아! 줴줴이야~
+  }
+  엄.. id = Number(항목.dataset.id)
+
+  진~지? {
+    예? e.target.matches("[data-action=삭제]") {
+      예? 예? 무슨 발언이세요?("이 할 일을 지울까요?") {
+        티~원! 삭제하기(id)
+        할일들 = 할일들.filter(할일 => 할일.id !== id)
+      }
+    } 예?? e.target.matches("input[type=checkbox]") {
+      엄.. 바뀐것 = 티~원! 토글하기(id)
+      할일들 = 할일들.map(할일 => 할일.id === id ? 바뀐것 : 할일)
+    }
+    그리기()
+  } 지~랄 에러 {
+    무슨 발언이세요? "변경 실패:", 에러.message
+  }
+})
+```
+
+마지막으로 파일 맨 아래에서 목록을 불러옵니다. ES 모듈이라 함수 밖에서도 `티~원!`을 쓸 수 있습니다.
+
+```hn
+진~지? {
+  할일들 = 티~원! 목록가져오기()
+  그리기()
+} 지~랄 에러 {
+  무슨 발언이세요? "불러오기 실패:", 에러.message
+}
+```
+
+## 4. Vite로 띄우기
+
+`index.html`이 `main.hn`을 바로 불러오고, Vite 플러그인이 `.hn`을 JS로 바꿉니다. `/api/` 요청은 서버로 프록시합니다.
+
+```js title="web/vite.config.js"
+import hannam from "@hannam-lang/vite-plugin"
+import { defineConfig } from "vite"
+
+const apiPort = Number(process.env.TODO_API_PORT ?? 3100)
+
+export default defineConfig({
+  plugins: [hannam()],
+  server: {
+    proxy: {
+      // "/api"로 쓰면 접두어 매칭이라 화면 모듈 /api.hn 요청까지 서버로 가 버린다
+      "/api/": `http://localhost:${apiPort}`,
+    },
+  },
+})
+```
+
+저장소 루트에서 다음 순서로 실행합니다.
+
+```sh
+pnpm install
+pnpm --filter @hannam-lang/core --filter @hannam-lang/vite-plugin build
+TODO_API_PORT=3100 pnpm --filter @hannam-lang/example-todo-web dev
+```
+
+투두 서버는 코드 안에서 포트가 3000으로 정해져 있습니다. Vite 프록시 포트(`TODO_API_PORT`)와 맞도록 `server.hn`의 `포트` 값을 바꾸거나 `TODO_API_PORT=3000`으로 띄운 뒤, 서버를 `hannam server/server.hn`으로 실행합니다.
+
+## 정리
+
+| 쓰인 밈 | 어디서 |
+| --- | --- |
+| `티~원` · `티~원!` | 파일 읽기·쓰기, `fetch` 호출 |
+| `진~지?` · `지~랄` | 서버 전체 에러 처리, 화면의 요청 실패 처리 |
+| `예???` | HTTP 메서드 나누기, 필터 |
+| `예? 예? 무슨 발언이세요?(...)` | 삭제 전 확인 |
+| `export 티~원` | API 함수 내보내기 |
+| JS 그대로 | `import`, `for await`, async 화살표 함수, DOM API |

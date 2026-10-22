@@ -1,0 +1,84 @@
+---
+title: 문법 한눈에 보기
+description: 한남랭의 기본 규칙과 밈별 문법 목록입니다.
+---
+
+한남랭은 JS 전체를 다시 만들지 않습니다. **문장 맨 앞에 오는 키워드만** 밈으로 바꾸고, 연산자·`new`·`typeof`·`this`·화살표 함수 같은 값 위치 문법은 JS 그대로 둡니다.
+
+## 기본 규칙
+
+- 블록은 JS처럼 중괄호 `{ }`로 씁니다.
+- 조건을 감싸는 괄호는 써도 되고 빼도 됩니다. `예? 조건 {`와 `예? (조건) {` 둘 다 됩니다.
+- 세미콜론은 생략합니다.
+- 밈이 있는 문법은 밈을 우선해서 쓰고, 밈이 없는 문법과 API만 JS 그대로 씁니다.
+- 출력은 ES 모듈입니다. 그래서 함수 밖에서도 `티~원!`(await)를 쓸 수 있습니다.
+- **문장 키워드는 띄어 쓰고, 값을 돌려주는 밈은 괄호를 붙입니다.** `무슨 발언이세요? 값`은 띄어 쓰고, `예? 무슨 발언이세요?("질문")`은 함수 호출처럼 씁니다. JS에서 `return x`와 `confirm(x)`의 모양이 다른 것과 같습니다. 예외로 `티~원!`은 JS `await`처럼 값 위치에서도 띄어 씁니다.
+
+## 밈별 문법
+
+| 한남랭 | JS | 문서 |
+| --- | --- | --- |
+| `엄` / `엄.` / `엄..` | `var` / `let` / `const` | [변수와 주석](/docs/syntax/variables) |
+| `엄...` | `// 주석` | [변수와 주석](/docs/syntax/variables) |
+| `예?` / `예??` / `아뇨아뇨아뇨아뇨` | `if` / `else if` / `else` | [조건문](/docs/syntax/conditionals) |
+| `예???` | `switch` | [조건문](/docs/syntax/conditionals) |
+| `요이~` | `for...of`, 범위 반복 | [반복문](/docs/syntax/loops) |
+| `요히~` | `for...in` | [반복문](/docs/syntax/loops) |
+| `요이이이~` | `while` | [반복문](/docs/syntax/loops) |
+| `줴줴이야` / `아뇨` | `break` / `continue` | [반복문](/docs/syntax/loops) |
+| `티-원` / `티~원` / `티~원!` | `function` / `async function` / `await` | [함수](/docs/syntax/functions) |
+| `아! 줴줴이야~` / `아... 줴줴이야...` | `return` / `throw` | [함수](/docs/syntax/functions) |
+| `진~지?` / `지~랄` | `try` / `catch` | [예외 처리](/docs/syntax/exceptions) |
+| `오호호호호~` / `오호호호홋~` | `class` / `class extends` | [클래스](/docs/syntax/classes) |
+| `무슨 발언이세요?` | `console.log` | [출력과 확인](/docs/syntax/output) |
+| `예? 무슨 발언이세요?(질문)` | `confirm` | [출력과 확인](/docs/syntax/output) |
+
+## JS 그대로 쓰는 문법
+
+다음 문법에는 밈이 없습니다. JS와 똑같이 씁니다.
+
+- `finally`, `do...while`, `for await`, `yield`, `function*`, 레이블(`label:`), `debugger`, `with`
+- 모든 연산자와 표현식, 화살표 함수, 메서드, 클래스 본문
+- `import`, `export`, `true`, `false`
+- `fetch`, DOM, Node API 같은 플랫폼 API
+
+## 종합 예시
+
+서버에서 할 일을 불러와 필터별로 출력하는 코드입니다. 밈 문법이 대부분 들어 있습니다.
+
+```hn title="todos.hn"
+엄... 서버에서 할 일 불러와서 필터별로 출력
+티~원 불러오기(url) {
+  엄.. 응답 = 티~원! fetch(url)
+  예? !응답.ok {
+    아... 줴줴이야... "불러오기 실패"
+  }
+  아! 줴줴이야~ 티~원! 응답.json()
+}
+
+진~지? {
+  엄.. 할일들 = 티~원! 불러오기("/api/todos")
+  엄.. 필터 = "남음"
+  요이~ 할일 할일들 {
+    예??? 필터 {
+      "완료" {
+        예? !할일.완료 {
+          아뇨
+        }
+      }
+      "남음" {
+        예? 할일.완료 {
+          아뇨
+        }
+      }
+    }
+    예? 할일.완료 {
+      무슨 발언이세요? `✔ ${할일.내용}`
+    } 아뇨아뇨아뇨아뇨 {
+      무슨 발언이세요? `□ ${할일.내용}`
+    }
+  }
+} 지~랄 e {
+  무슨 발언이세요? e.message
+}
+```

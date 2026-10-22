@@ -1,0 +1,46 @@
+---
+title: VS Code 확장
+description: .hn 파일에 문법 하이라이팅, 언어 설정, 스니펫을 제공합니다.
+---
+
+VS Code 확장은 `.hn` 파일을 `hannam` 언어로 등록하고 밈 키워드를 칠해 줍니다. 아직 마켓플레이스에 올리지 않아서 저장소에서 직접 설치합니다.
+
+## 제공하는 것
+
+- **문법 하이라이팅**: 밈 키워드마다 별도 scope를 붙이고, 밈이 아닌 부분은 VS Code 내장 JavaScript 문법으로 칠합니다. 이 문서 사이트의 `.hn` 코드 블록도 같은 문법 파일로 칠했습니다.
+- **언어 설정**: `//`·`/* */` 주석 토글, 괄호 짝 맞추기, 자동 닫기, 들여쓰기
+- **스니펫**: `예?`, `예???`, `요이~`, `티-원`, `티~원`, `진~지?` 등. 밈 접두어와 JS 키워드(`if`, `forof`, `function`, `try` …) 둘 다로 부를 수 있습니다.
+
+## 설치
+
+저장소 루트에서 `.vsix` 패키지를 만들어 설치합니다.
+
+```sh
+pnpm install
+pnpm --filter hannam-lang-vscode package
+code --install-extension packages/vscode/dist/hannam-lang-vscode.vsix
+```
+
+VS Code 확장 보기의 `...` 메뉴에서 **VSIX에서 설치...**를 골라도 됩니다. 지울 때는 다음 명령을 씁니다.
+
+```sh
+code --uninstall-extension hannam-lang.hannam-lang-vscode
+```
+
+## 색이 들어가는 방식
+
+scope 이름은 `keyword.control.conditional.if.hn`, `storage.type.const.hn`처럼 JS 키워드와 같은 앞부분에 `.hn`을 붙인 형태입니다. 그래서 어떤 테마를 쓰든 밈 키워드가 같은 역할의 JS 키워드와 같은 색으로 칠해집니다.
+
+| 밈 | scope |
+| --- | --- |
+| `엄` / `엄.` / `엄..` | `storage.type.var.hn` / `storage.type.let.hn` / `storage.type.const.hn` |
+| `예?` / `예??` / `예???` | `keyword.control.conditional.if.hn` / `.else-if.hn` / `.switch.hn` |
+| `요이~` / `요히~` / `요이이이~` | `keyword.control.loop.for-of.hn` / `.for-in.hn` / `.while.hn` |
+| `티-원` / `티~원` | `storage.type.function.hn` / `storage.type.function.async.hn` |
+| `무슨 발언이세요?` | `support.function.console.log.hn` |
+
+## 한계
+
+- TextMate 문법은 "문장 시작 위치"를 정확히 알 수 없습니다. 그래서 컴파일 에러가 나는 위치에 쓴 밈도 칠해질 수 있습니다.
+- 정해진 개수에서 벗어난 형태(`예????`, `아뇨아뇨`)는 칠하지 않습니다. 에러 표시는 컴파일러가 합니다.
+- 템플릿 `${}` 안의 값 위치 밈은 템플릿 중첩 깊이 3까지만 칠합니다.

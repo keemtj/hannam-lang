@@ -1,0 +1,36 @@
+---
+title: 모듈
+description: import와 export는 JS 그대로 쓰고, .hn 파일끼리는 확장자를 붙여 가져옵니다.
+---
+
+`import`와 `export`에는 밈이 없습니다. JS 그대로 씁니다. `export` 바로 뒤는 문장 시작 위치이므로 `export 티-원 …`, `export 오호호호호~ …`처럼 밈 선언을 내보낼 수 있습니다.
+
+```hn title="main.hn"
+import { 할일추가 } from "./store.hn"
+
+export 티-원 초기화() {
+  할일추가("첫 할 일")
+}
+```
+
+```js title="main.js (hannamc 출력)"
+import { 할일추가 } from "./store.js"
+
+export function 초기화() {
+  할일추가("첫 할 일")
+}
+```
+
+## 확장자를 꼭 씁니다
+
+`.hn` 파일끼리 import할 때는 경로에 `.hn` 확장자를 씁니다. `"./store"`처럼 확장자를 빼면 컴파일 에러입니다. 브라우저와 Node의 ESM 규칙과 같습니다.
+
+## 실행 방식별 처리
+
+| 실행 방식 | `.hn` 경로 처리 |
+| --- | --- |
+| `hannam`(Node 로더 훅), Bun 플러그인, Vite 플러그인 | `.hn` 경로를 그대로 처리합니다 |
+| `hannamc`(컴파일) | 상대 경로 import의 `.hn`을 `.js`로 바꿉니다 (`"./store.hn"` → `"./store.js"`) |
+
+- 문자열 리터럴 경로의 동적 import(`import("./x.hn")`)도 같은 규칙을 따릅니다.
+- 패키지 이름 import(`"node:http"`, `"vite"`)는 건드리지 않습니다.
