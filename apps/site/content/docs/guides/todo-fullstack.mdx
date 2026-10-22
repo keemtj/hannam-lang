@@ -37,7 +37,7 @@ import { readFile, writeFile } from "node:fs/promises"
 
 ### 파일 읽고 쓰기
 
-저장 파일이 아직 없으면(`ENOENT`) 빈 목록을 돌려주고, 다른 에러는 다시 던집니다. `아... 줴줴이야... 에러`처럼 타입을 모르는 값을 던지면 런타임 헬퍼가 Error인지 확인해서 그대로 던집니다.
+저장 파일이 아직 없으면(`ENOENT`) 빈 목록을 돌려주고, 다른 에러는 다시 던집니다. `아... 줴줴이야... 에러`처럼 타입을 모르는 값을 던지면 런타임 헬퍼를 거칩니다. 헬퍼는 문자열이면 Error로 감싸고, 그 밖의 값(여기서는 Error 객체)은 그대로 던집니다.
 
 ```hn
 티~원 불러오기() {
@@ -235,7 +235,11 @@ pnpm --filter @hannam-lang/core --filter @hannam-lang/vite-plugin build
 TODO_API_PORT=3100 pnpm --filter @hannam-lang/example-todo-web dev
 ```
 
-투두 서버는 코드 안에서 포트가 3000으로 정해져 있습니다. Vite 프록시 포트(`TODO_API_PORT`)와 맞도록 `server.hn`의 `포트` 값을 바꾸거나 `TODO_API_PORT=3000`으로 띄운 뒤, 서버를 `hannam server/server.hn`으로 실행합니다.
+투두 서버는 코드 안에서 포트가 3000으로 정해져 있습니다. Vite 프록시 포트(`TODO_API_PORT`)와 맞도록 `server.hn`의 `포트` 값을 바꾸거나 `TODO_API_PORT=3000`으로 화면을 띄운 뒤, 저장소 루트에서 서버를 실행합니다. 저장소 안에서는 `hannam` 명령이 PATH에 없으므로 실행 파일 경로로 부릅니다.
+
+```sh
+node packages/hannam-lang/bin/hannam.js examples/todo/server/server.hn
+```
 
 ## 정리
 

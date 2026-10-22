@@ -10,14 +10,18 @@ function getHighlighter() {
     themes: ["github-light", "github-dark"],
     langs: ["javascript", hnLanguage],
     engine: createOnigurumaEngine(import("shiki/wasm")),
+  }).catch((error: unknown) => {
+    // 실패한 Promise를 붙잡아 두지 않고 다음 호출에서 다시 만든다
+    highlighter = undefined
+    throw error
   })
   return highlighter
 }
 
-export async function highlight(code: string, lang: "hn" | "javascript" | "sh"): Promise<string> {
+export async function highlight(code: string, lang: "hn" | "javascript"): Promise<string> {
   const h = await getHighlighter()
   return h.codeToHtml(code, {
-    lang: lang === "sh" ? "text" : lang,
+    lang,
     themes: { light: "github-light", dark: "github-dark" },
     defaultColor: false,
   })

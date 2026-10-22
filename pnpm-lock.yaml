@@ -29,6 +29,9 @@ importers:
       fumadocs-ui:
         specifier: 16.16.2
         version: 16.16.2(@types/mdx@2.0.14)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(fumadocs-core@16.16.2(@mdx-js/mdx@3.1.1)(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.3.0)(lucide-react@1.52.0(@types/react@19.3.0)(react@19.3.0))(next@16.4.0(@types/node@22.20.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(zod@4.6.7))(next@16.4.0(@types/node@22.20.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@4.3.3)
+      hannam-lang-vscode:
+        specifier: workspace:*
+        version: link:../../packages/vscode
       lucide-react:
         specifier: 1.52.0
         version: 1.52.0(@types/react@19.3.0)(react@19.3.0)
@@ -63,9 +66,6 @@ importers:
       '@types/react-dom':
         specifier: 19.3.0
         version: 19.3.0(@types/react@19.3.0)
-      hannam-lang-vscode:
-        specifier: workspace:*
-        version: link:../../packages/vscode
       playwright:
         specifier: 1.64.0
         version: 1.64.0

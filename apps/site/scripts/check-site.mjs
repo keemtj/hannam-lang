@@ -43,7 +43,9 @@ function listeningPids(port) {
       .split("\n")
       .filter(Boolean)
       .map(Number)
-  } catch {
+  } catch (e) {
+    // lsof는 듣는 프로세스가 없으면 종료 코드 1로 끝난다. 명령 자체가 없으면 확인할 수 없다
+    if (e.code === "ENOENT") throw new Error("lsof가 없어 포트 소유자를 확인할 수 없음")
     return []
   }
 }
@@ -80,12 +82,20 @@ server.stdout.on("data", (d) => (serverLog += d))
 server.stderr.on("data", (d) => (serverLog += d))
 
 function stopServer() {
-  if (server.exitCode === null) server.kill("SIGTERM")
+  if (server.exitCode === null && server.signalCode === null) server.kill("SIGTERM")
 }
 process.on("exit", stopServer)
+// 스크립트가 신호로 끝나도 띄운 서버를 남기지 않는다
+for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
+  process.on(signal, () => {
+    stopServer()
+    process.exit(1)
+  })
+}
 
 async function waitForServer() {
   for (let i = 0; i < 100; i++) {
+    if (server.exitCode !== null) throw new Error(`next start가 바로 끝남 (pnpm build를 먼저 했는지 확인)\n${serverLog}`)
     try {
       const r = await fetch(base)
       if (r.ok) return

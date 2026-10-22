@@ -4,13 +4,13 @@ description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 hannam-lang을
 ---
 
 <Callout type="warn" title="공개 전">
-  hannam-lang은 아직 npm에 배포하기 전입니다. 아래 명령은 첫 배포(v0.1) 이후 기준입니다. 그 전에는 저장소를 받아 `pnpm install`, `pnpm -r build`로 직접 빌드해서 써 주세요.
+  hannam-lang은 아직 npm에 배포하기 전입니다. 아래 명령은 첫 배포(v0.1) 이후 기준입니다. 그 전에는 저장소를 받아 `pnpm install`, `pnpm -r build`로 직접 빌드하고, `node packages/hannam-lang/bin/hannam.js app.hn`처럼 실행 파일 경로로 실행해 주세요.
 </Callout>
 
 ## 요구 사항
 
-- **Node.js 20.16 이상** (Node 22 권장). `hannam`이 쓰는 로더 훅(`module.register`)과 터미널 확인 창 기능이 이 버전부터 동작합니다.
-- 또는 **Bun**. Bun에서는 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)).
+- **Node.js 20.16 이상**. `hannam`이 쓰는 로더 훅(`module.register`)과 터미널 확인 창 기능이 이 버전부터 동작합니다.
+- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hannamc` 명령 자체는 Node로 실행됩니다.
 
 ## 프로젝트에 설치
 
@@ -48,6 +48,8 @@ npm i -D hannam-lang
     ```
   </Tab>
 </Tabs>
+
+`yarn global add`는 Yarn 1(classic) 명령입니다. Yarn 2 이상에서는 전역 설치 대신 프로젝트에 설치해서 씁니다.
 
 설치가 끝나면 버전을 확인합니다.
 
