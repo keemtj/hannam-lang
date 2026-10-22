@@ -73,9 +73,12 @@ jobs:
           pr-title: "릴리스: Version Packages"
 
   # GITHUB_TOKEN으로 만든 PR에서는 pull_request 워크플로가 돌지 않으므로 여기서 직접 부른다
+  # 공개 전(배포가 꺼져 있을 때)에는 main push마다 macOS·Windows 러너를 쓰지 않도록 건너뛴다.
+  # 필요하면 install-matrix 워크플로를 수동 실행(workflow_dispatch)한다
   install-matrix:
     name: 설치 매트릭스
     needs: version
+    if: vars.NPM_PUBLISH_ENABLED == 'true'
     permissions:
       contents: read
     uses: ./.github/workflows/install-matrix.yml

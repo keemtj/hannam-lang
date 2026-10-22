@@ -231,8 +231,15 @@ bin_dir_for() {
   local pm="$1"
   local prefix="$WORK/pm/$pm"
   case "$pm" in
-    npm | yarn)
+    npm)
       if [ "$IS_WINDOWS" = "1" ]; then echo "$prefix"; else echo "$prefix/bin"; fi
+      ;;
+    yarn)
+      # yarn classic이 bin을 두는 위치는 OS마다 달라서 짐작하지 않고 yarn에게 묻는다
+      local dir
+      dir="$(cd "$WORK" && npx --yes "yarn@$YARN_VERSION" global bin --prefix "$prefix" 2>/dev/null | tail -n 1)"
+      if [ "$IS_WINDOWS" = "1" ] && command -v cygpath >/dev/null 2>&1; then dir="$(cygpath -u "$dir")"; fi
+      echo "${dir:-$prefix/bin}"
       ;;
     pnpm | bun) echo "$prefix/bin" ;;
   esac
