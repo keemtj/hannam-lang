@@ -92,3 +92,11 @@ describe("재검증 회귀 테스트", () => {
     expect(code("무슨 발언이세요? a\n=> b")).toBe("console.log(a)\n=> b")
   })
 })
+
+describe("명세 변형 에러의 경계", () => {
+  it("물결 없는 밈과 닮은 일반 식별자는 그대로 둔다", () => {
+    expect(code("지랄 = 1")).toBe("지랄 = 1")
+    expect(code("엄.. 아뇨값 = 1")).toBe("const 아뇨값 = 1")
+    expect(code("오호호 = 3")).toBe("오호호 = 3")
+  })
+})

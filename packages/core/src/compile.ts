@@ -312,6 +312,11 @@ class Compiler {
       return pos + 4
     }
 
+    // 밈 표기에서 물결이 빠진 형태는 catch·try로 쓰려던 것이라 안내한다 (일반 식별자 대입 `지랄 = 1` 등은 그대로)
+    if (/^(?:지-?랄|진지\?)[ \t]+[\p{ID_Start}$_({[]/u.test(src.slice(pos, pos + 16)) && !src.startsWith("지~랄", pos)) {
+      throw this.error(src[pos + 1] === "지" ? "try는 '진~지?'로 씁니다" : "catch는 '지~랄'로 씁니다", pos)
+    }
+
     if (c === "지" && src.startsWith("지~랄", pos) && !isIdContinue(src[pos + 3])) {
       if (st.lastClosed() !== "try") throw this.error("'지~랄'(catch)은 '진~지?' 블록의 '}' 바로 뒤에서만 쓸 수 있습니다", pos)
       return this.catchHead(pos, st)
@@ -331,7 +336,10 @@ class Compiler {
       return pos + 3
     }
 
-    if (c === "오" && /^오[호홋]+~/.test(src.slice(pos, pos + 16))) return this.classHead(pos, st)
+    if (c === "오" && /^오[호홋콧]+~/.test(src.slice(pos, pos + 16))) return this.classHead(pos, st)
+    if (c === "오" && /^오[호홋콧]+[ \t]+[\p{ID_Start}$_][\p{ID_Continue}$]*[^\n{]*\{/u.test(src.slice(pos, pos + 80))) {
+      throw this.error("클래스는 물결까지 붙여 '오호호호호~', 상속은 '오호호호홋~'로 씁니다", pos)
+    }
 
     if (c === "요" && /^요[이히]+~/.test(src.slice(pos, pos + 16))) {
       if (src.startsWith("요이이이~", pos)) return this.headerKeyword(pos, pos + 5, "while", "loop", st)
@@ -370,6 +378,10 @@ class Compiler {
     if (!isDecl) {
       if (dots === 0) return null // `엄 = 1` 같은 대입
       throw this.error("선언할 이름이 필요합니다", nameAt)
+    }
+    const nameMatch = /^[\p{ID_Start}$_][\p{ID_Continue}$]*/u.exec(src.slice(nameAt, nameAt + 64))
+    if (nameMatch && /^(?:(?:아뇨)+|줴줴이야)$/.test(nameMatch[0])) {
+      throw this.error(`'${nameMatch[0]}'는 예약어라 변수 이름으로 쓸 수 없습니다`, nameAt)
     }
     const kw = dots === 0 ? "var" : dots === 1 ? "let" : "const"
     this.s.update(pos, end, kw)
