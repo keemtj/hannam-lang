@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { ThemedPlayground } from "@/components/playground-client"
+import { version } from "@/lib/version"
 
 export const metadata: Metadata = {
   title: "Playground",
@@ -9,7 +10,11 @@ export const metadata: Metadata = {
 export default function PlaygroundPage() {
   return (
     <main className="hn-playground-page">
-      <ThemedPlayground syncUrl height="calc(100dvh - 7.5rem)" />
+      <p className="hn-playground-note">
+        최근 배포 버전은 <a href="/docs/changelog">v{version}</a>입니다. Playground는 저장소의 최신 코드로 동작하므로, 아직 배포되지 않은
+        변경이 먼저 들어 있을 수 있습니다.
+      </p>
+      <ThemedPlayground syncUrl height="calc(100dvh - 9.5rem)" />
     </main>
   )
 }
