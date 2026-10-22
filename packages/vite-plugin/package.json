@@ -36,8 +36,10 @@
   },
   "devDependencies": {
     "@types/node": "22.20.5",
+    "@types/ws": "8.18.2",
     "typescript": "5.9.3",
     "vite": "8.3.3",
-    "vitest": "4.1.11"
+    "vitest": "4.1.11",
+    "ws": "8.22.0"
   }
 }

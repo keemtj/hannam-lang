@@ -93,7 +93,8 @@ function hnFiles(): string[] {
     .map((name) => `packages/core/test/fixtures/${name}`)
   const examples = readdirSync(exampleDir, { recursive: true, encoding: "utf8" })
     .filter((name) => name.endsWith(".hn") && !name.includes("node_modules"))
-    .map((name) => `examples/todo/${name}`)
+    // Windows의 readdir는 경로를 \로 이어 준다. 테스트 이름(스냅샷 키)이 OS마다 같도록 /로 맞춘다
+    .map((name) => `examples/todo/${name.replaceAll("\\", "/")}`)
   return [...fixtures, ...examples].sort()
 }
 
