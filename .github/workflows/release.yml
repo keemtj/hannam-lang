@@ -1,0 +1,114 @@
+name: Release
+
+# main에 changeset이 쌓이면 "Version Packages" PR을 만들거나 갱신한다.
+# npm 배포는 기본으로 꺼져 있다. 저장소 변수 NPM_PUBLISH_ENABLED가 'true'일 때만 publish job이 돈다.
+# 켜는 방법과 토큰 선택(npm trusted publishing 또는 NPM_TOKEN)은 .github/RELEASING.md 참고.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions: {} # job마다 필요한 권한만 따로 준다
+
+jobs:
+  select-mode:
+    name: 모드 고르기
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    outputs:
+      mode: ${{ steps.select-mode.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      # changeset이 있으면 version, 없고 npm에 아직 없는 버전이 있으면 publish, 둘 다 아니면 none
+      - name: 모드 고르기
+        id: select-mode
+        uses: changesets/action/select-mode@v2.1.2
+
+  version:
+    name: Version Packages PR
+    needs: select-mode
+    if: needs.select-mode.outputs.mode == 'version'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # 버전 커밋을 changeset-release/* 브랜치에 push
+      pull-requests: write # Version Packages PR 생성·갱신
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      - name: Version Packages PR 만들기
+        uses: changesets/action/version@v2.1.2
+        with:
+          script: pnpm version-packages
+          commit-message: "릴리스: Version Packages"
+          pr-title: "릴리스: Version Packages"
+
+  # GITHUB_TOKEN으로 만든 PR에서는 pull_request 워크플로가 돌지 않으므로 여기서 직접 부른다
+  install-matrix:
+    name: 설치 매트릭스
+    needs: version
+    permissions:
+      contents: read
+    uses: ./.github/workflows/install-matrix.yml
+    with:
+      ref: changeset-release/${{ github.ref_name }}
+
+  publish:
+    name: npm 배포
+    needs: select-mode
+    # 기본값으로는 실행되지 않는다. 저장소 변수 NPM_PUBLISH_ENABLED를 'true'로 둬야 돈다
+    if: needs.select-mode.outputs.mode == 'publish' && vars.NPM_PUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: npm
+    permissions:
+      contents: write # git 태그와 GitHub 릴리스 생성
+      id-token: write # npm trusted publishing(OIDC)과 provenance
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          # trusted publishing에는 npm 11.5.1 이상이 필요해서 npm 11이 들어 있는 Node 24를 쓴다
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      - name: npm 배포
+        uses: changesets/action/publish@v2.1.2
+        with:
+          script: pnpm release
+        env:
+          # NPM_TOKEN 시크릿이 없으면 빈 값이 되고, 그때는 trusted publishing(OIDC)으로 인증한다
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
