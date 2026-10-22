@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [20, 22, 24]
+    steps:
+      # Windows 러너 기본값(autocrlf=true)이면 .hn ↔ .js fixture 비교가 줄바꿈 때문에 깨진다
+      - name: 줄바꿈 변환 끄기
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v7
+
+      # 버전은 package.json의 packageManager를 따른다
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      # pnpm -r은 워크스페이스 패키지 중 해당 스크립트가 있는 것만 실행한다
+      - name: 빌드
+        run: pnpm -r build
+
+      - name: 타입 검사
+        run: pnpm -r typecheck
+
+      - name: 테스트
+        run: pnpm -r test
