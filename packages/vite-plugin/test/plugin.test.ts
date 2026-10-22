@@ -5,6 +5,8 @@ import { fileURLToPath, pathToFileURL } from "node:url"
 import { build, createServer, type ViteDevServer } from "vite"
 import { afterAll, describe, expect, it } from "vitest"
 import hannam from "../src/index.js"
+// Node 20에는 전역 WebSocket이 없어서(Node 22부터 기본) HMR 채널은 ws 클라이언트로 연결한다
+import WebSocket from "ws"
 
 // 임시 프로젝트는 패키지 안에 만든다. dev 서버의 fs.allow가 모노레포 루트를 작업 영역으로 잡아야
 // packages/core/dist의 런타임 파일을 내줄 수 있다 (실제 사용자 앱이 node_modules에서 받는 것과 같은 조건)
