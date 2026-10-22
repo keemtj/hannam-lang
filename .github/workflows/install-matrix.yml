@@ -1,0 +1,63 @@
+name: Install matrix
+
+# packages/hannam-lang을 pnpm pack한 tarball을 npm, pnpm, yarn, bun으로 전역 설치해 확인한다.
+# 실제 단계는 scripts/install-matrix.sh에 있고, 로컬에서도 같은 스크립트로 돌릴 수 있다.
+
+on:
+  workflow_dispatch:
+  # 릴리스 PR(changeset-release/*)에서만 돈다. 아래 job의 if 참고
+  pull_request:
+    branches: [main]
+  # release.yml이 Version Packages PR을 만든 뒤 호출한다
+  # (GITHUB_TOKEN으로 만든 PR은 pull_request 이벤트를 일으키지 않기 때문)
+  workflow_call:
+    inputs:
+      ref:
+        description: 확인할 브랜치나 커밋
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.os }} / ${{ matrix.pm }}
+    if: github.event_name != 'pull_request' || startsWith(github.head_ref, 'changeset-release/')
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        pm: [npm, pnpm, yarn, bun]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Windows에서 셸 스크립트가 CRLF로 체크아웃되면 bash가 실행하지 못한다
+      - name: 줄바꿈 변환 끄기
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: oven-sh/setup-bun@v2
+        if: matrix.pm == 'bun'
+        with:
+          bun-version: 1.4.2
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      - name: 전역 설치 확인 (${{ matrix.pm }})
+        run: bash scripts/install-matrix.sh ${{ matrix.pm }}
