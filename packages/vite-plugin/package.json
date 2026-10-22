@@ -1,6 +1,6 @@
 {
   "name": "@hannam-lang/vite-plugin",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "hannam-lang(.hn) 모듈을 Vite에서 쓰게 해 주는 플러그인",
   "license": "MIT",
   "repository": {
