@@ -75,7 +75,7 @@ describe("스니펫", () => {
   test.each(Object.entries(snippets))("%s", async (name, snippet) => {
     expect(snippet.prefix.length).toBeGreaterThan(0)
     const tokens = await tokenize(expand(snippet.body))
-    // 스니펫 이름의 첫 밈이 문법에서 밈으로 칠해진다
+    // 스니펫 이름의 첫 키워드가 문법에서 키워드로 칠해진다
     const firstMeme = name.split(" ")[0]!
     const isMeme = (scopes: string[]) => scopes.some((scope) => scope.endsWith(".hn") && scope !== "source.hn")
     expect(tokens.some((token) => token.text.startsWith(firstMeme) && isMeme(token.scopes)), name).toBe(true)

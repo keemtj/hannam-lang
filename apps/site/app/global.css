@@ -2,6 +2,11 @@
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
 
+/* 본문 글꼴: Pretendard(OFL). 기기마다 시스템 한글 글꼴이 달라지지 않도록 직접 싣는다 */
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
 /* 한남랭 색: T1을 떠올리게 하는 빨강을 강조색으로 쓴다 */
 :root {
   --hn-accent: oklch(57% 0.22 20);
@@ -14,6 +19,9 @@
   --color-fd-primary: oklch(52% 0.21 20);
   --color-fd-primary-foreground: oklch(99% 0 0);
   --color-fd-ring: oklch(57% 0.22 20);
+  /* Black Han Sans는 아래쪽에 디센더 자리(0.21em)를 비워 두지만 한글은 기준선 위에만 그려진다.
+     그래서 상자 가운데에 두면 글자가 0.085em 위로 떠 보인다. 테두리나 배경이 있는 상자에서 이만큼 내린다 */
+  --hn-display-shift: 0.085em;
 }
 
 .dark {
@@ -43,18 +51,10 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* 내비게이션 로고 */
+/* 내비게이션 로고 (components/logo.tsx의 SVG) */
 .hn-logo {
-  display: inline-grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.5rem;
-  background: var(--hn-accent);
-  color: white;
-  font-family: var(--font-display), sans-serif;
-  font-size: 0.8rem;
-  letter-spacing: -0.02em;
+  display: block;
+  flex: none;
 }
 
 /* ───────── 메인 페이지 ───────── */
@@ -87,7 +87,7 @@ body {
   text-align: center;
 }
 
-/* 배경 밈 말풍선: 장식이라 흐리게, 화면 가장자리에 흩어 둔다 */
+/* 배경 말풍선: 장식이라 흐리게, 화면 가장자리에 흩어 둔다 */
 .hn-floating {
   position: absolute;
   inset: 0;
@@ -102,7 +102,7 @@ body {
   color: var(--hn-accent);
   opacity: 0.16;
   white-space: nowrap;
-  padding: 0.25rem 0.75rem;
+  padding: calc(0.25rem + var(--hn-display-shift)) 0.75rem calc(0.25rem - var(--hn-display-shift));
   border: 2px solid currentColor;
   border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
   animation: hn-bob 6s ease-in-out infinite;
@@ -374,8 +374,8 @@ body {
   text-underline-offset: 3px;
 }
 
-/* 밈 카드 */
-.hn-memes {
+/* 키워드 카드 */
+.hn-keywords {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
   gap: 1rem;
@@ -384,7 +384,7 @@ body {
   padding: 0;
 }
 
-.hn-meme {
+.hn-keyword {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -396,13 +396,13 @@ body {
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.hn-meme:hover {
+.hn-keyword:hover {
   transform: translateY(-3px) rotate(-0.6deg);
   border-color: var(--hn-accent);
   box-shadow: 0 16px 32px -24px var(--hn-accent);
 }
 
-.hn-meme-no {
+.hn-keyword-no {
   position: absolute;
   top: 1rem;
   right: 1.1rem;
@@ -411,7 +411,7 @@ body {
   color: var(--color-fd-muted-foreground);
 }
 
-.hn-meme-word {
+.hn-keyword-word {
   font-family: var(--font-display), sans-serif;
   font-size: 1.75rem;
   line-height: 1.2;
@@ -419,25 +419,17 @@ body {
   padding-right: 1.75rem;
 }
 
-.hn-meme-nuance {
-  margin-top: 0.4rem;
-  font-size: 0.875rem;
-  line-height: 1.55;
-  color: var(--color-fd-muted-foreground);
-}
-
-/* 밈 → JS 대응: 세 칸 격자(밈, 화살표, JS)로 줄을 맞춘다 */
-.hn-meme-map {
+/* 키워드 → JS 대응: 세 칸 격자(키워드, 화살표, JS)로 줄을 맞춘다 */
+.hn-keyword-map {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr);
   align-items: center;
   gap: 0.4rem 0.35rem;
-  margin-top: auto;
-  padding-top: 1rem;
+  padding-top: 0.85rem;
   color: var(--color-fd-muted-foreground);
 }
 
-.hn-meme-row {
+.hn-keyword-row {
   display: contents;
 }
 

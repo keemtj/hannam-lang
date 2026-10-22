@@ -125,7 +125,7 @@ class Compiler {
       prev = t
     }
 
-    // 밈 처리기가 상태를 바꿀 때 쓰는 핸들
+    // 키워드 처리기가 상태를 바꿀 때 쓰는 핸들
     const state: MemeState = {
       setPrev,
       endStatementStart: () => {
@@ -173,7 +173,7 @@ class Compiler {
       }
 
       if (isTemplate && prev === null && this.looksLikeStatementMeme(pos) && !src.startsWith(AWAIT, pos) && !src.startsWith(CONFIRM, pos)) {
-        throw this.error("템플릿의 ${} 안에는 '티~원!', '예? 무슨 발언이세요?(...)' 같은 값 위치 밈만 쓸 수 있습니다", pos)
+        throw this.error("템플릿의 ${} 안에는 '티~원!', '예? 무슨 발언이세요?(...)' 같은 값 위치 키워드만 쓸 수 있습니다", pos)
       }
 
       atLineStart = false
@@ -254,7 +254,7 @@ class Compiler {
     }
   }
 
-  // ───────────────────────── 문장 시작 밈 ─────────────────────────
+  // ───────────────────────── 문장 시작 키워드 ─────────────────────────
 
   private statementMeme(pos: number, st: MemeState): number | null {
     const src = this.src
@@ -265,7 +265,7 @@ class Compiler {
     if (c === "예" && src[pos + 1] === "?") {
       if (src.startsWith(CONFIRM, pos)) {
         this.checkConfirmStatement(pos)
-        return null // 값 위치 밈으로 처리
+        return null // 값 위치 키워드로 처리
       }
       let q = 0
       while (src[pos + 1 + q] === "?") q++
@@ -312,7 +312,7 @@ class Compiler {
       return pos + 4
     }
 
-    // 밈 표기에서 물결이 빠진 형태는 catch·try로 쓰려던 것이라 안내한다 (일반 식별자 대입 `지랄 = 1` 등은 그대로)
+    // 키워드 표기에서 물결이 빠진 형태는 catch·try로 쓰려던 것이라 안내한다 (일반 식별자 대입 `지랄 = 1` 등은 그대로)
     if (/^(?:지-?랄|진지\?)[ \t]+[\p{ID_Start}$_({[]/u.test(src.slice(pos, pos + 16)) && !src.startsWith("지~랄", pos)) {
       throw this.error(src[pos + 1] === "지" ? "try는 '진~지?'로 씁니다" : "catch는 '지~랄'로 씁니다", pos)
     }
@@ -323,7 +323,7 @@ class Compiler {
     }
 
     if (c === "티") {
-      if (src.startsWith(AWAIT, pos)) return null // 값 위치 밈
+      if (src.startsWith(AWAIT, pos)) return null // 값 위치 키워드
       const fn = src.startsWith("티-원", pos) ? "function" : src.startsWith("티~원", pos) ? "async function" : null
       if (!fn) return null
       const nameAt = this.skipInlineWs(pos + 3)
@@ -697,7 +697,7 @@ class Compiler {
     return patStart
   }
 
-  // ───────────────────────── 값 위치 밈 ─────────────────────────
+  // ───────────────────────── 값 위치 키워드 ─────────────────────────
 
   private valueMeme(pos: number, st: MemeState): number | null {
     const src = this.src

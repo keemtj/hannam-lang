@@ -1,11 +1,11 @@
 name: 기능 제안
-description: CLI 옵션, 플러그인, 에러 메시지, 도구 개선처럼 밈 키워드가 아닌 기능 제안
+description: CLI 옵션, 플러그인, 에러 메시지, 도구 개선처럼 문법 키워드가 아닌 기능 제안
 labels: [enhancement]
 body:
   - type: markdown
     attributes:
       value: |
-        새 밈 키워드를 제안하려면 이 양식 대신 **새 밈 제안** 양식을 써 주세요.
+        새 키워드를 제안하려면 이 양식 대신 **새 키워드 제안** 양식을 써 주세요.
 
   - type: textarea
     id: problem

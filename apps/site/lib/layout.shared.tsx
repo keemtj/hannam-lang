@@ -1,17 +1,11 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
-import { appName, githubUrl } from "./shared"
+import { Logo } from "@/components/logo"
+import { githubUrl } from "./shared"
 
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      title: (
-        <span className="flex items-center gap-2 font-bold">
-          <span className="hn-logo" aria-hidden>
-            엄.
-          </span>
-          {appName}
-        </span>
-      ),
+      title: <Logo />,
     },
     links: [
       { text: "문서", url: "/docs", active: "nested-url" },

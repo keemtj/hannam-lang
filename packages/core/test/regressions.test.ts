@@ -53,7 +53,7 @@ describe("리뷰 회귀 테스트", () => {
     expect(code("엄.. o = { class: 1 }\n엄.. r = o.class / 2")).toBe("const o = { class: 1 }\nconst r = o.class / 2")
   })
 
-  it("M6: 객체 리터럴의 키는 밈으로 바꾸지 않고, static 블록 안은 바꾼다", () => {
+  it("M6: 객체 리터럴의 키는 키워드로 바꾸지 않고, static 블록 안은 바꾼다", () => {
     expect(code("export default {\n  아뇨: 1,\n}")).toBe("export default {\n  아뇨: 1,\n}")
     expect(code("엄.. o =\n{\n  아뇨: 1\n}")).toBe("const o =\n{\n  아뇨: 1\n}")
     expect(code("오호호호호~ A {\n  static {\n    무슨 발언이세요? 1\n  }\n}")).toBe("class A {\n  static {\n    console.log(1)\n  }\n}")
@@ -73,7 +73,7 @@ describe("리뷰 회귀 테스트", () => {
 })
 
 describe("재검증 회귀 테스트", () => {
-  it("N1: JS switch의 case 아래 밈도 바꾸고, 줄 끝 :인 삼항식은 이어 읽는다", () => {
+  it("N1: JS switch의 case 아래 키워드도 바꾸고, 줄 끝 :인 삼항식은 이어 읽는다", () => {
     expect(code("switch (x) {\n  case 1:\n    무슨 발언이세요? 1\n    break\n  default:\n    무슨 발언이세요? 2\n}")).toBe(
       "switch (x) {\n  case 1:\n    console.log(1)\n    break\n  default:\n    console.log(2)\n}",
     )
@@ -94,7 +94,7 @@ describe("재검증 회귀 테스트", () => {
 })
 
 describe("명세 변형 에러의 경계", () => {
-  it("물결 없는 밈과 닮은 일반 식별자는 그대로 둔다", () => {
+  it("물결 없는 키워드와 닮은 일반 식별자는 그대로 둔다", () => {
     expect(code("지랄 = 1")).toBe("지랄 = 1")
     expect(code("엄.. 아뇨값 = 1")).toBe("const 아뇨값 = 1")
     expect(code("오호호 = 3")).toBe("오호호 = 3")

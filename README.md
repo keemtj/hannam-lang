@@ -1,12 +1,12 @@
 # hannam-lang
 
-**한남 말투 밈 11개로 쓰는 JavaScript 상위 호환 언어입니다.** `.hn`으로 쓰고 JS로 바꿔서 브라우저와 Node 양쪽에서 실행합니다.
+**그냥 JavaScript입니다. 말투만 한남입니다.** `.hn`에 한남 말투로 쓰고 JS로 바꿔서 브라우저와 Node 양쪽에서 실행합니다.
 
 [![npm](https://img.shields.io/npm/v/hannam-lang?label=npm)](https://www.npmjs.com/package/hannam-lang)
 
 > **공개 전입니다.** 아직 npm에 배포하지 않았습니다. 위 배지는 지금 "not found"로 나오고, 아래 [설치](#설치)의 `npm i -g hannam-lang` 같은 명령도 아직 동작하지 않습니다. 지금 써 보려면 [레포에서 바로 써 보기](#레포에서-바로-써-보기)를 따라 하세요.
 
-밈 키워드만 JS로 바꾸고 나머지는 그대로 둡니다. 그래서 ES2015+ 문법, DOM, `fetch`, Node API, npm 패키지를 그대로 씁니다. 장난 언어가 아니라 실제 웹 개발에 쓸 수 있는 수준을 목표로 합니다. 서버와 화면을 모두 `.hn`으로 짠 [투두 풀스택 예제](examples/todo/)가 그 증거입니다.
+한남랭은 새 언어가 아니라 JavaScript를 쓰는 말투입니다. 문장 맨 앞의 키워드만 JS로 바꾸고 나머지는 그대로 두기 때문에, ES2015+ 문법, DOM, `fetch`, Node API, npm 패키지를 그대로 씁니다. 읽기에는 낯설어도 실제 웹 개발에 쓸 수 있는 수준을 목표로 합니다. 서버와 화면을 모두 `.hn`으로 짠 [투두 풀스택 예제](examples/todo/)가 그 증거입니다.
 
 ```hn
 엄... 할 일 목록에서 남은 일만 출력한다
@@ -62,27 +62,27 @@ $ hannam todo.hn
 □ 운동
 ```
 
-## 밈 11개
+## 키워드
 
-문장 맨 앞에 오는 키워드만 밈으로 바꿉니다. 연산자, 화살표 함수, `new`, `typeof`, `import`/`export` 같은 나머지 문법과 플랫폼 API는 JS 그대로 씁니다. 자세한 규칙은 [문법 명세](docs/hannam-lang-syntax.md)를 보세요.
+문장 맨 앞에 오는 키워드만 한남 말투로 바꿉니다. 연산자, 화살표 함수, `new`, `typeof`, `import`/`export` 같은 나머지 문법과 플랫폼 API는 JS 그대로 씁니다. 자세한 규칙은 [문법 명세](docs/hannam-lang-syntax.md)를 보세요.
 
-| 밈 | 한남랭 | JS |
-| --- | --- | --- |
-| 엄 | `엄` / `엄.` / `엄..` / `엄...` | `var` / `let` / `const` / `// 주석` |
-| 예? | `예? 조건 {` / `} 예?? 조건 {` / `예??? 값 {` | `if` / `else if` / `switch` (if-else 체인으로 변환) |
-| 아뇨아뇨아뇨아뇨 | `} 아뇨아뇨아뇨아뇨 {` / `아뇨` | `else`·`default` / `continue` |
-| 요이 | `요이~ 항목 목록 {` / `요이~ i 0..10 {` / `요이이이~ 조건 {` | `for...of` / 범위 `for` (끝 미포함) / `while` |
-| 요히 | `요히~ 키 객체 {` | `for...in` |
-| 줴줴이야 | `줴줴이야` / `아! 줴줴이야~ 값` / `아... 줴줴이야... 값` | `break` / `return` / `throw` (문자열이면 `new Error`로 감쌈) |
-| 티원 | `티-원 이름() {` / `티~원 이름() {` / `티~원! 표현식` | `function` / `async function` / `await` |
-| 진~지? | `진~지? {` | `try` |
-| 지~랄 | `} 지~랄 e {` | `catch (e)` |
-| 오호호호호 | `오호호호호~ 이름 {` / `오호호호홋~ 이름 부모 {` | `class` / `class extends` |
-| 무슨 발언이세요? | `무슨 발언이세요? 값` / `예? 무슨 발언이세요?(질문)` | `console.log(값)` / `confirm(질문)` |
+| 한남랭 | JS |
+| --- | --- |
+| `엄` / `엄.` / `엄..` / `엄...` | `var` / `let` / `const` / `// 주석` |
+| `예? 조건 {` / `} 예?? 조건 {` / `예??? 값 {` | `if` / `else if` / `switch` (if-else 체인으로 변환) |
+| `} 아뇨아뇨아뇨아뇨 {` / `아뇨` | `else`·`default` / `continue` |
+| `요이~ 항목 목록 {` / `요이~ i 0..10 {` / `요이이이~ 조건 {` | `for...of` / 범위 `for` (끝 미포함) / `while` |
+| `요히~ 키 객체 {` | `for...in` |
+| `줴줴이야` / `아! 줴줴이야~ 값` / `아... 줴줴이야... 값` | `break` / `return` / `throw` (문자열이면 `new Error`로 감쌈) |
+| `티-원 이름() {` / `티~원 이름() {` / `티~원! 표현식` | `function` / `async function` / `await` |
+| `진~지? {` | `try` |
+| `} 지~랄 e {` | `catch (e)` |
+| `오호호호호~ 이름 {` / `오호호호홋~ 이름 부모 {` | `class` / `class extends` |
+| `무슨 발언이세요? 값` / `예? 무슨 발언이세요?(질문)` | `console.log(값)` / `confirm(질문)` |
 
 - 블록은 JS처럼 `{ }`를 쓰고, 조건 괄호와 세미콜론은 생략할 수 있습니다.
-- 밈의 형태는 고정입니다. `예????`, `아뇨아뇨`, `요이이~`처럼 정해진 개수에서 벗어나면 JS로 넘기지 않고 컴파일 에러를 냅니다.
-- 문자열·주석·정규식 안의 밈 글자는 바꾸지 않습니다.
+- 키워드의 형태는 고정입니다. `예????`, `아뇨아뇨`, `요이이~`처럼 정해진 개수에서 벗어나면 JS로 넘기지 않고 컴파일 에러를 냅니다.
+- 문자열·주석·정규식 안의 키워드 글자는 바꾸지 않습니다.
 
 ## 설치
 
@@ -203,7 +203,7 @@ pnpm install
 pnpm demo        # 서버(기본 포트 3100)와 Vite 개발 서버를 함께 띄움
 ```
 
-실행 방법, API, 코드에서 눈여겨볼 밈은 [`examples/todo`](examples/todo/README.md)에 있습니다.
+실행 방법, API, 코드에서 눈여겨볼 문법은 [`examples/todo`](examples/todo/README.md)에 있습니다.
 
 ## 모노레포 구조
 
@@ -234,7 +234,7 @@ const { code, map } = compile(source, { filename: "app.hn" })
 
 ## 기여하기
 
-개발 환경, 테스트, changeset, 커밋·PR 규칙, 새 밈을 제안하는 기준은 [CONTRIBUTING.md](CONTRIBUTING.md)에 있습니다. 문법이 맞는지 판단하는 기준은 [문법 명세](docs/hannam-lang-syntax.md)이고, 만든 이유와 기각한 안은 [프로젝트 맥락](docs/hannam-lang-context.md)에 정리했습니다.
+개발 환경, 테스트, changeset, 커밋·PR 규칙, 새 키워드를 제안하는 기준은 [CONTRIBUTING.md](CONTRIBUTING.md)에 있습니다. 문법이 맞는지 판단하는 기준은 [문법 명세](docs/hannam-lang-syntax.md)이고, 만든 이유와 기각한 안은 [프로젝트 맥락](docs/hannam-lang-context.md)에 정리했습니다.
 
 ```sh
 pnpm install

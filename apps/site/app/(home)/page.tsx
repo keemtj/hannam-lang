@@ -5,7 +5,7 @@ import type { CSSProperties } from "react"
 import { CopyCommand } from "@/components/home/copy-command"
 import { InstallTabs } from "@/components/home/install-tabs"
 import { highlight } from "@/lib/highlight"
-import { MEMES } from "@/lib/memes"
+import { KEYWORDS } from "@/lib/keywords"
 import { umjunsikUrl } from "@/lib/shared"
 
 const HERO_CODE = `티~원 할일불러오기() {
@@ -26,14 +26,14 @@ const HERO_CODE = `티~원 할일불러오기() {
 }
 `
 
-// 배경에 흩뿌리는 밈 말풍선
+// 배경에 흩뿌리는 한남 말투 말풍선
 const FLOATING = ["예???", "아! 줴줴이야~", "오호호호호~", "진~지?", "엄...", "요이~", "지~랄", "티~원!"]
 
 const FEATURES = [
   {
     icon: ShieldCheck,
     title: "JS 상위 호환",
-    body: "밈 키워드만 JS로 바뀌고 나머지는 그대로 통과합니다. ES2015 이후 문법, DOM, fetch, npm 패키지를 전부 그대로 씁니다.",
+    body: "한남랭 키워드만 JS로 바뀌고 나머지는 그대로 통과합니다. ES2015 이후 문법, DOM, fetch, npm 패키지를 전부 그대로 씁니다.",
   },
   {
     icon: Globe,
@@ -48,7 +48,7 @@ const FEATURES = [
   {
     icon: Play,
     title: "친절한 컴파일 에러",
-    body: "예???? 처럼 개수가 틀린 밈, 휴대폰이 바꾼 둥근 따옴표까지 위치와 고칠 방법을 한국어로 알려 줍니다.",
+    body: "예???? 처럼 개수가 틀린 키워드, 휴대폰이 바꾼 둥근 따옴표까지 위치와 고칠 방법을 한국어로 알려 줍니다.",
   },
 ]
 
@@ -79,8 +79,8 @@ export default async function HomePage() {
             <span className="hn-title-accent">진짜 JavaScript</span>
           </h1>
           <p className="hn-lead">
-            밈 11개만 외우면 끝입니다. <code>.hn</code>으로 쓰고 JS로 바꿔 브라우저와 Node에서 그대로 실행하세요.
-            장난처럼 보여도 풀스택 투두 앱까지 만들 수 있습니다.
+            그냥 JavaScript입니다. 말투만 한남입니다. <code>.hn</code>으로 쓰고 JS로 바꿔 브라우저와 Node에서 그대로
+            실행하세요. 장난처럼 보여도 풀스택 투두 앱까지 만들 수 있습니다.
           </p>
 
           <div className="hn-hero-actions">
@@ -126,26 +126,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 밈 11개 */}
-      <section className="hn-section" id="memes">
+      {/* 키워드 → JS */}
+      <section className="hn-section" id="keywords">
         <div className="hn-container">
           <h2 className="hn-h2">
-            밈 11개 = <span className="hn-title-accent">문법 전부</span>
+            한남 말투 → <span className="hn-title-accent">JavaScript</span>
           </h2>
           <p className="hn-sub">
-            밈의 뉘앙스가 그대로 문법의 역할이 됩니다. 점·물음표·글자 개수가 다르면 다른 문법이고, 정해진 개수를 벗어나면
-            컴파일 에러로 알려 줍니다.
+            문장 맨 앞의 키워드만 바뀝니다. 점·물음표·글자 개수가 다르면 다른 문법이고, 정해진 개수를 벗어나면 컴파일
+            에러로 알려 줍니다.
           </p>
-          <ol className="hn-memes">
-            {MEMES.map((m, i) => (
-              <li key={m.meme}>
-                <Link href={m.href} className="hn-meme">
-                  <span className="hn-meme-no">{String(i + 1).padStart(2, "0")}</span>
-                  <span className="hn-meme-word">{m.meme}</span>
-                  <span className="hn-meme-nuance">{m.nuance}</span>
-                  <span className="hn-meme-map">
+          <ol className="hn-keywords">
+            {KEYWORDS.map((m, i) => (
+              <li key={m.word}>
+                <Link href={m.href} className="hn-keyword">
+                  <span className="hn-keyword-no">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="hn-keyword-word">{m.word}</span>
+                  <span className="hn-keyword-map">
                     {m.syntax.map((s) => (
-                      <span key={s.hn} className="hn-meme-row">
+                      <span key={s.hn} className="hn-keyword-row">
                         <code className="hn-chip-hn">{s.hn}</code>
                         <ArrowRight size={14} aria-hidden />
                         <code className="hn-chip-js">{s.js}</code>
@@ -162,10 +161,10 @@ export default async function HomePage() {
       {/* 특징 */}
       <section className="hn-section hn-section-alt">
         <div className="hn-container">
-          <h2 className="hn-h2">장난 언어 말고, 쓸 수 있는 언어</h2>
+          <h2 className="hn-h2">새 언어가 아니라, JavaScript 그대로</h2>
           <p className="hn-sub">
-            원조 밈 언어 엄랭이 &quot;만들 수 있냐&quot;를 묻는 퍼즐이었다면, 한남랭은 &quot;실제로 쓸 수 있냐&quot;를
-            목표로 합니다.
+            엄랭이 &quot;만들 수 있냐&quot;를 묻는 퍼즐이었다면, 한남랭은 &quot;실제로 쓸 수 있냐&quot;를 목표로 합니다.
+            타입도 실행 규칙도 JS 그대로이고, 바뀌는 것은 말투뿐입니다.
           </p>
           <div className="hn-features">
             {FEATURES.map((f) => (

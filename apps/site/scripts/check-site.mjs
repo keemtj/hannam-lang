@@ -135,10 +135,10 @@ try {
     r.status === 200 ? ok(`${path} 200`) : fail(`${path} ${r.status}`)
   }
 
-  // 2. hn 하이라이팅: 밈 키워드가 JS 키워드 색(github 테마의 keyword 색)을 받은 span으로 나오는지
+  // 2. hn 하이라이팅: 한남랭 키워드가 JS 키워드 색(github 테마의 keyword 색)을 받은 span으로 나오는지
   {
     const html = await (await fetch(`${base}/docs/syntax/conditionals`)).text()
-    // 밈 글자만 담은 span이 기본 글자색(#24292E)이 아닌 색을 받았는지 본다 (줄 앞 공백은 span에 함께 들어갈 수 있음)
+    // 키워드 글자만 담은 span이 기본 글자색(#24292E)이 아닌 색을 받았는지 본다 (줄 앞 공백은 span에 함께 들어갈 수 있음)
     const memeSpans = ["예?", "예??", "아뇨아뇨아뇨아뇨", "예???", "무슨 발언이세요?"].map((meme) => {
       const re = new RegExp(`<span style="--shiki-light:(#[0-9A-F]{6});--shiki-dark:#[0-9A-F]{6}">\\s*${meme.replace(/[?]/g, "\\?")}</span>`, "g")
       const colors = [...html.matchAll(re)].map((m) => m[1])
@@ -147,7 +147,7 @@ try {
     for (const [meme, found] of memeSpans) {
       found ? ok(`hn 하이라이팅: '${meme}' 키워드 span`) : fail(`hn 하이라이팅: '${meme}' span 없음`)
     }
-    // 문자열 안의 밈 글자는 키워드로 칠하지 않는다
+    // 문자열 안의 키워드 글자는 칠하지 않는다
     const loops = await (await fetch(`${base}/docs/syntax/recognition`)).text()
     ;/<pre[^>]*>[\s\S]*?<span style="--shiki-light:#D73A49;--shiki-dark:#F97583">티~원!<\/span>/.test(loops)
       ? ok("hn 하이라이팅: 템플릿 ${} 안의 '티~원!' span")

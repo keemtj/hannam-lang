@@ -1,6 +1,6 @@
 # hannam-lang
 
-한남 말투 밈으로 쓰는 JS 상위 호환 언어 hannam-lang(`.hn`)의 실행기와 컴파일러입니다. 문법은 [문법 명세](../../docs/hannam-lang-syntax.md)를 보세요.
+JavaScript를 한남 말투로 쓰는 hannam-lang(`.hn`)의 실행기와 컴파일러입니다. 문법은 [문법 명세](../../docs/hannam-lang-syntax.md)를 보세요.
 
 ```sh
 npm i -D hannam-lang

@@ -5,7 +5,7 @@ import { tokenize, type Token } from "./tokenize.ts"
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url))
 
-// 밈 scope → 그 scope를 받아야 하는 정확한 글자
+// 키워드 scope → 그 scope를 받아야 하는 정확한 글자
 const memeTexts: Record<string, string> = {
   "storage.type.var.hn": "엄",
   "storage.type.let.hn": "엄.",
@@ -33,10 +33,10 @@ const memeTexts: Record<string, string> = {
   "support.function.confirm.hn": "예? 무슨 발언이세요?",
 }
 
-// 템플릿 ${} 안에서 칠할 수 있는 값 위치 밈
+// 템플릿 ${} 안에서 칠할 수 있는 값 위치 키워드
 const valueMemeScopes = new Set(["keyword.control.flow.await.hn", "support.function.confirm.hn"])
 
-// 이름 칠하기 같은 보조 scope (밈 글자가 아님)
+// 이름 칠하기 같은 보조 scope (키워드 글자가 아님)
 const helperScopes = new Set([
   "source.hn",
   "comment.line.triple-dot.hn",
@@ -45,7 +45,7 @@ const helperScopes = new Set([
   "entity.other.inherited-class.hn",
 ])
 
-// 코드 위치에 남으면 안 되는 밈 형태 (공백 경계 규칙을 지키는 일반 식별자 엄·엄마·아뇨값은 걸리지 않음)
+// 코드 위치에 남으면 안 되는 키워드 형태 (공백 경계 규칙을 지키는 일반 식별자 엄·엄마·아뇨값은 걸리지 않음)
 const memePattern =
   /(?<![_$\p{L}\p{N}.])(?:예\?|요이~|요히~|요이이이~|티-원|티~원|진~지\?|지~랄|오호호호[호홋]~|무슨 발언이세요\?|줴줴이야|아뇨(?![_$\p{L}\p{N}])|엄\.{1,3}(?=\s)|엄(?=[ \t]+[_$\p{L}[{]))/u
 
@@ -61,7 +61,7 @@ function isInTemplateExpression(token: Token): boolean {
   return token.scopes.includes("meta.template.expression.js")
 }
 
-// 밈 토큰만 "줄 글자 → scope" 형태로 모은다
+// 키워드 토큰만 "줄 글자 → scope" 형태로 모은다
 function memeTokens(tokens: Token[]): string[] {
   return tokens.flatMap((token) => {
     const scope = memeScopeOf(token)
@@ -75,7 +75,7 @@ function scopeOf(tokens: Token[], text: string, nth = 0): string[] {
   return found.scopes
 }
 
-// 각 줄에서 JS 코드로 칠해진(문자열·주석·밈이 아닌) 글자만 남기고 나머지는 공백으로 가린다
+// 각 줄에서 JS 코드로 칠해진(문자열·주석·키워드가 아닌) 글자만 남기고 나머지는 공백으로 가린다
 function plainCodeLines(tokens: Token[]): Map<number, string> {
   const lines = new Map<number, string>()
   for (const token of tokens) {
@@ -110,15 +110,15 @@ describe("fixture와 예제 .hn 파일", () => {
     for (const token of tokens) {
       const scope = memeScopeOf(token)
       if (!scope) continue
-      // 밈 scope는 정확히 그 밈 글자에만 붙는다
+      // 키워드 scope는 정확히 그 키워드 글자에만 붙는다
       expect(memeTexts[scope], `${token.line}줄 ${scope}`).toBe(token.text)
-      // 문자열·주석 안에서는 밈을 칠하지 않는다. 템플릿 ${} 안의 값 위치 밈만 예외
+      // 문자열·주석 안에서는 키워드를 칠하지 않는다. 템플릿 ${} 안의 값 위치 키워드만 예외
       if (isInStringOrComment(token)) {
         expect(isInTemplateExpression(token) && valueMemeScopes.has(scope), `${token.line}줄 "${token.text}"`).toBe(true)
       }
     }
 
-    // 코드 위치의 밈이 JS 색으로 새지 않았는지 확인
+    // 코드 위치의 키워드가 JS 색으로 새지 않았는지 확인
     for (const [line, code] of plainCodeLines(tokens)) {
       expect(code.match(memePattern)?.[0], `${line}줄: ${code}`).toBeUndefined()
     }
@@ -206,7 +206,7 @@ describe("공백 경계", () => {
     expect(memeTokens(await tokenize("요이~x\n오호호호호~A {}"))).toEqual([])
   })
 
-  test("멤버 접근 뒤의 밈 글자는 칠하지 않는다", async () => {
+  test("멤버 접근 뒤의 키워드 글자는 칠하지 않는다", async () => {
     expect(memeTokens(await tokenize("객체.아뇨\n객체.줴줴이야\n객체.엄 = 1"))).toEqual([])
   })
 
@@ -229,7 +229,7 @@ describe("클래스", () => {
 })
 
 describe("문자열·주석·정규식·템플릿", () => {
-  test("문자열·주석·정규식 안의 밈 글자는 칠하지 않는다", async () => {
+  test("문자열·주석·정규식 안의 키워드 글자는 칠하지 않는다", async () => {
     const source = [
       '"엄.. 예? 무슨 발언이세요? 아! 줴줴이야~ 티~원!"',
       "'진~지? 지~랄 오호호호호~'",
@@ -241,7 +241,7 @@ describe("문자열·주석·정규식·템플릿", () => {
     expect(memeTokens(await tokenize(source))).toEqual(["6 엄.. → storage.type.const.hn"])
   })
 
-  test("템플릿 글자는 칠하지 않고 ${} 안의 값 위치 밈은 칠한다", async () => {
+  test("템플릿 글자는 칠하지 않고 ${} 안의 값 위치 키워드는 칠한다", async () => {
     const tokens = await tokenize("무슨 발언이세요? `예? 티~원! ${티~원! 개수()} ${예? 무슨 발언이세요?(\"확인\")}`")
     expect(memeTokens(tokens)).toEqual([
       "1 무슨 발언이세요? → support.function.console.log.hn",
@@ -250,7 +250,7 @@ describe("문자열·주석·정규식·템플릿", () => {
     ])
   })
 
-  test("${} 안에서도 문자열 안의 밈 글자와 문장 키워드는 칠하지 않는다", async () => {
+  test("${} 안에서도 문자열 안의 키워드 글자와 문장 키워드는 칠하지 않는다", async () => {
     const tokens = await tokenize('`${"티~원!"} ${엄.. x} ${a ? "예?" : `아뇨 ${티~원! b}`}`')
     expect(memeTokens(tokens)).toEqual(["1 티~원! → keyword.control.flow.await.hn"])
     // 칠해진 티~원!은 바깥 템플릿 안의 안쪽 템플릿 ${} 안에 있다
@@ -263,7 +263,7 @@ describe("문자열·주석·정규식·템플릿", () => {
     expect(memeTokens(tokens)).toEqual(["1 티~원! → keyword.control.flow.await.hn"])
   })
 
-  test("엄... 주석 안의 밈 글자는 칠하지 않는다", async () => {
+  test("엄... 주석 안의 키워드 글자는 칠하지 않는다", async () => {
     const tokens = await tokenize("엄... 예? 요이~ 티~원! 아뇨\n엄.. a = 1")
     expect(memeTokens(tokens)).toEqual([
       "1 엄... → punctuation.definition.comment.hn",
@@ -271,7 +271,7 @@ describe("문자열·주석·정규식·템플릿", () => {
     ])
   })
 
-  test("블록·괄호 안에서도 밈을 칠한다", async () => {
+  test("블록·괄호 안에서도 키워드를 칠한다", async () => {
     const tokens = await tokenize("예? 목록.some(x => {\n  아! 줴줴이야~ x > 1\n}) {\n  { 무슨 발언이세요? [x] }\n}")
     expect(memeTokens(tokens)).toEqual([
       "1 예? → keyword.control.conditional.if.hn",
