@@ -66,6 +66,36 @@ describe("hannamc", () => {
     expect(map.sources).toEqual(["../../src/lib/util.hn"])
   })
 
+  it("파일 인자 여러 개와 --out-dir을 함께 쓰면 공통 조상 기준으로 구조를 유지한다", () => {
+    const root = project({
+      "a/main.hn": MAIN.replace("./util.hn", "./lib/util.hn"),
+      "a/lib/util.hn": UTIL,
+      "b/main.hn": `엄.. b = 1\n`,
+    })
+    const r = node([HANNAMC, "a/main.hn", "a/lib/util.hn", "b/main.hn", "-o", "out"], root)
+    expect(r.stderr).toBe("")
+    expect(r.status).toBe(0)
+    expect(readFileSync(join(root, "out/a/main.js"), "utf8")).toContain(`from "./lib/util.js"`)
+    expect(existsSync(join(root, "out/a/lib/util.js"))).toBe(true)
+    expect(readFileSync(join(root, "out/b/main.js"), "utf8")).toBe("const b = 1\n")
+  })
+
+  it("--out-dir 뒤에 값이 없거나 옵션이 오면 종료 코드 1", () => {
+    const root = project({ "main.hn": MAIN })
+    expect(node([HANNAMC, "main.hn", "-o", "--source-map"], root).status).toBe(1)
+    expect(node([HANNAMC, "main.hn", "--out-dir="], root).status).toBe(1)
+    expect(existsSync(join(root, "--source-map"))).toBe(false)
+  })
+
+  it("쓰기에 실패한 파일은 에러 메시지만 출력하고 나머지는 계속 컴파일한다", () => {
+    const root = project({ "a.hn": `엄.. a = 1\n`, "b/c.hn": `엄.. c = 1\n`, "out/b": "디렉터리 자리에 있는 파일" })
+    const r = node([HANNAMC, ".", "-o", "out"], root)
+    expect(r.status).toBe(1)
+    expect(r.stderr).toMatch(/^hannamc: b\/c\.hn: /m)
+    expect(r.stderr).not.toMatch(/^\s+at /m)
+    expect(existsSync(join(root, "out/a.js"))).toBe(true)
+  })
+
   it("컴파일 에러가 있으면 코드 조각을 출력하고 종료 코드 1, 나머지 파일은 계속 컴파일한다", () => {
     const root = project({ "a-bad.hn": "엄.. x = 1\n예???? x {\n}\n", "b-good.hn": "엄.. y = 2\n" })
     const r = node([HANNAMC, "."], root)

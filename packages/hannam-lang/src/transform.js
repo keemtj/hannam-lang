@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url"
 import { compile } from "@hannam-lang/core"
 
 /**
@@ -9,6 +10,8 @@ import { compile } from "@hannam-lang/core"
  */
 export function transform(source, filename, runtimeImport) {
   const { code, map } = compile(source, { filename, runtimeImport })
+  // Windows 경로(C:\\...)가 URL scheme으로 잘못 읽히지 않도록 소스맵에는 file URL을 넣는다
+  map.sources = [pathToFileURL(filename).href]
   return `${code}${code.endsWith("\n") ? "" : "\n"}//# sourceMappingURL=${map.toUrl()}\n`
 }
 

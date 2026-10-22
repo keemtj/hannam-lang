@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // hannamc <파일|디렉터리...> [--out-dir <dir>] [--source-map]: .hn을 .js로 컴파일한다 (tsc 역할)
 import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs"
-import { basename, dirname, join, relative, resolve, sep } from "node:path"
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path"
 import { compile } from "@hannam-lang/core"
 import { reportSyntaxError, version } from "../src/cli.js"
 
@@ -39,9 +39,10 @@ for (let i = 0; i < args.length; i++) {
     process.exit(0)
   } else if (arg === "-o" || arg === "--out-dir") {
     outDir = args[++i]
-    if (outDir === undefined) usageError(`${arg} 뒤에 디렉터리가 필요합니다`)
+    if (!outDir || outDir.startsWith("-")) usageError(`${arg} 뒤에 디렉터리가 필요합니다`)
   } else if (arg.startsWith("--out-dir=")) {
     outDir = arg.slice("--out-dir=".length)
+    if (!outDir) usageError("--out-dir 뒤에 디렉터리가 필요합니다")
   } else if (arg === "--source-map") {
     sourceMap = true
   } else if (arg.startsWith("-")) {
@@ -52,8 +53,11 @@ for (let i = 0; i < args.length; i++) {
 }
 if (inputs.length === 0) usageError("컴파일할 파일이나 디렉터리를 주세요")
 
-/** @type {Array<{ src: string, out: string }>} */
-const jobs = []
+/** @type {string[]} */
+const sources = []
+/** 출력 구조의 기준 디렉터리 후보: 디렉터리 인자는 그 자신, 파일 인자는 그 파일이 있는 디렉터리 */
+/** @type {string[]} */
+const bases = []
 let failed = false
 
 for (const input of inputs) {
@@ -67,27 +71,69 @@ for (const input of inputs) {
     continue
   }
   if (stat.isDirectory()) {
-    for (const src of findHn(abs)) {
-      jobs.push({ src, out: toJs(outDir ? join(resolve(outDir), relative(abs, src)) : src) })
+    try {
+      sources.push(...findHn(abs))
+    } catch (error) {
+      reportFsError(input, error)
+      continue
     }
+    bases.push(abs)
   } else if (abs.endsWith(".hn")) {
-    jobs.push({ src: abs, out: toJs(outDir ? join(resolve(outDir), basename(abs)) : abs) })
+    sources.push(abs)
+    bases.push(dirname(abs))
   } else {
     process.stderr.write(`hannamc: .hn 파일이 아닙니다: ${input}\n`)
     failed = true
   }
 }
 
-for (const { src, out } of jobs) {
+// --out-dir에서는 모든 입력의 공통 조상을 기준으로 디렉터리 구조를 유지한다 (같은 이름 파일이 덮어써지지 않게)
+const root = commonDir(bases)
+/** @type {Map<string, string>} 출력 경로 → 원본 */
+const jobs = new Map()
+for (const src of new Set(sources)) {
+  const out = toJs(outDir ? join(resolve(outDir), relative(root, src)) : src)
+  const other = jobs.get(out)
+  if (other) {
+    process.stderr.write(`hannamc: 출력 경로가 겹칩니다: ${relative(process.cwd(), other)}, ${relative(process.cwd(), src)} → ${relative(process.cwd(), out)}\n`)
+    failed = true
+    continue
+  }
+  jobs.set(out, src)
+}
+
+for (const [out, src] of jobs) {
   try {
     compileFile(src, out)
   } catch (error) {
-    if (!reportSyntaxError(error)) throw error
+    if (!reportSyntaxError(error)) reportFsError(relative(process.cwd(), src), error)
     failed = true
   }
 }
 
 if (failed) process.exitCode = 1
+
+/**
+ * @param {string} where
+ * @param {unknown} error
+ */
+function reportFsError(where, error) {
+  process.stderr.write(`hannamc: ${where}: ${error instanceof Error ? error.message : String(error)}\n`)
+  failed = true
+}
+
+/**
+ * @param {string[]} dirs
+ * @returns {string}
+ */
+function commonDir(dirs) {
+  if (dirs.length === 0) return process.cwd()
+  let common = /** @type {string} */ (dirs[0])
+  for (const dir of dirs.slice(1)) {
+    while (relative(common, dir).startsWith("..") || isAbsolute(relative(common, dir))) common = dirname(common)
+  }
+  return common
+}
 
 /** @param {string} path */
 function toJs(path) {
@@ -125,7 +171,7 @@ function compileFile(src, out) {
     map.sources = [relative(dirname(out), src).split(sep).join("/")]
     map.file = basename(out)
     writeFileSync(`${out}.map`, map.toString())
-    writeFileSync(out, `${code}${code.endsWith("\n") ? "" : "\n"}//# sourceMappingURL=${mapFile}\n`)
+    writeFileSync(out, `${code}${code.endsWith("\n") ? "" : "\n"}//# sourceMappingURL=${encodeURI(mapFile)}\n`)
   } else {
     writeFileSync(out, code)
   }
