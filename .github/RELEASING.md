@@ -66,3 +66,9 @@ bash scripts/install-matrix.sh # 전역 설치 매트릭스 (로컬 임시 레�
 ```
 
 `pnpm release`(빌드 후 `changeset publish`)는 실제 npm 배포이므로 로컬에서 실행하지 않는다.
+
+## changelog와 GitHub 토큰
+
+changelog는 `@changesets/changelog-github`(`keemtj/hannam-lang`)로 만든다. 커밋·PR 링크를 GitHub API에서 가져오므로 `pnpm version-packages`에는 `GITHUB_TOKEN`이 필요하다. CI에서는 워크플로가 넘겨 주고, 로컬에서 직접 돌릴 때는 `GITHUB_TOKEN=$(gh auth token) pnpm version-packages`처럼 실행한다.
+
+첫 공개 버전은 `.changeset/first-public-release.md`로 `@hannam-lang/core`, `hannam-lang`, `@hannam-lang/vite-plugin`을 0.1.0으로 올린다.

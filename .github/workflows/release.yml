@@ -64,6 +64,9 @@ jobs:
 
       - name: Version Packages PR 만들기
         uses: changesets/action/version@v2.1.2
+        env:
+          # @changesets/changelog-github가 커밋·PR 정보를 GitHub API에서 가져온다
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: pnpm version-packages
           commit-message: "릴리스: Version Packages"
