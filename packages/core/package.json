@@ -1,6 +1,6 @@
 {
   "name": "@hannam-lang/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "hannam-lang(.hn) → JavaScript 변환기",
   "license": "MIT",
   "repository": {
