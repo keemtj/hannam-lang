@@ -1,0 +1,34 @@
+{
+  "name": "@hannam-lang/core",
+  "version": "0.0.0",
+  "description": "hannam-lang(.hn) → JavaScript 변환기",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "default": "./dist/runtime.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "magic-string": "1.4.3"
+  },
+  "devDependencies": {
+    "@jridgewell/sourcemap-codec": "1.6.0",
+    "@types/node": "22.20.5",
+    "acorn": "8.19.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

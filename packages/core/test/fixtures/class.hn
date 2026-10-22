@@ -1,0 +1,23 @@
+오호호호호~ 할일 {
+  constructor(내용) {
+    this.내용 = 내용
+    this.완료 = false
+  }
+
+  토글() {
+    this.완료 = !this.완료
+    예? this.완료 {
+      무슨 발언이세요? "완료!"
+    }
+    아! 줴줴이야~ this
+  }
+}
+
+오호호호홋~ 마감할일 할일 {
+  constructor(내용, 마감일) {
+    super(내용)
+    this.마감일 = 마감일
+  }
+}
+
+export 오호호호호~ 내보낼할일 {}
