@@ -1,0 +1,29 @@
+엄... 서버 REST API 호출 모음
+엄.. 주소 = "/api/todos"
+
+티~원 요청(경로, 옵션 = {}) {
+  엄.. 응답 = 티~원! fetch(경로, {
+    headers: { "Content-Type": "application/json" },
+    ...옵션,
+  })
+  예? !응답.ok {
+    아... 줴줴이야... `요청 실패 (${응답.status})`
+  }
+  아! 줴줴이야~ 응답.status === 204 ? null : 티~원! 응답.json()
+}
+
+export 티~원 목록가져오기() {
+  아! 줴줴이야~ 티~원! 요청(주소)
+}
+
+export 티~원 추가하기(내용) {
+  아! 줴줴이야~ 티~원! 요청(주소, { method: "POST", body: JSON.stringify({ 내용 }) })
+}
+
+export 티~원 토글하기(id) {
+  아! 줴줴이야~ 티~원! 요청(`${주소}/${id}`, { method: "PATCH" })
+}
+
+export 티~원 삭제하기(id) {
+  티~원! 요청(`${주소}/${id}`, { method: "DELETE" })
+}

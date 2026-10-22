@@ -1,0 +1,91 @@
+엄... 할 일 화면: 추가, 완료 토글, 삭제, 필터
+import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.hn"
+
+엄.. 폼 = document.querySelector("#새할일")
+엄.. 입력 = document.querySelector("#내용")
+엄.. 목록 = document.querySelector("#목록")
+엄.. 필터버튼들 = document.querySelectorAll("[data-filter]")
+
+엄. 할일들 = []
+엄. 필터 = "전체"
+
+티-원 글자만(문자열) {
+  엄.. 칸 = document.createElement("span")
+  칸.textContent = 문자열
+  아! 줴줴이야~ 칸.innerHTML
+}
+
+티-원 보이는할일() {
+  예??? 필터 {
+    "전체" { 아! 줴줴이야~ 할일들 }
+    "완료" { 아! 줴줴이야~ 할일들.filter(할일 => 할일.완료) }
+    "남음" { 아! 줴줴이야~ 할일들.filter(할일 => !할일.완료) }
+  }
+  아... 줴줴이야... `예? 무슨 필터: ${필터}`
+}
+
+티-원 그리기() {
+  목록.innerHTML = 보이는할일()
+    .map(할일 => `
+      <li data-id="${할일.id}" class="${할일.완료 ? "완료" : ""}">
+        <input type="checkbox" ${할일.완료 ? "checked" : ""}>
+        <span>${글자만(할일.내용)}</span>
+        <button data-action="삭제">삭제</button>
+      </li>`)
+    .join("")
+  요이~ 버튼 필터버튼들 {
+    버튼.classList.toggle("선택", 버튼.dataset.filter === 필터)
+  }
+}
+
+폼.addEventListener("submit", async (e) => {
+  e.preventDefault()
+  엄.. 내용 = 입력.value.trim()
+  예? !내용 {
+    아! 줴줴이야~
+  }
+  진~지? {
+    할일들.push(티~원! 추가하기(내용))
+    입력.value = ""
+    그리기()
+  } 지~랄 에러 {
+    무슨 발언이세요? "추가 실패:", 에러.message
+  }
+})
+
+목록.addEventListener("click", async (e) => {
+  엄.. 항목 = e.target.closest("li")
+  예? !항목 {
+    아! 줴줴이야~
+  }
+  엄.. id = Number(항목.dataset.id)
+
+  진~지? {
+    예? e.target.matches("[data-action=삭제]") {
+      예? 예? 무슨 발언이세요?("이 할 일을 지울까요?") {
+        티~원! 삭제하기(id)
+        할일들 = 할일들.filter(할일 => 할일.id !== id)
+      }
+    } 예?? e.target.matches("input[type=checkbox]") {
+      엄.. 바뀐것 = 티~원! 토글하기(id)
+      할일들 = 할일들.map(할일 => 할일.id === id ? 바뀐것 : 할일)
+    }
+    그리기()
+  } 지~랄 에러 {
+    무슨 발언이세요? "변경 실패:", 에러.message
+  }
+})
+
+요이~ 버튼 필터버튼들 {
+  버튼.addEventListener("click", () => {
+    필터 = 버튼.dataset.filter
+    그리기()
+  })
+}
+
+진~지? {
+  할일들 = 티~원! 목록가져오기()
+  그리기()
+} 지~랄 에러 {
+  무슨 발언이세요? "불러오기 실패:", 에러.message
+}

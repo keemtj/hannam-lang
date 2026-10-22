@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>한남랭 할 일</title>
+  </head>
+  <body>
+    <h1>할 일</h1>
+    <form id="새할일">
+      <input id="내용" placeholder="할 일 입력" autocomplete="off" />
+      <button>추가</button>
+    </form>
+    <nav>
+      <button data-filter="전체">전체</button>
+      <button data-filter="완료">완료</button>
+      <button data-filter="남음">남음</button>
+    </nav>
+    <ul id="목록"></ul>
+    <script type="module" src="./main.hn"></script>
+  </body>
+</html>

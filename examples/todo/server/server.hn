@@ -1,0 +1,95 @@
+엄... 할 일 REST 서버 (node:http + JSON 파일 저장)
+엄... GET /api/todos, POST /api/todos, PATCH /api/todos/:id (완료 토글), DELETE /api/todos/:id
+import http from "node:http"
+import { readFile, writeFile } from "node:fs/promises"
+
+엄.. 파일 = new URL("./todos.json", import.meta.url)
+엄.. 포트 = 3000
+
+티~원 불러오기() {
+  진~지? {
+    아! 줴줴이야~ JSON.parse(티~원! readFile(파일, "utf8"))
+  } 지~랄 에러 {
+    예? 에러.code === "ENOENT" {
+      아! 줴줴이야~ []
+    }
+    아... 줴줴이야... 에러
+  }
+}
+
+티~원 저장하기(할일들) {
+  티~원! writeFile(파일, JSON.stringify(할일들, null, 2))
+}
+
+티~원 본문읽기(req) {
+  엄. 본문 = ""
+  for await (const 조각 of req) {
+    본문 += 조각
+  }
+  아! 줴줴이야~ 본문 ? JSON.parse(본문) : {}
+}
+
+티-원 응답(res, 상태, 데이터) {
+  res.writeHead(상태, { "Content-Type": "application/json; charset=utf-8" })
+  res.end(JSON.stringify(데이터))
+}
+
+엄.. 서버 = http.createServer(async (req, res) => {
+  엄.. { pathname } = new URL(req.url, `http://${req.headers.host}`)
+  엄.. 일치 = pathname.match(/^\/api\/todos\/(\d+)$/)
+  엄.. id = 일치 ? Number(일치[1]) : null
+
+  진~지? {
+    예? pathname === "/api/todos" {
+      예??? req.method {
+        "GET" {
+          아! 줴줴이야~ 응답(res, 200, 티~원! 불러오기())
+        }
+        "POST" {
+          엄.. { 내용 } = 티~원! 본문읽기(req)
+          예? typeof 내용 !== "string" || !내용.trim() {
+            아! 줴줴이야~ 응답(res, 400, { 에러: "빈 할 일" })
+          }
+          엄.. 할일들 = 티~원! 불러오기()
+          엄.. 새할일 = { id: Date.now(), 내용: 내용.trim(), 완료: false }
+          할일들.push(새할일)
+          티~원! 저장하기(할일들)
+          아! 줴줴이야~ 응답(res, 201, 새할일)
+        }
+        아뇨아뇨아뇨아뇨 {
+          아! 줴줴이야~ 응답(res, 405, { 에러: "지원하지 않는 메서드" })
+        }
+      }
+    } 예?? id !== null {
+      엄.. 할일들 = 티~원! 불러오기()
+      엄.. 위치 = 할일들.findIndex(할일 => 할일.id === id)
+      예? 위치 === -1 {
+        아! 줴줴이야~ 응답(res, 404, { 에러: "없는 할 일" })
+      }
+      예??? req.method {
+        "PATCH" {
+          할일들[위치].완료 = !할일들[위치].완료
+          티~원! 저장하기(할일들)
+          아! 줴줴이야~ 응답(res, 200, 할일들[위치])
+        }
+        "DELETE" {
+          할일들.splice(위치, 1)
+          티~원! 저장하기(할일들)
+          res.writeHead(204).end()
+          아! 줴줴이야~
+        }
+        아뇨아뇨아뇨아뇨 {
+          아! 줴줴이야~ 응답(res, 405, { 에러: "지원하지 않는 메서드" })
+        }
+      }
+    }
+    응답(res, 404, { 에러: "없는 경로" })
+  } 지~랄 에러 {
+    무슨 발언이세요? 에러
+    응답(res, 500, { 에러: "서버 오류" })
+  }
+})
+
+서버.listen(포트, () => {
+  무슨 발언이세요? `할 일 서버: http://localhost:${포트}`
+})
