@@ -1,0 +1,67 @@
+---
+title: 설치
+description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 hannam-lang을 설치합니다.
+---
+
+<Callout type="warn" title="공개 전">
+  hannam-lang은 아직 npm에 배포하기 전입니다. 아래 명령은 첫 배포(v0.1) 이후 기준입니다. 그 전에는 저장소를 받아 `pnpm install`, `pnpm -r build`로 직접 빌드하고, `node packages/hannam-lang/bin/hannam.js app.hn`처럼 실행 파일 경로로 실행해 주세요.
+</Callout>
+
+## 요구 사항
+
+- **Node.js 20.16 이상**. `hannam`이 쓰는 로더 훅(`module.register`)과 터미널 확인 창 기능이 이 버전부터 동작합니다.
+- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hannamc` 명령 자체는 Node로 실행됩니다.
+
+## 프로젝트에 설치
+
+`hannam-lang` 패키지 하나에 실행기 `hannam`, 컴파일러 `hannamc`, 런타임 헬퍼가 모두 들어 있습니다.
+
+```npm
+npm i -D hannam-lang
+```
+
+`hannamc`로 컴파일한 `.js`를 배포한다면, 출력물이 `hannam-lang/runtime`을 import할 수 있으므로 `-D` 없이 일반 의존성으로 설치합니다.
+
+## 전역으로 설치
+
+어느 폴더에서나 `hannam app.hn`을 실행하고 싶다면 전역으로 설치합니다.
+
+<Tabs items={["npm", "pnpm", "yarn", "bun"]}>
+  <Tab value="npm">
+    ```sh
+    npm install -g hannam-lang
+    ```
+  </Tab>
+  <Tab value="pnpm">
+    ```sh
+    pnpm add -g hannam-lang
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```sh
+    yarn global add hannam-lang
+    ```
+  </Tab>
+  <Tab value="bun">
+    ```sh
+    bun add -g hannam-lang
+    ```
+  </Tab>
+</Tabs>
+
+`yarn global add`는 Yarn 1(classic) 명령입니다. Yarn 2 이상에서는 전역 설치 대신 프로젝트에 설치해서 씁니다.
+
+설치가 끝나면 버전을 확인합니다.
+
+```sh
+hannam --version
+hannamc --version
+```
+
+## 함께 쓰면 좋은 것
+
+| 패키지 | 하는 일 |
+| --- | --- |
+| `@hannam-lang/vite-plugin` | Vite에서 `.hn`을 바로 import합니다. [Vite로 웹 앱 만들기](/docs/getting-started/vite) |
+| VS Code 확장 | `.hn` 문법 하이라이팅과 스니펫. [VS Code 확장](/docs/tools/vscode) |
+| `@hannam-lang/core` | 변환기 API(`compile`)를 직접 쓸 때 |

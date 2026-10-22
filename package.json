@@ -13,7 +13,9 @@
     "demo:build": "pnpm --filter @hannam-lang/core --filter @hannam-lang/vite-plugin build",
     "demo:server": "node packages/hannam-lang/bin/hannam.js examples/todo/server/server.hn",
     "demo:web": "pnpm --filter @hannam-lang/example-todo-web dev",
-    "demo": "pnpm demo:build && node examples/todo/demo.js"
+    "demo": "pnpm demo:build && node examples/todo/demo.js",
+    "site:dev": "pnpm --filter @hannam-lang/site dev",
+    "site:build": "pnpm --filter @hannam-lang/core build && pnpm --filter @hannam-lang/site build"
   },
   "devDependencies": {
     "@changesets/changelog-github": "1.0.1",

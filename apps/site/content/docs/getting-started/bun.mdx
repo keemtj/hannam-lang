@@ -1,0 +1,32 @@
+---
+title: Bun에서 실행
+description: Bun 플러그인으로 .hn을 Bun에서 바로 실행합니다.
+---
+
+Node 로더 훅(`hannam-lang/register`)은 Bun에서 동작하지 않습니다. 그래서 Bun용 플러그인을 따로 제공합니다.
+
+## 설치
+
+```sh
+bun add -d hannam-lang
+```
+
+## 실행
+
+`--preload`로 플러그인을 먼저 불러온 뒤 `.hn` 파일을 실행합니다.
+
+```sh
+bun --preload hannam-lang/bun app.hn
+```
+
+매번 옵션을 쓰기 번거로우면 `bunfig.toml`에 등록합니다.
+
+```toml title="bunfig.toml"
+preload = ["hannam-lang/bun"]
+```
+
+```sh
+bun app.hn
+```
+
+`.hn` 파일끼리 import하는 방법은 Node와 같습니다. 경로에 `.hn` 확장자를 붙여 주세요.

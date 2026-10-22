@@ -1,0 +1,16 @@
+{
+  "title": "문법 레퍼런스",
+  "pages": [
+    "index",
+    "variables",
+    "conditionals",
+    "loops",
+    "functions",
+    "exceptions",
+    "classes",
+    "output",
+    "modules",
+    "recognition",
+    "runtime"
+  ]
+}

@@ -1,0 +1,37 @@
+// Fumadocs UI 문구 한국어 번역 (fumadocs-ui의 Translations 키)
+import type { Translations } from "fumadocs-ui/i18n"
+
+export const koTranslations: Partial<Translations> = {
+  displayName: "한국어",
+  "Back to Home(404 page)": "처음으로",
+  "Page Not Found(404 page)": "페이지를 찾을 수 없습니다",
+  "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.(404 page)":
+    "찾는 페이지가 없어졌거나 이름이 바뀌었을 수 있습니다.",
+  "Close Search(search dialog)(aria-label)": "검색 닫기",
+  "Close Sidebar(aria-label)": "사이드바 닫기",
+  "Close Sidebar(sidebar)(aria-label)": "사이드바 닫기",
+  "Collapse Sidebar(sidebar)(aria-label)": "사이드바 접기",
+  "Copied Anchor Link(heading anchor)(aria-label)": "링크를 복사했습니다",
+  "Copied Text(code block)(aria-label)": "복사했습니다",
+  "Copy Anchor Link(heading anchor)(aria-label)": "링크 복사",
+  "Copy Text(code block)(aria-label)": "코드 복사",
+  "Dark(theme switcher)(aria-label)": "다크",
+  "Light(theme switcher)(aria-label)": "라이트",
+  "System(theme switcher)(aria-label)": "시스템 설정",
+  "Toggle Theme(theme switcher)(aria-label)": "테마 바꾸기",
+  "Hide Sidebar(sidebar)": "사이드바 숨기기",
+  "Show Sidebar(sidebar)": "사이드바 보이기",
+  "Open Sidebar(sidebar)(aria-label)": "사이드바 열기",
+  "Toggle Menu(mobile menu)(aria-label)": "메뉴 열기",
+  "Next Page(pagination)": "다음",
+  "Previous Page(pagination)": "이전",
+  "No Headings(table of contents)": "제목 없음",
+  "On this page(table of contents)": "이 페이지에서",
+  "Table of Contents(inline table of contents)": "목차",
+  "No results found(search dialog)": "검색 결과가 없습니다",
+  "Open Search(search trigger)(aria-label)": "검색 열기",
+  "Search(search dialog)": "문서 검색",
+  "Search(search trigger)": "검색",
+  "Last updated on(page footer)": "마지막 수정",
+  "Edit on GitHub(edit page)": "GitHub에서 고치기",
+}
