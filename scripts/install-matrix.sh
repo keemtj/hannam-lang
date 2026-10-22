@@ -180,7 +180,9 @@ done
 if ! kill -0 "$REGISTRY_PID" 2>/dev/null; then
   registry_failed "레지스트리 프로세스가 종료됐다:"
 fi
-if ! curl -fsS "$REGISTRY" 2>/dev/null | grep -q "$NONCE"; then
+# pipefail에서 grep -q가 먼저 끝나 curl이 SIGPIPE로 실패하지 않도록 본문을 먼저 받는다
+REGISTRY_HOME="$(curl -fsS "$REGISTRY" 2>/dev/null || true)"
+if ! grep -q "$NONCE" <<< "$REGISTRY_HOME"; then
   registry_failed "${PORT} 포트에서 응답한 레지스트리가 이 스크립트가 띄운 것이 아니다:"
 fi
 # lsof가 있으면 포트를 연 프로세스의 PID도 대조한다 (Windows Git Bash에는 없어서 위의 표식으로만 확인)
@@ -242,8 +244,9 @@ install_with() {
   local prefix="$WORK/pm/$pm"
   local bin_dir
   bin_dir="$(bin_dir_for "$pm")"
-  mkdir -p "$prefix" "$bin_dir"
-  cd "$WORK"
+  # if 조건 안에서 불리면 set -e가 꺼지므로 준비 단계 실패는 직접 돌려준다
+  mkdir -p "$prefix" "$bin_dir" || return 1
+  cd "$WORK" || return 1
   case "$pm" in
     npm)
       npm install -g "$CLI_NAME@$CLI_VERSION" --prefix "$prefix" --registry "$REGISTRY" \
@@ -259,7 +262,7 @@ install_with() {
       ;;
     yarn)
       # yarn classic의 global add는 --registry를 무시하므로 yarnrc로 지정한다
-      printf 'registry "%s"\n' "$REGISTRY" > "$prefix/yarnrc"
+      printf 'registry "%s"\n' "$REGISTRY" > "$prefix/yarnrc" || return 1
       npx --yes "yarn@$YARN_VERSION" --use-yarnrc "$prefix/yarnrc" global add "$CLI_NAME@$CLI_VERSION" \
         --registry "$REGISTRY" \
         --prefix "$prefix" \

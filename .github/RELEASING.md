@@ -8,6 +8,8 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 2. PR이 main에 병합되면 `.github/workflows/release.yml`이 돈다.
 3. changeset이 남아 있으면 `changeset-release/main` 브랜치에 버전을 올린 커밋을 만들고 **"릴리스: Version Packages" PR**을 열거나 갱신한다.
    - 이어서 같은 워크플로가 `install-matrix.yml`을 불러, 그 브랜치의 CLI 패키지를 npm·pnpm·yarn·bun으로 전역 설치해 확인한다.
+   - 이 결과는 Version Packages PR의 체크에 붙지 않고 main 커밋의 Release 실행에 붙는다. **병합 전에 Actions 탭에서 그 실행의 "설치 매트릭스" job이 통과했는지 직접 확인한다.** 병합을 자동으로 막아 주지는 않는다.
+   - `packages/hannam-lang`이 아직 없으면 매트릭스는 건너뛴다(notice만 남김).
 4. 메인테이너가 Version Packages PR을 병합하면 changeset이 비고, npm에 아직 없는 버전이 생긴다. 이때 `publish` job이 대상이 된다.
 5. **npm 배포는 기본으로 꺼져 있다.** 아래 "배포 켜기"를 하기 전까지 `publish` job은 건너뛴다(skipped).
 
@@ -35,6 +37,20 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 - npmjs.com에서 granular access token(배포 권한, 대상 패키지 한정)을 만든다.
 - Settings → Secrets and variables → Actions → **Secrets**에 `NPM_TOKEN`으로 저장한다. 위의 `npm` environment 시크릿으로 넣어도 된다.
 - 워크플로는 이 값을 `NODE_AUTH_TOKEN`으로 넘긴다. `id-token: write` 권한이 있으므로 provenance는 이 방식에서도 붙는다.
+
+## 패키지 체크리스트
+
+- provenance를 붙여 배포하므로 **공개 패키지마다 `package.json`에 `repository` 필드가 있어야 한다.** npm이 provenance의 저장소와 `repository.url`을 대조해서, 없거나 다르면 publish가 E422로 실패한다.
+
+  ```json
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<owner>/hannam-lang.git",
+    "directory": "packages/core"
+  }
+  ```
+
+- 2026-10-22 기준 `packages/core/package.json`에는 이 필드가 없다. 배포를 켜기 전에 추가한다.
 
 ## 저장소 설정 체크리스트
 
