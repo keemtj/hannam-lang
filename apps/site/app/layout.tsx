@@ -1,6 +1,15 @@
 import { RootProvider } from "fumadocs-ui/provider/next"
 import type { Metadata } from "next"
+import { Black_Han_Sans } from "next/font/google"
+import { koTranslations } from "@/lib/i18n-ko"
 import "./global.css"
+
+// 밈 글자를 크게 보여 줄 때 쓰는 제목용 글꼴
+const display = Black_Han_Sans({
+  weight: "400",
+  preload: false,
+  variable: "--font-display",
+})
 
 export const metadata: Metadata = {
   title: {
@@ -12,9 +21,10 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" className={display.variable} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <RootProvider
+          i18n={{ locale: "ko", translations: koTranslations }}
           search={{
             options: { api: "/api/search" },
           }}

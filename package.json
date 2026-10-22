@@ -9,7 +9,9 @@
     "typecheck": "pnpm -r typecheck",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
-    "release": "pnpm -r build && changeset publish"
+    "release": "pnpm -r build && changeset publish",
+    "site:dev": "pnpm --filter @hannam-lang/site dev",
+    "site:build": "pnpm --filter @hannam-lang/core build && pnpm --filter @hannam-lang/site build"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3"
