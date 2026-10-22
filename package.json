@@ -9,7 +9,11 @@
     "typecheck": "pnpm -r typecheck",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
-    "release": "pnpm -r build && changeset publish"
+    "release": "pnpm -r build && changeset publish",
+    "demo:build": "pnpm --filter @hannam-lang/core --filter @hannam-lang/vite-plugin build",
+    "demo:server": "node packages/hannam-lang/bin/hannam.js examples/todo/server/server.hn",
+    "demo:web": "pnpm --filter @hannam-lang/example-todo-web dev",
+    "demo": "pnpm demo:build && node examples/todo/demo.js"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3"
