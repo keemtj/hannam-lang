@@ -13,7 +13,7 @@ const HELP = `사용법: hannam <파일.hn> [인자...]
   -h, --help     이 도움말을 출력합니다
   -v, --version  버전을 출력합니다
 
-컴파일만 하려면 hannamc를 쓰세요.`
+컴파일만 하려면 hnc를 쓰세요.`
 
 const [entry, ...rest] = process.argv.slice(2)
 

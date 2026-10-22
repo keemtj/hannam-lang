@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url"
 
 export const PKG_DIR = fileURLToPath(new URL("..", import.meta.url))
 export const HANNAM = join(PKG_DIR, "bin/hannam.js")
-export const HANNAMC = join(PKG_DIR, "bin/hannamc.js")
+export const HNC = join(PKG_DIR, "bin/hnc.js")
 
 /** @type {string[]} */
 const dirs = []

@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, symlinkSync } from "node:fs"
 import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { HANNAM, HANNAMC, PKG_DIR, cleanup, node, project } from "./helpers.js"
+import { HANNAM, HNC, PKG_DIR, cleanup, node, project } from "./helpers.js"
 
 afterEach(cleanup)
 
@@ -118,12 +118,12 @@ describe("패키지 exports", () => {
     expect(() => compile("예???? x {}")).toThrow(HannamSyntaxError)
   })
 
-  it("hannamc 출력의 hannam-lang/runtime import가 설치된 패키지로 풀린다", () => {
+  it("hnc 출력의 hannam-lang/runtime import가 설치된 패키지로 풀린다", () => {
     const root = linkedProject({
       "main.hn": `import { 확인 } from "./util.hn"\n무슨 발언이세요? 확인("x")\n`,
       "util.hn": `export 티-원 확인(값) {\n  진~지? {\n    아... 줴줴이야... 값\n  } 지~랄 e {\n    아! 줴줴이야~ e instanceof Error\n  }\n}\n`,
     })
-    expect(node([HANNAMC, "."], root).status).toBe(0)
+    expect(node([HNC, "."], root).status).toBe(0)
     const r = node(["main.js"], root)
     expect(r.stderr).toBe("")
     expect(r.stdout).toBe("true\n")

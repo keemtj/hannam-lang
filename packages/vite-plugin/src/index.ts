@@ -35,7 +35,8 @@ export default function hannam(options: HannamPluginOptions = {}): Plugin {
       const file = cleanId(id)
       if (!HN_RE.test(file)) return null
       try {
-        const { code: js, map } = compile(code, { filename: file, runtimeImport })
+        const { code: js, map, warnings } = compile(code, { filename: file, runtimeImport })
+        for (const w of warnings) this.warn({ message: w.message, id: file, loc: { file, line: w.line, column: w.column } })
         // Vite 8(rolldown)은 확장자로 모듈 종류를 짐작하므로 JS라고 알려 준다. Vite 7은 이 값을 무시한다
         return { code: js, map: map.toString(), moduleType: "js" }
       } catch (err) {

@@ -1,5 +1,5 @@
 import MagicString, { type SourceMap } from "magic-string"
-import { HannamSyntaxError } from "./errors.js"
+import { HannamSyntaxError, type HannamWarning, createWarning } from "./errors.js"
 import {
   LexError,
   type Token,
@@ -15,7 +15,7 @@ import {
 export interface CompileOptions {
   /** 에러 메시지와 소스맵에 쓸 파일 이름 */
   filename?: string
-  /** 상대 경로 import의 `.hn`을 `.js`로 바꿀지 여부 (hannamc 출력용) */
+  /** 상대 경로 import의 `.hn`을 `.js`로 바꿀지 여부 (hnc 출력용) */
   rewriteImports?: boolean
   /** `__hn` 런타임을 가져올 모듈 이름 */
   runtimeImport?: string
@@ -24,6 +24,8 @@ export interface CompileOptions {
 export interface CompileResult {
   code: string
   map: SourceMap
+  /** 변환은 했지만 알려야 하는 내용. 없으면 빈 배열이다 */
+  warnings: HannamWarning[]
 }
 
 type FrameKind = "top" | "block" | "obj" | "paren" | "bracket" | "switch" | "class" | "tmpl"
@@ -62,6 +64,7 @@ export function compile(source: string, options: CompileOptions = {}): CompileRe
 
 class Compiler {
   private readonly s: MagicString
+  private readonly warnings: HannamWarning[] = []
   private readonly pending = new Map<number, PendingBrace>()
   private switchCount = 0
   private usesRuntime = false
@@ -99,6 +102,7 @@ class Compiler {
         includeContent: true,
         hires: true,
       }),
+      warnings: this.warnings,
     }
   }
 
@@ -739,7 +743,13 @@ class Compiler {
     const spec = t.value.slice(1, -1)
     if (!/^\.\.?\//.test(spec)) return
     const last = spec.split("/").pop() ?? ""
-    if (!last.includes(".")) throw this.error(`import 경로에 확장자를 씁니다 (예: "${spec}.hn")`, t.start)
+    // 일반 JS(번들러용 코드)는 확장자 없이 쓰는 경우가 많아서 막지 않는다. .hn을 가리키려던 실수일 수 있어 경고만 남긴다
+    if (!last.includes(".")) {
+      this.warnings.push(
+        createWarning(`확장자가 없는 상대 경로 import입니다. .hn 파일이라면 확장자를 붙여야 찾을 수 있습니다 (예: "${spec}.hn")`, this.src, t.start, this.opts.filename),
+      )
+      return
+    }
     if (this.opts.rewriteImports && spec.endsWith(".hn")) this.s.update(t.end - 4, t.end - 1, ".js")
   }
 

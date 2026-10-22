@@ -303,10 +303,10 @@ verify_with() {
         exit 1
         ;;
     esac
-    case "$(command -v hannamc || true)" in
+    case "$(command -v hnc || true)" in
       "$bin_dir"/*) ;;
       *)
-        echo "[$pm] hannamc가 설치 위치($bin_dir)에서 잡히지 않는다" >&2
+        echo "[$pm] hnc가 설치 위치($bin_dir)에서 잡히지 않는다" >&2
         exit 1
         ;;
     esac

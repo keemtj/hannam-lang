@@ -9,7 +9,8 @@ import { compile } from "@hannam-lang/core"
  * @param {string} runtimeImport 이 패키지의 런타임 모듈 지정자
  */
 export function transform(source, filename, runtimeImport) {
-  const { code, map } = compile(source, { filename, runtimeImport })
+  const { code, map, warnings } = compile(source, { filename, runtimeImport })
+  for (const w of warnings) process.stderr.write(`hannam: 경고: ${w.text}\n`)
   // Windows 경로(C:\\...)가 URL scheme으로 잘못 읽히지 않도록 소스맵에는 file URL을 넣는다
   map.sources = [pathToFileURL(filename).href]
   return `${code}${code.endsWith("\n") ? "" : "\n"}//# sourceMappingURL=${map.toUrl()}\n`

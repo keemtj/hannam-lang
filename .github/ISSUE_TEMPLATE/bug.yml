@@ -14,7 +14,7 @@ body:
       label: 어디에서 생겼나요?
       options:
         - 변환기 (@hannam-lang/core)
-        - CLI (hannam, hannamc)
+        - CLI (hannam, hnc)
         - Vite 플러그인
         - VS Code 하이라이팅
         - Playground

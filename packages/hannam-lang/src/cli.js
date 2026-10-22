@@ -1,4 +1,4 @@
-// hannam, hannamc가 함께 쓰는 CLI 도우미
+// hannam, hnc가 함께 쓰는 CLI 도우미
 import { readFileSync } from "node:fs"
 import { isHannamSyntaxError } from "./transform.js"
 

@@ -100,3 +100,17 @@ describe("명세 변형 에러의 경계", () => {
     expect(code("오호호 = 3")).toBe("오호호 = 3")
   })
 })
+
+describe("상위 호환: 확장자 없는 상대 경로 import", () => {
+  it("에러 없이 그대로 두고 경고만 남긴다", () => {
+    const r = compile('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.hn"', { filename: "t.hn" })
+    expect(r.code).toBe('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.hn"')
+    expect(r.warnings.map((w) => w.line)).toEqual([1, 2])
+    expect(r.warnings.every((w) => w.message.startsWith("확장자가 없는 상대 경로 import입니다"))).toBe(true)
+    expect(r.warnings[0]?.text).toContain("t.hn:1:19")
+  })
+
+  it("경고가 없으면 빈 배열이다", () => {
+    expect(compile("엄.. a = 1").warnings).toEqual([])
+  })
+})

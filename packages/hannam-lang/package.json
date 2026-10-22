@@ -1,7 +1,7 @@
 {
   "name": "hannam-lang",
   "version": "0.0.0",
-  "description": "hannam-lang(.hn) 실행기(hannam)와 컴파일러(hannamc), Node 로더 훅, Bun 플러그인",
+  "description": "hannam-lang(.hn) 실행기(hannam)와 컴파일러(hnc), Node 로더 훅, Bun 플러그인",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   "type": "module",
   "bin": {
     "hannam": "./bin/hannam.js",
-    "hannamc": "./bin/hannamc.js"
+    "hnc": "./bin/hnc.js"
   },
   "exports": {
     ".": {
