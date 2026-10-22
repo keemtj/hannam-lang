@@ -13,7 +13,7 @@ export 티-원 초기화() {
 }
 ```
 
-```js title="main.js (hannamc 출력)"
+```js title="main.js (hnc 출력)"
 import { 할일추가 } from "./store.js"
 
 export function 초기화() {
@@ -21,16 +21,29 @@ export function 초기화() {
 }
 ```
 
-## 확장자를 꼭 씁니다
+## .hn 파일은 확장자까지 씁니다
 
-`.hn` 파일끼리 import할 때는 경로에 `.hn` 확장자를 씁니다. `"./store"`처럼 확장자를 빼면 컴파일 에러입니다. 브라우저와 Node의 ESM 규칙과 같습니다.
+`.hn` 파일끼리 import할 때는 경로에 `.hn` 확장자를 씁니다. 브라우저와 Node의 ESM 규칙과 같습니다. 확장자를 빼면 실행할 때 `.hn` 파일을 찾지 못합니다.
+
+```hn
+import { 할일추가 } from "./store.hn" // 됨
+import { 할일추가 } from "./store"    // 경고: .hn 파일을 찾지 못합니다
+```
+
+확장자가 없는 상대 경로는 컴파일 에러가 아니라 **경고**입니다. 번들러용 JS 코드는 확장자 없이 쓰는 경우가 많아서, JS 코드를 그대로 옮겨 와도 막히지 않게 하려는 것입니다. 경고는 `hnc`와 `hannam`이 터미널에, Vite 플러그인이 빌드 로그에 출력합니다.
+
+```txt
+hnc: 경고: 확장자가 없는 상대 경로 import입니다. .hn 파일이라면 확장자를 붙여야 찾을 수 있습니다 (예: "./store.hn") (main.hn:1:22)
+1 | import { 할일추가 } from "./store"
+                             ^
+```
 
 ## 실행 방식별 처리
 
 | 실행 방식 | `.hn` 경로 처리 |
 | --- | --- |
 | `hannam`(Node 로더 훅), Bun 플러그인, Vite 플러그인 | `.hn` 경로를 그대로 처리합니다 |
-| `hannamc`(컴파일) | 상대 경로 import의 `.hn`을 `.js`로 바꿉니다 (`"./store.hn"` → `"./store.js"`) |
+| `hnc`(컴파일) | 상대 경로 import의 `.hn`을 `.js`로 바꿉니다 (`"./store.hn"` → `"./store.js"`) |
 
 - 문자열 리터럴 경로의 동적 import(`import("./x.hn")`)도 같은 규칙을 따릅니다.
 - 패키지 이름 import(`"node:http"`, `"vite"`)는 건드리지 않습니다.

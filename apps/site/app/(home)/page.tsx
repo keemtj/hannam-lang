@@ -108,7 +108,7 @@ export default async function HomePage() {
               <div className="hn-code" dangerouslySetInnerHTML={{ __html: hnHtml }} />
             </figure>
             <div className="hn-compare-arrow" aria-hidden>
-              <span>hannamc</span>
+              <span>hnc</span>
               <ArrowRight size={20} />
             </div>
             <figure className="hn-window">
@@ -184,14 +184,15 @@ export default async function HomePage() {
           <div>
             <h2 className="hn-h2">설치는 한 줄</h2>
             <p className="hn-sub">
-              <code>hannam-lang</code> 패키지 하나에 실행기 <code>hannam</code>, 컴파일러 <code>hannamc</code>, 런타임
-              헬퍼가 모두 들어 있습니다. 쓰는 패키지 매니저를 고르세요.
+              <code>hannam-lang</code> 패키지 하나에 실행기 <code>hannam</code>, 컴파일러{" "}
+              <code>hnc</code>(hannam compiler), 런타임 헬퍼가 모두 들어 있습니다. 쓰는 패키지 매니저를 고르세요.
             </p>
             <p className="hn-sub hn-small">
-              아직 npm 배포 전입니다. 지금은 저장소에서 빌드해 쓸 수 있습니다.{" "}
+              전역 설치와 버전 올리기는{" "}
               <Link href="/docs/getting-started/installation" className="hn-link">
-                설치 문서 보기
+                설치 문서
               </Link>
+              를 보세요.
             </p>
           </div>
           <InstallTabs />

@@ -53,8 +53,8 @@
 
 ### 이름 · 배포
 - 정식 명칭 **hannam-lang**, 확장자 **`.hn`**
-- 명령어: **`hannam app.hn`**(실행, node·tsx 역할) / **`hannamc app.hn`**(컴파일 → `app.js`, tsc 역할)
-- npm 확인(2026-10-22): `hannam-lang`, `hannam`, `hannamc` 비어 있음
+- 명령어: **`hannam app.hn`**(실행, node·tsx 역할) / **`hnc app.hn`**(컴파일 → `app.js`, tsc 역할)
+- npm 확인(2026-10-22): `hannam-lang`, `hannam`, `hnc` 비어 있음
 - 회피: `hnc`(해커뉴스 CLI 패키지, 등록 명령어가 `hn`), `hn`(Drupal 관련 패키지)
 - 배포 전 재확인 필요. 선점돼 있으면 스코프 패키지로
 
@@ -82,7 +82,7 @@
 ```
 packages/
   core/          # 변환기 (렉서 → JS 출력, 소스맵)
-  cli/           # hannam, hannamc
+  cli/           # hannam, hnc
   vite-plugin/   # .hn import → JS (HMR)
   vscode/        # 문법 하이라이팅
 apps/
@@ -105,7 +105,7 @@ examples/
 - 명세를 `.hn` ↔ `.js` 예제 짝으로 작성 → 그대로 vitest 스냅샷 테스트 케이스로 사용
 
 ### CLI
-- `package.json`의 `bin`에 `hannam`, `hannamc` 등록 + 실행 파일 맨 위 `#!/usr/bin/env node`
+- `package.json`의 `bin`에 `hannam`, `hnc` 등록 + 실행 파일 맨 위 `#!/usr/bin/env node`
 - `hannam`은 메모리에서 변환 후 실행, Node 로더 훅 등록으로 `.hn`끼리 import 지원
 - 로컬 테스트는 `npm link`
 
@@ -122,7 +122,7 @@ examples/
 | --- | --- | --- |
 | 0. 명세 | 11개 말투 → 문법 매핑, 충돌 규칙, 예제 짝 | 완료 (2026-10-22) |
 | 1. 코어 변환기 | `packages/core`: 렉서, JS 출력, 소스맵, 테스트 88개, 독립 리뷰 2회 | 완료 |
-| 2. CLI | `packages/hannam-lang`: `hannam`, `hannamc`, Node 로더 훅, Bun 플러그인, 패키지 매니저 4종 설치 확인 | 완료 (npm 배포 전) |
+| 2. CLI | `packages/hannam-lang`: `hannam`, `hnc`, Node 로더 훅, Bun 플러그인, 패키지 매니저 4종 설치 확인 | 완료 (npm 배포 전) |
 | 3. 웹 개발 환경 | `packages/vite-plugin`, `packages/vscode` | 완료 |
 | 4·5. 투두 풀스택 | `examples/todo`: `pnpm demo`로 서버(hannam)와 웹(Vite) 실행 | 완료 |
 | 6. 홍보 | `packages/playground`(웹 IDE), `apps/site`(소개 랜딩 + 문서 23쪽, Fumadocs), 루트 README | 완료 (사이트 배포 전) |
@@ -132,9 +132,8 @@ examples/
 1. npm에서 `@hannam-lang` 조직을 만들고, 패키지 이름 `hannam-lang`이 비어 있는지 다시 확인한다
 2. 저장소 변수 `NPM_PUBLISH_ENABLED=true`, 배포 인증(OIDC trusted publishing 또는 `NPM_TOKEN`) 설정 (`.github/RELEASING.md`)
 3. 열려 있는 "Version Packages" PR(0.1.0)을 병합하면 배포된다
-4. README·사이트의 "공개 전 / npm 배포 전" 안내를 지운다
-5. 사이트 배포 위치를 정하고 배포한다, 저장소를 public으로 바꾼다
-6. 데모 GIF (이 PC에 ffmpeg가 없어 아직 못 만듦)
+4. 사이트 배포 위치를 정하고 배포한다, 저장소를 public으로 바꾼다
+5. 데모 GIF (이 PC에 ffmpeg가 없어 아직 못 만듦)
 
 ## 참고 자료
 - rycont/umjunsik-lang (원조 엄랭, 웹엄 구현 참고)

@@ -440,10 +440,10 @@ if (__hn.confirm("전부 지울까요?")) {
 
 ## 모듈
 - `import`/`export`는 JS 그대로 (`export` 뒤는 문장 시작 위치라 `export 티-원 …`, `export 오호호호호~ …` 가능)
-- `.hn` 파일끼리 import할 때는 경로에 `.hn` 확장자를 씀. 확장자 생략(`"./store"`)은 에러 (ESM 규칙과 동일)
+- `.hn` 파일끼리 import할 때는 경로에 `.hn` 확장자를 씀 (ESM 규칙과 동일). 확장자가 없는 상대 경로(`"./store"`)는 에러가 아니라 경고를 내고 그대로 둠. 번들러용 JS 코드를 그대로 받아들이기 위해서다
 - 실행 방식별 처리
   - `hannam`(Node 로더 훅), Vite 플러그인: `.hn` 경로를 그대로 처리
-  - `hannamc`(컴파일): 상대 경로 import의 `.hn`을 `.js`로 바꿔 출력 (`"./store.hn"` → `"./store.js"`). 문자열 리터럴 경로의 동적 `import("./x.hn")`도 같음
+  - `hnc`(컴파일): 상대 경로 import의 `.hn`을 `.js`로 바꿔 출력 (`"./store.hn"` → `"./store.js"`). 문자열 리터럴 경로의 동적 `import("./x.hn")`도 같음
   - 패키지 이름 import(`"node:http"`, `"vite"`)는 건드리지 않음
 
 ```
@@ -453,7 +453,7 @@ export 티-원 초기화() {
 }
 ```
 ```js
-// hannamc 출력
+// hnc 출력
 import { 할일추가 } from "./store.js"
 export function 초기화() {
   할일추가("첫 할 일")

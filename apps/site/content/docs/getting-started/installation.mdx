@@ -3,24 +3,26 @@ title: 설치
 description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 hannam-lang을 설치합니다.
 ---
 
-<Callout type="warn" title="공개 전">
-  hannam-lang은 아직 npm에 배포하기 전입니다. 아래 명령은 첫 배포(v0.1) 이후 기준입니다. 그 전에는 저장소를 받아 `pnpm install`, `pnpm -r build`로 직접 빌드하고, `node packages/hannam-lang/bin/hannam.js app.hn`처럼 실행 파일 경로로 실행해 주세요.
-</Callout>
-
 ## 요구 사항
 
 - **Node.js 20.16 이상**. `hannam`이 쓰는 로더 훅(`module.register`)과 터미널 확인 창 기능이 이 버전부터 동작합니다.
-- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hannamc` 명령 자체는 Node로 실행됩니다.
+- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hnc` 명령 자체는 Node로 실행됩니다.
 
 ## 프로젝트에 설치
 
-`hannam-lang` 패키지 하나에 실행기 `hannam`, 컴파일러 `hannamc`, 런타임 헬퍼가 모두 들어 있습니다.
+`hannam-lang` 패키지 하나에 실행기 `hannam`, 컴파일러 `hnc`(hannam compiler), 런타임 헬퍼가 모두 들어 있습니다.
 
 ```npm
 npm i -D hannam-lang
 ```
 
-`hannamc`로 컴파일한 `.js`를 배포한다면, 출력물이 `hannam-lang/runtime`을 import할 수 있으므로 `-D` 없이 일반 의존성으로 설치합니다.
+처음 설치하면 그 시점의 최신 버전이 깔리고, `package.json`에는 `^0.1.0` 같은 범위가 기록됩니다. 그래서 새로 설치할 때는 `@latest`를 붙이지 않아도 됩니다. 이미 설치한 프로젝트를 최신 버전으로 올릴 때는 범위를 새로 쓰도록 `@latest`를 붙입니다.
+
+```npm
+npm i -D hannam-lang@latest
+```
+
+`hnc`로 컴파일한 `.js`를 배포한다면, 출력물이 `hannam-lang/runtime`을 import할 수 있으므로 `-D` 없이 일반 의존성으로 설치합니다.
 
 ## 전역으로 설치
 
@@ -55,7 +57,7 @@ npm i -D hannam-lang
 
 ```sh
 hannam --version
-hannamc --version
+hnc --version
 ```
 
 ## 함께 쓰면 좋은 것

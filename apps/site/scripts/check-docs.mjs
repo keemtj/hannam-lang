@@ -59,7 +59,7 @@ for (const file of walk(root)) {
     const shouldFail = expectedErrors.some((s) => block.code.includes(s))
     let out
     try {
-      out = compile(block.code, { filename: "doc.hn", rewriteImports: block.meta.includes("hannamc") }).code
+      out = compile(block.code, { filename: "doc.hn", rewriteImports: block.meta.includes("hnc") }).code
     } catch (e) {
       if (!shouldFail) {
         failures++
@@ -75,8 +75,8 @@ for (const file of walk(root)) {
     const next = blocks[i + 1]
     if (next?.lang === "js" && isPair(block.meta, next.meta)) {
       compared++
-      // hannamc 출력 예시는 rewriteImports를 켜고 다시 비교한다
-      const expected = next.meta.includes("hannamc")
+      // hnc 출력 예시는 rewriteImports를 켜고 다시 비교한다
+      const expected = next.meta.includes("hnc")
         ? compile(block.code, { filename: "doc.hn", rewriteImports: true }).code
         : out
       if (normalize(expected) !== normalize(next.code)) {

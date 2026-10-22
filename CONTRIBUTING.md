@@ -18,6 +18,15 @@ pnpm install
 pnpm -r build
 ```
 
+### 개발 버전 실행하기
+
+빌드한 뒤에는 npm에서 받은 패키지 대신 저장소의 실행 파일을 직접 실행할 수 있습니다.
+
+```sh
+node packages/hannam-lang/bin/hannam.js hello.hn   # hannam
+node packages/hannam-lang/bin/hnc.js hello.hn      # hnc
+```
+
 ### 저장소 구조
 
 ```

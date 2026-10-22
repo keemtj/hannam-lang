@@ -23,7 +23,7 @@ export default defineConfig({
 <script type="module" src="./main.hn"></script>
 ```
 
-`.hn` 안에서는 다른 `.hn`을 확장자까지 적어 가져온다 (`import { a } from "./api.hn"`). 확장자 없는 상대 import는 컴파일 에러다.
+`.hn` 안에서는 다른 `.hn`을 확장자까지 적어 가져온다 (`import { a } from "./api.hn"`). 확장자 없는 상대 import는 그대로 통과시키고 Vite 경고(`this.warn`)를 낸다.
 
 ## 하는 일
 - **변환**: `.hn`(쿼리가 붙은 요청 포함)을 JS로 바꾸고 소스맵을 돌려준다. 브라우저 개발자 도구와 빌드 소스맵이 `.hn` 원본을 가리킨다

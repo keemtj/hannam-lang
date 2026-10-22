@@ -4,8 +4,6 @@
 
 [![npm](https://img.shields.io/npm/v/hannam-lang?label=npm)](https://www.npmjs.com/package/hannam-lang)
 
-> **공개 전입니다.** 아직 npm에 배포하지 않았습니다. 위 배지는 지금 "not found"로 나오고, 아래 [설치](#설치)의 `npm i -g hannam-lang` 같은 명령도 아직 동작하지 않습니다. 지금 써 보려면 [레포에서 바로 써 보기](#레포에서-바로-써-보기)를 따라 하세요.
-
 한남랭은 새 언어가 아니라 JavaScript를 쓰는 말투입니다. 문장 맨 앞의 키워드만 JS로 바꾸고 나머지는 그대로 두기 때문에, ES2015+ 문법, DOM, `fetch`, Node API, npm 패키지를 그대로 씁니다. 읽기에는 낯설어도 실제 웹 개발에 쓸 수 있는 수준을 목표로 합니다. 서버와 화면을 모두 `.hn`으로 짠 [투두 풀스택 예제](examples/todo/)가 그 증거입니다.
 
 ```hn
@@ -31,7 +29,7 @@
 }
 ```
 
-`hannamc`로 바꾸면 이런 JS가 나옵니다. 줄 번호가 원본과 같아서 스택 트레이스를 그대로 읽을 수 있습니다.
+`hnc`로 바꾸면 이런 JS가 나옵니다. 줄 번호가 원본과 같아서 스택 트레이스를 그대로 읽을 수 있습니다.
 
 ```js
 // 할 일 목록에서 남은 일만 출력한다
@@ -86,7 +84,16 @@ $ hannam todo.hn
 
 ## 설치
 
-> 공개 전이라 아래 명령은 아직 동작하지 않습니다. 배포 후의 사용법입니다.
+프로젝트 의존성으로 설치합니다. Node 20.16 이상이 필요합니다.
+
+```sh
+npm i -D hannam-lang
+pnpm add -D hannam-lang
+yarn add -D hannam-lang
+bun add -d hannam-lang
+```
+
+처음 설치하면 그 시점의 최신 버전이 깔리고, `package.json`에는 `^0.1.0` 같은 범위가 기록됩니다. 이미 설치한 프로젝트를 최신 버전으로 올릴 때는 `npm i -D hannam-lang@latest`처럼 `@latest`를 붙입니다.
 
 전역 설치:
 
@@ -97,26 +104,14 @@ yarn global add hannam-lang
 bun add -g hannam-lang
 ```
 
-설치 없이 한 번 실행 (패키지 이름과 명령 이름이 달라서 `-p`로 패키지를 지정합니다):
+설치 없이 한 번 실행 (패키지 이름과 명령 이름이 달라서 `-p`로 패키지를 지정합니다. 설치 없이 실행할 때는 `@latest`를 붙여 항상 최신 버전을 받게 합니다):
 
 ```sh
-npx -p hannam-lang hannam app.hn
-bunx -p hannam-lang hannam app.hn
+npx -p hannam-lang@latest hannam app.hn
+bunx -p hannam-lang@latest hannam app.hn
 ```
 
-프로젝트 의존성으로 쓸 때는 `npm i -D hannam-lang`처럼 설치합니다. Node 20.16 이상이 필요합니다.
-
-### 레포에서 바로 써 보기
-
-배포 전에는 이 레포를 받아 빌드해서 씁니다. Node 22와 pnpm 10을 기준으로 합니다.
-
-```sh
-corepack enable
-pnpm install
-pnpm -r build
-node packages/hannam-lang/bin/hannam.js hello.hn       # hannam
-node packages/hannam-lang/bin/hannamc.js hello.hn      # hannamc
-```
+저장소를 받아 개발 버전을 직접 빌드해 쓰는 방법은 [CONTRIBUTING.md](CONTRIBUTING.md#개발-버전-실행하기)에 있습니다.
 
 ## 빠른 시작
 
@@ -128,15 +123,16 @@ node packages/hannam-lang/bin/hannamc.js hello.hn      # hannamc
 ```
 
 ```sh
-hannam hello.hn                          # 바로 실행 (node, tsx 역할)
-hannamc hello.hn                         # hello.js 생성 (tsc 역할)
-hannamc src --out-dir dist --source-map  # 디렉터리 전체를 dist/로, 소스맵 포함
+hannam hello.hn                      # 바로 실행 (node, tsx 역할)
+hnc hello.hn                         # hello.js 생성 (tsc 역할)
+hnc src --out-dir dist --source-map  # 디렉터리 전체를 dist/로, 소스맵 포함
 ```
 
+- `hnc`는 hannam compiler의 줄임말입니다. TypeScript의 `tsc`(TypeScript compiler)와 같은 방식으로 지은 이름입니다.
 - `hannam`은 `.hn`을 메모리에서 JS로 바꿔 실행합니다. 에러 스택은 소스맵으로 `.hn` 원본 줄을 가리킵니다.
-- `.hn` 파일끼리는 `import { 할일추가 } from "./store.hn"`처럼 확장자를 붙여 가져옵니다. `hannamc`는 이 경로를 `./store.js`로 바꿔 출력합니다.
+- `.hn` 파일끼리는 `import { 할일추가 } from "./store.hn"`처럼 확장자를 붙여 가져옵니다. `hnc`는 이 경로를 `./store.js`로 바꿔 출력합니다. 확장자 없는 상대 경로 import는 그대로 두고 경고만 냅니다.
 - 컴파일 에러는 파일·줄·칸과 코드 조각을 보여 주고 종료 코드 1로 끝납니다.
-- `hannamc` 출력물 중 런타임 헬퍼가 필요한 파일은 `hannam-lang/runtime`을 import합니다. 출력물을 실행할 프로젝트에 `hannam-lang`을 의존성으로 설치하세요.
+- `hnc` 출력물 중 런타임 헬퍼가 필요한 파일은 `hannam-lang/runtime`을 import합니다. 출력물을 실행할 프로젝트에 `hannam-lang`을 의존성으로 설치하세요.
 - Node 로더 훅으로도 실행할 수 있습니다: `node --import hannam-lang/register app.hn`
 
 자세한 내용은 [`packages/hannam-lang`](packages/hannam-lang/README.md)을 보세요.
@@ -212,7 +208,7 @@ pnpm 워크스페이스입니다.
 ```
 packages/
   core/          @hannam-lang/core         변환기 (compile, 소스맵, 런타임 헬퍼)
-  hannam-lang/   hannam-lang               CLI hannam·hannamc, Node 로더 훅, Bun 플러그인
+  hannam-lang/   hannam-lang               CLI hannam·hnc, Node 로더 훅, Bun 플러그인
   vite-plugin/   @hannam-lang/vite-plugin  Vite 플러그인
   vscode/        hannam-lang-vscode        VS Code 확장 (private)
   playground/    @hannam-lang/playground   Playground React 컴포넌트 (private)
