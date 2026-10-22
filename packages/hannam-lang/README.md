@@ -22,7 +22,7 @@ hannamc src --out-dir dist --source-map
 ```sh
 node --import hannam-lang/register app.hn
 ```
-Node 20.6 이상에서 동작합니다.
+Node 20.16 이상에서 동작합니다 (로더 훅 `module.register`와, 런타임의 터미널 confirm이 쓰는 `process.getBuiltinModule` 기준).
 
 ## Bun
 ```sh
