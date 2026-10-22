@@ -2,9 +2,11 @@ import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promis
 import { createServer as createNetServer } from "node:net"
 import { dirname, join } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
-import { build, createServer, type ViteDevServer } from "vite"
+import { build, createServer, normalizePath, type ViteDevServer } from "vite"
 import { afterAll, describe, expect, it } from "vitest"
 import hannam from "../src/index.js"
+// Node 20에는 전역 WebSocket이 없어서(Node 22부터 기본) HMR 채널은 ws 클라이언트로 연결한다
+import WebSocket from "ws"
 
 // 임시 프로젝트는 패키지 안에 만든다. dev 서버의 fs.allow가 모노레포 루트를 작업 영역으로 잡아야
 // packages/core/dist의 런타임 파일을 내줄 수 있다 (실제 사용자 앱이 node_modules에서 받는 것과 같은 조건)
@@ -128,7 +130,8 @@ describe("build", () => {
         return (errors?.[0] ?? err) as BuildError
       },
     )
-    const file = join(root, "main.hn")
+    // Vite는 모듈 경로를 OS와 상관없이 /로 넘긴다(Windows에서도 D:/a/...). 기대값도 같은 형식으로 맞춘다
+    const file = normalizePath(join(root, "main.hn"))
     // id는 Vite 8에서 main.hn, Vite 7에서는 에러를 다시 감싼 index.html이다. 위치는 loc.file에 남는다
     expect(error.loc?.file).toBe(file)
     expect(error.loc?.line).toBe(3)
@@ -231,8 +234,8 @@ describe("dev 서버", () => {
         },
         (err: unknown) => err as { id?: string; loc?: { file?: string; line: number }; frame?: string },
       )
-      expect(error.id).toBe(join(root, "main.hn"))
-      expect(error.loc?.file).toBe(join(root, "main.hn"))
+      expect(error.id).toBe(normalizePath(join(root, "main.hn")))
+      expect(error.loc?.file).toBe(normalizePath(join(root, "main.hn")))
       expect(error.frame).toMatch(new RegExp(`^${error.loc?.line} \\| `))
     } finally {
       await dev.close()
