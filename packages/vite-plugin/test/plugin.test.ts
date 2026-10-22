@@ -129,7 +129,7 @@ describe("build", () => {
       },
     )
     const file = join(root, "main.hn")
-    expect(error.id).toBe(file)
+    // id는 Vite 8에서 main.hn, Vite 7에서는 에러를 다시 감싼 index.html이다. 위치는 loc.file에 남는다
     expect(error.loc?.file).toBe(file)
     expect(error.loc?.line).toBe(3)
     expect(error.loc?.column).toBe(2)
