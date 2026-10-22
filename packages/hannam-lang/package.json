@@ -1,0 +1,42 @@
+{
+  "name": "hannam-lang",
+  "version": "0.0.0",
+  "description": "hannam-lang(.hn) 실행기(hannam)와 컴파일러(hannamc), Node 로더 훅, Bun 플러그인",
+  "type": "module",
+  "bin": {
+    "hannam": "./bin/hannam.js",
+    "hannamc": "./bin/hannamc.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./runtime": {
+      "types": "./src/runtime.d.ts",
+      "default": "./src/runtime.js"
+    },
+    "./register": "./src/register.js",
+    "./bun": "./src/bun.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hannam-lang/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}
