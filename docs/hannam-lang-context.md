@@ -128,12 +128,15 @@ examples/
 | 6. 홍보 | `packages/playground`(웹 IDE), `apps/site`(소개 랜딩 + 문서 23쪽, Fumadocs), 루트 README | 완료 (사이트 배포 전) |
 | 공통 | changesets, CI, 릴리스 워크플로(배포 꺼 둠), 설치 매트릭스, CONTRIBUTING, MIT 라이선스 | 완료 |
 
-### 공개할 때 할 일
-1. npm에서 `@hannam-lang` 조직을 만들고, 패키지 이름 `hannam-lang`이 비어 있는지 다시 확인한다
-2. 저장소 변수 `NPM_PUBLISH_ENABLED=true`, 배포 인증(OIDC trusted publishing 또는 `NPM_TOKEN`) 설정 (`.github/RELEASING.md`)
-3. 열려 있는 "Version Packages" PR(0.1.0)을 병합하면 npm 패키지가 배포된다
-5. 사이트 배포 위치를 정하고 배포한다, 저장소를 public으로 바꾼다
-6. 데모 GIF (이 PC에 ffmpeg가 없어 아직 못 만듦)
+### 공개 (2026-10-22 완료)
+- 저장소 public 전환, `main` 보호 규칙(Ruleset "main 보호", 관리자 예외)
+- npm 조직 `hannam-lang` 생성, 0.1.0을 메인테이너가 로컬에서 직접 배포 (`hannam-lang`은 개인 계정 `keemtj` 소유, 나머지 둘은 조직 소유)
+- 세 패키지에 trusted publishing 등록, `NPM_PUBLISH_ENABLED=true`, `npm` environment 승인자 `keemtj`. 배포 토큰은 만들지 않음 (회사 조직 패키지 권한이 같은 계정에 있어서 All packages 토큰을 피함)
+- 세 패키지 버전을 묶고(fixed) GitHub 릴리스는 버전당 하나
+
+### 남은 일
+- 사이트 배포 위치를 정하고 배포한다. 주소가 정해지면 README와 문서에 링크를 추가한다
+- 데모 GIF (이 PC에 ffmpeg가 없어 아직 못 만듦)
 
 ## 참고 자료
 - rycont/umjunsik-lang (원조 엄준식랭, 웹엄 구현 참고)

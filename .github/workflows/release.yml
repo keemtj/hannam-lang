@@ -111,10 +111,26 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: npm 배포
+        id: publish
         uses: changesets/action/publish@v2.1.2
         with:
           script: pnpm release
+          # 세 패키지는 버전을 묶어 함께 내므로 패키지별 릴리스 대신 아래에서 버전당 하나만 만든다.
+          # 버전 태그(hannam-lang@x.y.z 등)는 그대로 push한다
+          create-github-releases: false
+          push-git-tags: true
         env:
           # NPM_TOKEN 시크릿이 없으면 빈 값이 되고, 그때는 trusted publishing(OIDC)으로 인증한다
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+
+      # 세 패키지의 CHANGELOG에서 이번 버전 절을 모아 GitHub 릴리스를 하나 만든다
+      - name: GitHub 릴리스 만들기
+        if: steps.publish.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLISHED: ${{ steps.publish.outputs.published-packages }}
+        run: |
+          version=$(node -p "JSON.parse(process.env.PUBLISHED).find((p) => p.name === 'hannam-lang').version")
+          node scripts/release-notes.mjs "$version" > release-notes.md
+          gh release create "hannam-lang@$version" --title "v$version" --notes-file release-notes.md --latest

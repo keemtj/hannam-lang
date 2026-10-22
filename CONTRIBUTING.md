@@ -89,6 +89,7 @@ Fixed blank lines disappearing inside `예???` blocks.
 ```
 
 - **요약은 한국어 한 문단, 영어 한 문단으로 씁니다.** 두 문단 사이에 빈 줄을 둡니다. 그대로 CHANGELOG와 GitHub 릴리스에 들어가므로 사용자 입장에서 씁니다. 두 문단의 내용은 같아야 합니다. 영어가 어렵다면 한국어만 써도 되고, 메인테이너가 병합 전에 영어 문단을 채웁니다.
+- 세 패키지는 버전을 묶어서 냅니다. changeset에 패키지 하나만 적어도 세 패키지가 같은 버전으로 오릅니다. 실제로 바뀐 패키지만 적으면 됩니다.
 - 버전 종류: 아직 0.x이므로 기존 코드가 깨지는 변경은 `minor`, 그 밖의 기능 추가와 수정은 `patch`로 둡니다. `major`(1.0)는 메인테이너가 정합니다.
 - changeset이 필요 없는 변경: 문서, 테스트, CI, 그리고 배포하지 않는 패키지(사이트 `apps/site`, `packages/playground`, `packages/vscode`, `examples/todo`)만 바꾼 경우. PR 설명에 "changeset 없음"과 이유를 적어 주세요.
 - 버전 올리기와 배포는 메인테이너가 합니다. main에 병합되면 "Version Packages" PR이 자동으로 만들어집니다(`.github/RELEASING.md`).
