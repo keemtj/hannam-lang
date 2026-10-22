@@ -4,7 +4,7 @@ import http from "node:http"
 import { readFile, writeFile } from "node:fs/promises"
 
 const 파일 = new URL("./todos.json", import.meta.url)
-const 포트 = 3000
+const 포트 = Number(process.env.PORT ?? 3100)
 
 async function 불러오기() {
   try {

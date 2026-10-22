@@ -4,7 +4,7 @@ import http from "node:http"
 import { readFile, writeFile } from "node:fs/promises"
 
 엄.. 파일 = new URL("./todos.json", import.meta.url)
-엄.. 포트 = 3000
+엄.. 포트 = Number(process.env.PORT ?? 3100)
 
 티~원 불러오기() {
   진~지? {
