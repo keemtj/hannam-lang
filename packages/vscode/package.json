@@ -2,11 +2,20 @@
   "name": "hannam-lang-vscode",
   "displayName": "hannam-lang",
   "description": "hannam-lang(.hn) 문법 하이라이팅과 스니펫",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keemtj/hannam-lang.git",
+    "directory": "packages/vscode"
+  },
+  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "bugs": {
+    "url": "https://github.com/keemtj/hannam-lang/issues"
+  },
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "publisher": "hannam-lang",
-  "license": "UNLICENSED",
   "engines": {
     "vscode": "^1.90.0"
   },

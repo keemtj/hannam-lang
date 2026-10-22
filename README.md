@@ -245,3 +245,7 @@ pnpm -r test
 ## 크레딧
 
 [rycont/umjunsik-lang](https://github.com/rycont/umjunsik-lang)(엄랭)에 영감을 받아 제작했습니다. 엄랭이 "만들 수 있냐"를 묻는 퍼즐이라면, hannam-lang은 "실제로 쓸 수 있냐"를 목표로 한 시즌2입니다.
+
+## 라이선스
+
+[MIT](LICENSE)

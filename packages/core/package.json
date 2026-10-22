@@ -2,6 +2,16 @@
   "name": "@hannam-lang/core",
   "version": "0.0.0",
   "description": "hannam-lang(.hn) → JavaScript 변환기",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keemtj/hannam-lang.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "bugs": {
+    "url": "https://github.com/keemtj/hannam-lang/issues"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -14,7 +24,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

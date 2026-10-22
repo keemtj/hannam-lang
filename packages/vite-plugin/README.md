@@ -47,7 +47,7 @@ TODO_API_PORT=3100 pnpm --filter @hannam-lang/example-todo-web dev   # 개발 �
 pnpm --filter @hannam-lang/example-todo-web build                    # 정적 빌드 (dist/)
 ```
 
-투두 서버(`examples/todo/server/server.hn`)는 포트가 3000으로 고정돼 있다. 다른 포트로 띄우려면 복사본의 `포트` 값을 바꾸고 core의 `compile()`로 변환해 node로 실행한다.
+투두 서버(`examples/todo/server/server.hn`)는 `PORT` 환경변수로 포트를 받는다(기본값 3100). 레포 루트에서 `PORT=3100 pnpm demo:server`로 띄우거나, `pnpm demo`로 서버와 웹을 함께 띄운다.
 
 ## 알려진 동작
 - dev 서버는 HTML의 `<script src="./main.hn">` 요청을 브라우저가 붙이는 `Sec-Fetch-Dest: script` 헤더로 알아보고 변환한다. 이 헤더를 보내지 않는 오래된 브라우저에서는 진입점이 변환되지 않는다

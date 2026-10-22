@@ -3,7 +3,12 @@
   "baseBranch": "main",
   "access": "public",
   "format": false,
-  "changelog": "@changesets/cli/changelog",
+  "changelog": [
+    "@changesets/changelog-github",
+    {
+      "repo": "keemtj/hannam-lang"
+    }
+  ],
   "commit": false,
   "ignore": [],
   "fixed": [],
