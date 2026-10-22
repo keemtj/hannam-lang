@@ -3,7 +3,7 @@ title: VS Code 확장
 description: .hn 파일에 문법 하이라이팅, 언어 설정, 스니펫을 제공합니다.
 ---
 
-VS Code 확장은 `.hn` 파일을 `hannam` 언어로 등록하고 한남랭 키워드를 칠해 줍니다. 아직 마켓플레이스에 올리지 않아서 저장소에서 직접 설치합니다.
+VS Code 확장은 `.hn` 파일을 `hannam` 언어로 등록하고 한남랭 키워드를 칠해 줍니다. 확장은 마켓플레이스가 아니라 저장소에서 `.vsix` 파일을 만들어 설치합니다.
 
 ## 제공하는 것
 
@@ -13,9 +13,11 @@ VS Code 확장은 `.hn` 파일을 `hannam` 언어로 등록하고 한남랭 키�
 
 ## 설치
 
-저장소 루트에서 `.vsix` 패키지를 만들어 설치합니다.
+저장소를 받아 `.vsix` 패키지를 만든 뒤 설치합니다. [pnpm](https://pnpm.io)이 필요합니다.
 
 ```sh
+git clone https://github.com/keemtj/hannam-lang.git
+cd hannam-lang
 pnpm install
 pnpm --filter hannam-lang-vscode package
 code --install-extension packages/vscode/dist/hannam-lang-vscode.vsix

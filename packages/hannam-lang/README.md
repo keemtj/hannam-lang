@@ -35,5 +35,3 @@ Node 로더 훅은 Bun에서 동작하지 않으므로 Bun 플러그인을 따�
 import { compile, HannamSyntaxError } from "hannam-lang"
 const { code, map } = compile(source, { filename: "app.hn" })
 ```
-
-rycont/umjunsik-lang(엄랭)에 영감을 받아 제작했습니다.

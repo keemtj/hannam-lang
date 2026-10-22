@@ -27,7 +27,7 @@ export function 초기화() {
 
 ```hn
 import { 할일추가 } from "./store.hn" // 됨
-import { 할일추가 } from "./store"    // 경고: .hn 파일을 찾지 못합니다
+import { 할일추가 } from "./store"    // 경고: 확장자가 없는 상대 경로 import입니다
 ```
 
 확장자가 없는 상대 경로는 컴파일 에러가 아니라 **경고**입니다. 번들러용 JS 코드는 확장자 없이 쓰는 경우가 많아서, JS 코드를 그대로 옮겨 와도 막히지 않게 하려는 것입니다. 경고는 `hnc`와 `hannam`이 터미널에, Vite 플러그인이 빌드 로그에 출력합니다.

@@ -21,7 +21,7 @@ function 보이는할일() {
     else if (__hn_s0 === "완료") { return 할일들.filter(할일 => 할일.완료) }
     else if (__hn_s0 === "남음") { return 할일들.filter(할일 => !할일.완료) }
   }
-  throw new Error(`예? 무슨 필터: ${필터}`)
+  throw new Error(`알 수 없는 필터: ${필터}`)
 }
 
 function 그리기() {

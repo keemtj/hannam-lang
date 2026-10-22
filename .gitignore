@@ -3,3 +3,6 @@ node_modules/
 .playwright-mcp/
 .DS_Store
 dist/
+
+# Next.js 개발 서버가 자동으로 만드는 AI 에이전트 안내 파일
+apps/site/AGENTS.md
