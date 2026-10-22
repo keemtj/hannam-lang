@@ -1,7 +1,7 @@
 {
   "name": "hannam-lang-vscode",
-  "displayName": "hannam-lang",
-  "description": "hannam-lang(.hn) 문법 하이라이팅과 스니펫",
+  "displayName": "한남랭 (hannam-lang)",
+  "description": "한남랭(.hn) 문법 하이라이팅, 스니펫, 컴파일 에러 표시",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -16,12 +16,27 @@
   "private": true,
   "type": "module",
   "publisher": "hannam-lang",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#18181b",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },
   "categories": [
     "Programming Languages",
     "Snippets"
+  ],
+  "keywords": [
+    "hannam",
+    "hannam-lang",
+    "hn",
+    "한남랭"
+  ],
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "onLanguage:hannam"
   ],
   "contributes": {
     "languages": [
@@ -55,13 +70,18 @@
     ]
   },
   "scripts": {
+    "build": "esbuild src/extension.ts --bundle --platform=node --target=node20 --format=cjs --external:vscode --outfile=dist/extension.cjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "package": "mkdir -p dist && vsce package --no-dependencies --skip-license --allow-missing-repository --out dist/hannam-lang-vscode.vsix"
+    "package": "pnpm build && vsce package --no-dependencies --out dist/hannam-lang-vscode.vsix"
   },
   "devDependencies": {
+    "@hannam-lang/core": "workspace:*",
     "@types/node": "22.20.5",
+    "@types/vscode": "1.90.0",
     "@vscode/vsce": "3.9.2",
+    "esbuild": "0.28.2",
+    "ovsx": "1.2.0",
     "typescript": "5.9.3",
     "vitest": "4.1.11",
     "vscode-oniguruma": "2.0.1",

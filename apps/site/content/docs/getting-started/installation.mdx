@@ -5,7 +5,7 @@ description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 hannam-lang을
 
 ## 요구 사항
 
-- **Node.js 20.16 이상**. `hannam`이 쓰는 로더 훅(`module.register`)과 터미널 확인 창 기능이 이 버전부터 동작합니다.
+- **Node.js 20.16 이상**. 터미널 확인 창(`예? 무슨 발언이세요?(...)`)이 쓰는 `process.getBuiltinModule`이 이 버전부터 있습니다.
 - Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hnc` 명령 자체는 Node로 실행됩니다.
 
 ## 프로젝트에 설치
@@ -65,5 +65,5 @@ hnc --version
 | 패키지 | 하는 일 |
 | --- | --- |
 | `@hannam-lang/vite-plugin` | Vite에서 `.hn`을 바로 import합니다. [Vite로 웹 앱 만들기](/docs/getting-started/vite) |
-| VS Code 확장 | `.hn` 문법 하이라이팅과 스니펫. 저장소에서 설치합니다. [VS Code 확장](/docs/tools/vscode) |
+| VS Code 확장 | `.hn` 문법 하이라이팅, 컴파일 에러 표시, 스니펫. 확장 보기에서 **한남랭**을 검색해 설치합니다. [VS Code 확장](/docs/tools/vscode) |
 | `@hannam-lang/core` | 변환기 API(`compile`)를 직접 쓸 때 |

@@ -2,6 +2,7 @@ name: Release
 
 # main에 changeset이 쌓이면 "Version Packages" PR을 만들거나 갱신한다.
 # npm 배포는 기본으로 꺼져 있다. 저장소 변수 NPM_PUBLISH_ENABLED가 'true'일 때만 publish job이 돈다.
+# VS Code 확장 배포도 같은 방식이다. VSCODE_PUBLISH_ENABLED가 'true'일 때만 publish-vscode job이 돈다.
 # 켜는 방법과 토큰 선택(npm trusted publishing 또는 NPM_TOKEN)은 .github/RELEASING.md 참고.
 
 on:
@@ -118,3 +119,70 @@ jobs:
           # NPM_TOKEN 시크릿이 없으면 빈 값이 되고, 그때는 trusted publishing(OIDC)으로 인증한다
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+
+  # VS Code 마켓플레이스와 Open VSX에 확장을 올린다. 확장은 npm 패키지가 아니라(private) select-mode의
+  # publish 판정에 잡히지 않으므로, 확장 버전이 바뀐 push인지 아래 job에서 따로 본다
+  # 이번 push에서 확장의 package.json 버전이 바뀌었는지 본다. 바뀌지 않았으면 배포 잡이 마켓플레이스에 접속하지 않는다
+  vscode-version:
+    name: 확장 버전 변경 확인
+    if: vars.VSCODE_PUBLISH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      - name: 버전 비교
+        id: check
+        run: |
+          now=$(node -p "require('./packages/vscode/package.json').version")
+          before=$(git show HEAD^:packages/vscode/package.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version" 2>/dev/null || echo none)
+          echo "이전 $before, 현재 $now"
+          echo "changed=$([ "$now" != "$before" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  publish-vscode:
+    name: VS Code 확장 배포
+    # 확장 버전이 바뀐 push(Version Packages PR 병합)나 수동 실행에서만 배포한다. 같은 버전은 --skip-duplicate로 건너뛴다
+    needs: [select-mode, vscode-version]
+    if: >-
+      needs.select-mode.outputs.mode != 'version' && vars.VSCODE_PUBLISH_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' || needs.vscode-version.outputs.changed == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: vscode
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
+
+      # 확장 번들(dist/extension.cjs)에 core를 함께 묶으므로 core를 먼저 빌드한다
+      - name: .vsix 만들기
+        run: |
+          pnpm --filter @hannam-lang/core build
+          pnpm --filter hannam-lang-vscode package
+
+      - name: VS Code 마켓플레이스 배포
+        working-directory: packages/vscode
+        run: pnpm exec vsce publish --packagePath dist/hannam-lang-vscode.vsix --skip-duplicate
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Open VSX 배포
+        working-directory: packages/vscode
+        run: pnpm exec ovsx publish dist/hannam-lang-vscode.vsix --skip-duplicate
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}

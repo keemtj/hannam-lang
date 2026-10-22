@@ -1,6 +1,6 @@
 # Changesets
 
-이 폴더는 [changesets](https://changesets.dev)가 관리합니다. 공개 패키지에 사용자가 알아야 할 변경을 했다면 PR에 changeset 파일을 하나 넣어 주세요.
+이 폴더는 [changesets](https://changesets.dev)가 관리합니다. 배포하는 패키지(npm 패키지 3개와 VS Code 확장)에 사용자가 알아야 할 변경을 했다면 PR에 changeset 파일을 하나 넣어 주세요.
 
 ```sh
 pnpm changeset

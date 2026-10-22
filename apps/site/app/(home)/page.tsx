@@ -6,6 +6,7 @@ import { CopyCommand } from "@/components/home/copy-command"
 import { InstallTabs } from "@/components/home/install-tabs"
 import { highlight } from "@/lib/highlight"
 import { KEYWORDS } from "@/lib/keywords"
+import { githubUrl } from "@/lib/shared"
 
 const HERO_CODE = `티~원 할일불러오기() {
   진~지? {
@@ -232,12 +233,14 @@ export default async function HomePage() {
 
       <footer className="hn-footer">
         <div className="hn-container hn-footer-inner">
-          <p>MIT 라이선스</p>
           <nav>
             <Link href="/docs">문서</Link>
             <Link href="/docs/syntax">문법</Link>
             <Link href="/playground">Playground</Link>
             <Link href="/docs/contributing">기여하기</Link>
+            <a href={githubUrl} target="_blank" rel="noreferrer">
+              GitHub
+            </a>
           </nav>
         </div>
       </footer>

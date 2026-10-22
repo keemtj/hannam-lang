@@ -4,6 +4,8 @@ export interface Position {
 }
 
 export class HannamSyntaxError extends SyntaxError {
+  /** 위치와 코드 조각을 붙이기 전의 문구. 에디터 진단처럼 위치를 따로 보여 주는 곳에서 쓴다 */
+  readonly rawMessage: string
   readonly line: number
   readonly column: number
   readonly filename: string | undefined
@@ -15,6 +17,7 @@ export class HannamSyntaxError extends SyntaxError {
     const frame = codeFrame(source, line, column)
     super(`${message} (${where})\n${frame}`)
     this.name = "HannamSyntaxError"
+    this.rawMessage = message
     this.line = line
     this.column = column
     this.filename = filename

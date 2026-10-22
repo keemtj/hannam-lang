@@ -10,12 +10,12 @@
     }
   ],
   "commit": false,
-  "ignore": [],
+  "ignore": ["@hannam-lang/site", "@hannam-lang/playground", "@hannam-lang/example-todo-web"],
   "fixed": [],
   "linked": [],
   "updateInternalDependencies": "patch",
   "privatePackages": {
-    "version": false,
+    "version": true,
     "tag": false
   }
 }

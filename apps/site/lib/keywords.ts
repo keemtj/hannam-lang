@@ -31,6 +31,7 @@ export const KEYWORDS: Keyword[] = [
     word: "요이~",
     syntax: [
       { hn: "요이~ 항목 목록", js: "for...of" },
+      { hn: "요이~ i 0..10", js: "범위 반복" },
       { hn: "요이이이~", js: "while" },
     ],
     href: "/docs/syntax/loops",

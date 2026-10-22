@@ -1,12 +1,23 @@
-// 문서의 ```hn 블록과 <TryIt code={...}> 코드가 실제로 컴파일되는지 확인한다.
+// 문서와 README의 ```hn 블록, <TryIt code={...}> 코드가 실제로 컴파일되는지 확인한다.
 // ```hn 바로 다음에 ```js 블록이 오면 변환 결과와 같은지도 비교한다.
 // 사용법: node scripts/check-docs.mjs
-import { readFileSync, readdirSync, statSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs"
 import { join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
 import { compile } from "@hannam-lang/core"
 
 const root = fileURLToPath(new URL("../content/docs", import.meta.url))
+const repoRoot = fileURLToPath(new URL("../../..", import.meta.url))
+// 저장소의 README도 같은 기준으로 검사한다. 사이트 문서와 README의 예시가 실제 동작과 어긋나지 않게 하려는 것이다
+const readmes = [
+  "README.md",
+  "README.en.md",
+  "CONTRIBUTING.md",
+  "examples/todo/README.md",
+  ...readdirSync(join(repoRoot, "packages")).map((dir) => `packages/${dir}/README.md`),
+]
+  .map((path) => join(repoRoot, path))
+  .filter((path) => existsSync(path))
 // 컴파일 에러를 보여 주려고 일부러 틀리게 쓴 블록
 const expectedErrors = ["예???? 개수 > 0 {"]
 
@@ -39,9 +50,9 @@ let failures = 0
 let checked = 0
 let compared = 0
 
-for (const file of walk(root)) {
+for (const file of [...walk(root), ...readmes]) {
   const text = readFileSync(file, "utf8")
-  const name = relative(root, file)
+  const name = file.startsWith(root) ? relative(root, file) : relative(repoRoot, file)
   const blocks = [...text.matchAll(/^( *)```(\w+)([^\n]*)\n([\s\S]*?)^\1```$/gm)].map((m) => ({
     lang: m[2],
     meta: m[3],

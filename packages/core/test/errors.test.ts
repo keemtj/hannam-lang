@@ -72,6 +72,13 @@ describe("컴파일 에러", () => {
     expect(e.frame).toBe(`1 | 엄.. 목록 = 1; 예???? 목록 {\n${" ".repeat("1 | ".length + 15)}^`)
   })
 
+  it("rawMessage는 위치와 코드 조각이 없는 원래 문구다", () => {
+    const e = errorOf("엄. a = 1\n예???? a {\n}")
+    expect(e.rawMessage).not.toContain("t.hn:")
+    expect(e.message.startsWith(e.rawMessage)).toBe(true)
+    expect(e.rawMessage).toContain("물음표는 1~3개")
+  })
+
   it("에러 메시지에 위치와 코드 조각이 들어간다", () => {
     const e = errorOf("엄. a = 1\n예???? a {\n}")
     expect(e.message).toContain("t.hn:2:1")
