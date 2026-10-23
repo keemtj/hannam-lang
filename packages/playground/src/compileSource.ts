@@ -1,4 +1,4 @@
-import { compile, HannamSyntaxError } from "@hannam-lang/core"
+import { compile, MzScriptSyntaxError } from "@mzscript/core"
 
 export interface CompileDiagnostic {
   /** 1부터 시작하는 줄 번호 */
@@ -18,9 +18,9 @@ export type CompileOutcome =
   | { ok: true; code: string }
   | { ok: false; diagnostic: CompileDiagnostic }
 
-const FILENAME = "playground.hn"
+const FILENAME = "playground.mz"
 
-/** .hn 소스를 JS로 바꾸고, 실패하면 에디터에 표시할 위치 정보를 돌려준다 */
+/** .mz 소스를 JS로 바꾸고, 실패하면 에디터에 표시할 위치 정보를 돌려준다 */
 export function compileSource(source: string): CompileOutcome {
   try {
     const { code } = compile(source, { filename: FILENAME })
@@ -31,7 +31,7 @@ export function compileSource(source: string): CompileOutcome {
 }
 
 function toDiagnostic(source: string, e: unknown): CompileDiagnostic {
-  if (e instanceof HannamSyntaxError) {
+  if (e instanceof MzScriptSyntaxError) {
     const from = offsetAt(source, e.line, e.column)
     return {
       line: e.line,

@@ -1,7 +1,7 @@
 // 메인 페이지 코드 조각을 서버에서 칠한다 (문서와 같은 hn 문법, 같은 테마)
 import { createHighlighter, type Highlighter } from "shiki"
 import { createOnigurumaEngine } from "shiki/engine/oniguruma"
-import { hnLanguage } from "./hn-grammar"
+import { hnLanguage } from "./mz-grammar"
 
 let highlighter: Promise<Highlighter> | undefined
 
@@ -18,7 +18,7 @@ function getHighlighter() {
   return highlighter
 }
 
-export async function highlight(code: string, lang: "hn" | "javascript"): Promise<string> {
+export async function highlight(code: string, lang: "mz" | "javascript"): Promise<string> {
   const h = await getHighlighter()
   return h.codeToHtml(code, {
     lang,

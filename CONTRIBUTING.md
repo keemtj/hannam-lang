@@ -1,11 +1,11 @@
 # 기여 안내
 
-hannam-lang에 관심 가져 줘서 고마워요. 이 문서는 개발 환경, 테스트, changeset, 커밋·PR 규칙, 새 키워드 제안 기준을 다룹니다.
+mzscript에 관심 가져 줘서 고마워요. 이 문서는 개발 환경, 테스트, changeset, 커밋·PR 규칙, 새 키워드 제안 기준을 다룹니다.
 
 먼저 읽으면 좋은 문서:
 
-- `docs/hannam-lang-syntax.md`: 문법 명세. 변환 결과가 맞는지 판단하는 기준입니다.
-- `docs/hannam-lang-context.md`: 프로젝트를 만든 이유, 주요 결정과 기각한 안, 로드맵.
+- `docs/mzscript-syntax.md`: 문법 명세. 변환 결과가 맞는지 판단하는 기준입니다.
+- `docs/mzscript-context.md`: 프로젝트를 만든 이유, 주요 결정과 기각한 안, 로드맵.
 
 ## 개발 환경
 
@@ -23,23 +23,23 @@ pnpm -r build
 빌드한 뒤에는 npm에서 받은 패키지 대신 저장소의 실행 파일을 직접 실행할 수 있습니다.
 
 ```sh
-node packages/hannam-lang/bin/hannam.js hello.hn   # hannam
-node packages/hannam-lang/bin/hnc.js hello.hn      # hnc
+node packages/mzscript/bin/mz.js hello.mz   # mz
+node packages/mzscript/bin/mzc.js hello.mz      # mzc
 ```
 
 ### 저장소 구조
 
 ```
 packages/
-  core/          # 변환기 @hannam-lang/core (렉서, JS 출력, 소스맵, 런타임 헬퍼)
-  hannam-lang/   # CLI hannam·hnc, Node 로더 훅, Bun 플러그인
-  vite-plugin/   # Vite 플러그인 @hannam-lang/vite-plugin
+  core/          # 변환기 @mzscript/core (렉서, JS 출력, 소스맵, 런타임 헬퍼)
+  mzscript/   # CLI mz·mzc, Node 로더 훅, Bun 플러그인
+  vite-plugin/   # Vite 플러그인 @mzscript/vite-plugin
   vscode/        # VS Code 확장 (배포하지 않음, .vsix로 설치)
   playground/    # 문서 사이트의 Playground 컴포넌트 (배포하지 않음)
 apps/
   site/          # 소개·문서 사이트 (Next.js + Fumadocs)
 examples/
-  todo/          # 명세만으로 쓴 투두 풀스택 예제 (.hn)
+  todo/          # 명세만으로 쓴 투두 풀스택 예제 (.mz)
 docs/            # 문법 명세와 프로젝트 맥락
 scripts/         # 저장소 관리용 스크립트
 ```
@@ -52,16 +52,16 @@ pnpm -r typecheck   # 타입 검사
 pnpm -r test        # 테스트 (vitest)
 ```
 
-CI(`.github/workflows/ci.yml`)도 이 세 명령을 같은 순서로 실행합니다. PR과 수동 실행에서는 ubuntu·macOS·Windows × Node 20·22·24 전체를, main push에서는 ubuntu·Node 22 하나만 돌립니다. 특정 패키지만 돌리려면 `pnpm --filter @hannam-lang/core test`처럼 씁니다.
+CI(`.github/workflows/ci.yml`)도 이 세 명령을 같은 순서로 실행합니다. PR과 수동 실행에서는 ubuntu·macOS·Windows × Node 20·22·24 전체를, main push에서는 ubuntu·Node 22 하나만 돌립니다. 특정 패키지만 돌리려면 `pnpm --filter @mzscript/core test`처럼 씁니다.
 
-- **변환 결과는 `.hn` ↔ `.js` 짝으로 테스트합니다.** `packages/core/test/fixtures/`에 같은 이름의 `.hn`과 기대하는 `.js`를 나란히 둡니다. 명세의 예제가 곧 테스트 케이스입니다.
+- **변환 결과는 `.mz` ↔ `.js` 짝으로 테스트합니다.** `packages/core/test/fixtures/`에 같은 이름의 `.mz`와 기대하는 `.js`를 나란히 둡니다. 명세의 예제가 곧 테스트 케이스입니다.
 - 버그를 고칠 때는 먼저 그 버그를 재현하는 테스트를 추가하고, 그 테스트가 통과하도록 고칩니다.
 - `test.skip`, `.only`, 비어 있는 테스트는 커밋하지 않습니다.
 - 스냅샷을 갱신(`vitest -u`)했다면 바뀐 내용이 의도한 것인지 diff로 확인하고, PR 설명에 이유를 적어 주세요.
 
 ### 설치 매트릭스
 
-CLI 패키지(`packages/hannam-lang`)를 npm, pnpm, yarn, bun으로 전역 설치해 보는 스크립트가 있습니다. 로컬 임시 레지스트리를 쓰고 실제 npm이나 전역 디렉터리는 건드리지 않습니다.
+CLI 패키지(`packages/mzscript`)를 npm, pnpm, yarn, bun으로 전역 설치해 보는 스크립트가 있습니다. 로컬 임시 레지스트리를 쓰고 실제 npm이나 전역 디렉터리는 건드리지 않습니다.
 
 ```sh
 bash scripts/install-matrix.sh            # 4종 모두
@@ -80,7 +80,7 @@ pnpm changeset
 
 ```md
 ---
-"@hannam-lang/core": patch
+"@mzscript/core": patch
 ---
 
 `예???` 블록 안의 빈 줄이 사라지던 문제를 고쳤습니다.
@@ -105,7 +105,7 @@ Fixed blank lines disappearing inside `예???` blocks.
   변환기: 예??? 블록 안 빈 줄 보존
 
   - case 사이 빈 줄이 사라져 소스맵 줄 번호가 어긋나던 문제
-  - fixture switch.hn에 회귀 케이스 추가
+  - fixture switch.mz에 회귀 케이스 추가
   ```
 
   분류 예시: `변환기`, `CLI`, `문서`, `테스트`, `CI`, `릴리스`. 기존 커밋 로그(`git log --oneline`)를 참고하세요.
@@ -116,7 +116,7 @@ Fixed blank lines disappearing inside `예???` blocks.
 
 - main에서 브랜치를 만들어 PR을 엽니다. 한 PR에는 한 가지 주제만 담습니다.
 - PR 템플릿의 확인 항목을 채워 주세요. CI가 통과해야 병합합니다.
-- **문법을 바꾸는 PR은 명세(`docs/hannam-lang-syntax.md`)와 fixture를 같은 PR에서 함께 고칩니다.** 명세와 구현이 어긋나면 명세가 기준입니다.
+- **문법을 바꾸는 PR은 명세(`docs/mzscript-syntax.md`)와 fixture를 같은 PR에서 함께 고칩니다.** 명세와 구현이 어긋나면 명세가 기준입니다.
 - 새 의존성은 정확한 버전으로 고정합니다(`^`, `~` 없이).
 - 큰 변경이나 새 키워드는 PR 전에 이슈로 먼저 이야기해 주세요.
 
@@ -130,7 +130,7 @@ Fixed blank lines disappearing inside `예???` blocks.
 
 > 판단 기준: 투두 풀스택 데모에서 자주 쓰는가 + 말투가 역할과 어울리는가
 >
-> — `docs/hannam-lang-syntax.md`, "설탕 적용 범위"
+> — `docs/mzscript-syntax.md`, "설탕 적용 범위"
 
 명세의 설계 원칙도 함께 지켜야 합니다.
 
@@ -138,19 +138,19 @@ Fixed blank lines disappearing inside `예???` blocks.
 > - **설탕만 두고 별칭은 두지 않는다.** JS 기호 하나를 긴 키워드로 바꾸는 것(예: `!` → `아뇨아뇨아뇨아뇨!`)은 설탕이 아니다.
 > - **플랫폼 API는 JS 그대로.** `fetch`, DOM 등은 이름을 바꾸지 않는다. 자주 쓰는 `console.log`, `confirm`만 예외로 설탕을 둔다.
 >
-> — `docs/hannam-lang-syntax.md`, "설계 원칙"
+> — `docs/mzscript-syntax.md`, "설계 원칙"
 
 정리하면 제안에는 다음이 들어가야 합니다.
 
 1. 키워드 형태(글자 그대로)와 대응하는 JS 문법
-2. `.hn` → `.js` 변환 예시 짝
+2. `.mz` → `.js` 변환 예시 짝
 3. 말투가 그 역할과 어울리는 이유
 4. 일반 JS 문법이나 기존 키워드와 충돌하지 않는다는 검토 (명세의 "인식 규칙"과 기호 충돌 목록 참고)
 5. 오래 쓰일 말투라는 근거
 
-이번 버전은 한남 말투 11개만 다룹니다. `true`/`false`, `import`/`export` 같은 빈자리에 다른 인터넷 유행어를 넣는 안은 명세의 "다음 버전 후보"에 모아 두고 다음 버전에서 검토합니다.
+이번 버전은 지금의 키워드 11개만 다룹니다. `true`/`false`, `import`/`export` 같은 빈자리에 다른 인터넷 유행어를 넣는 안은 명세의 "다음 버전 후보"에 모아 두고 다음 버전에서 검토합니다.
 
 ## 질문과 버그
 
 - 버그는 **버그 신고** 양식으로, 문법 키워드가 아닌 기능 제안은 **기능 제안** 양식으로 이슈를 열어 주세요.
-- 재현할 수 있는 가장 짧은 `.hn` 코드가 있으면 가장 빨리 고칠 수 있습니다.
+- 재현할 수 있는 가장 짧은 `.mz` 코드가 있으면 가장 빨리 고칠 수 있습니다.

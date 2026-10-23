@@ -1,16 +1,16 @@
 {
-  "name": "@hannam-lang/vite-plugin",
+  "name": "@mzscript/vite-plugin",
   "version": "0.1.0",
-  "description": "hannam-lang(.hn) 모듈을 Vite에서 쓰게 해 주는 플러그인",
+  "description": "mzscript(.mz) 모듈을 Vite에서 쓰게 해 주는 플러그인",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keemtj/hannam-lang.git",
+    "url": "git+https://github.com/keemtj/mzscript.git",
     "directory": "packages/vite-plugin"
   },
-  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "homepage": "https://github.com/keemtj/mzscript#readme",
   "bugs": {
-    "url": "https://github.com/keemtj/hannam-lang/issues"
+    "url": "https://github.com/keemtj/mzscript/issues"
   },
   "type": "module",
   "exports": {
@@ -29,7 +29,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@hannam-lang/core": "workspace:*"
+    "@mzscript/core": "workspace:*"
   },
   "peerDependencies": {
     "vite": "^7.0.0 || ^8.0.0"

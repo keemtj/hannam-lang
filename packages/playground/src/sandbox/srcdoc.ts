@@ -15,7 +15,7 @@ export function scriptJson(value: unknown): string {
 
 /**
  * 변환된 JS를 실행할 iframe 문서를 만든다.
- * - import map으로 `hannam-lang/runtime`을 data: URL 런타임에 연결한다
+ * - import map으로 `mzscript/runtime`을 data: URL 런타임에 연결한다
  * - 사용자 코드는 iframe 안에서 blob URL 모듈로 만들어 import한다 (스택에서 줄 번호를 찾기 쉽다)
  */
 export function buildSrcdoc(code: string, options: SrcdocOptions): string {
@@ -29,7 +29,7 @@ export function buildSrcdoc(code: string, options: SrcdocOptions): string {
 </head><body>
 <script type="module">
 const url = URL.createObjectURL(new Blob([${scriptJson(userCode)}], { type: "text/javascript" }))
-import(url).then(() => window.__hn_done(), (e) => { window.__hn_report(e); window.__hn_done() })
+import(url).then(() => window.__mz_done(), (e) => { window.__mz_report(e); window.__mz_done() })
 </script>
 </body></html>`
 }

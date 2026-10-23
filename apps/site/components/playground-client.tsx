@@ -2,11 +2,11 @@
 
 // Playground 번들(CodeMirror, acorn, core)은 크기가 커서 쓰는 페이지에서만 브라우저 쪽으로 불러온다
 import dynamic from "next/dynamic"
-import type { PlaygroundProps } from "@hannam-lang/playground"
+import type { PlaygroundProps } from "@mzscript/playground"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 
-const Playground = dynamic(() => import("@hannam-lang/playground").then((m) => m.Playground), {
+const Playground = dynamic(() => import("@mzscript/playground").then((m) => m.Playground), {
   ssr: false,
   loading: () => <PlaygroundSkeleton />,
 })

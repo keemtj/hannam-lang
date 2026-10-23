@@ -3,7 +3,7 @@
 import { writeFileSync } from "node:fs"
 import { collectVersions, sectionsFor } from "../../../scripts/changelog.mjs"
 
-const releaseUrl = (version) => `https://github.com/keemtj/hannam-lang/releases/tag/hannam-lang%40${version}`
+const releaseUrl = (version) => `https://github.com/keemtj/mzscript/releases/tag/mzscript%40${version}`
 
 // MDX가 JSX로 읽지 않도록 코드 밖의 {, <를 이스케이프한다
 const escapeMdx = (text) =>
@@ -20,7 +20,7 @@ const out = [
   "",
   "{/* 이 파일은 apps/site/scripts/gen-changelog.mjs가 각 패키지의 CHANGELOG.md로 만든다. 직접 고치지 않는다 */}",
   "",
-  "`hannam-lang`, `@hannam-lang/core`, `@hannam-lang/vite-plugin`은 항상 같은 버전으로 나옵니다. 같은 버전끼리 함께 쓰면 됩니다.",
+  "`mzscript`, `@mzscript/core`, `@mzscript/vite-plugin`은 항상 같은 버전으로 나옵니다. 같은 버전끼리 함께 쓰면 됩니다.",
   "",
 ]
 for (const [version, entries] of collectVersions()) {

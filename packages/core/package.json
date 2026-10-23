@@ -1,16 +1,16 @@
 {
-  "name": "@hannam-lang/core",
+  "name": "@mzscript/core",
   "version": "0.1.0",
-  "description": "hannam-lang(.hn) → JavaScript 변환기",
+  "description": "mzscript(.mz) → JavaScript 변환기",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keemtj/hannam-lang.git",
+    "url": "git+https://github.com/keemtj/mzscript.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "homepage": "https://github.com/keemtj/mzscript#readme",
   "bugs": {
-    "url": "https://github.com/keemtj/hannam-lang/issues"
+    "url": "https://github.com/keemtj/mzscript/issues"
   },
   "type": "module",
   "exports": {

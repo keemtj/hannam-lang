@@ -1,6 +1,6 @@
 // iframe → 부모 창으로 보내는 메시지 형식
 
-export const MESSAGE_SOURCE = "hannam-playground"
+export const MESSAGE_SOURCE = "mzscript-playground"
 
 export type ConsoleLevel = "log" | "info" | "warn" | "error" | "debug"
 

@@ -1,5 +1,5 @@
 {
-  "name": "hannam-lang-monorepo",
+  "name": "mzscript-monorepo",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.29.3",
@@ -10,12 +10,12 @@
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm install --lockfile-only",
     "release": "pnpm -r build && changeset publish",
-    "demo:build": "pnpm --filter @hannam-lang/core --filter @hannam-lang/vite-plugin build",
-    "demo:server": "node packages/hannam-lang/bin/hannam.js examples/todo/server/server.hn",
-    "demo:web": "pnpm --filter @hannam-lang/example-todo-web dev",
+    "demo:build": "pnpm --filter @mzscript/core --filter @mzscript/vite-plugin build",
+    "demo:server": "node packages/mzscript/bin/mz.js examples/todo/server/server.mz",
+    "demo:web": "pnpm --filter @mzscript/example-todo-web dev",
     "demo": "pnpm demo:build && node examples/todo/demo.js",
-    "site:dev": "pnpm --filter @hannam-lang/site dev",
-    "site:build": "pnpm --filter @hannam-lang/core build && pnpm --filter @hannam-lang/site build"
+    "site:dev": "pnpm --filter @mzscript/site dev",
+    "site:build": "pnpm --filter @mzscript/core build && pnpm --filter @mzscript/site build"
   },
   "devDependencies": {
     "@changesets/changelog-github": "1.0.1",

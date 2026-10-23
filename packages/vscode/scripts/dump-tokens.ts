@@ -1,4 +1,4 @@
-// 디버깅용: .hn 파일의 토큰과 scope를 출력한다
+// 디버깅용: .mz 파일의 토큰과 scope를 출력한다
 // 사용법: node --experimental-strip-types scripts/dump-tokens.ts <파일...>
 import { readFileSync } from "node:fs"
 import { tokenize } from "../test/tokenize.ts"

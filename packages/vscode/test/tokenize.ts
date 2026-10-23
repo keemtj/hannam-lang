@@ -1,4 +1,4 @@
-// vscode-textmate + vscode-oniguruma로 .hn 소스를 실제 VS Code와 같은 방식으로 토큰화한다
+// vscode-textmate + vscode-oniguruma로 .mz 소스를 실제 VS Code와 같은 방식으로 토큰화한다
 import { readFileSync } from "node:fs"
 import { createRequire } from "node:module"
 import { fileURLToPath } from "node:url"
@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url)
 const packageRoot = fileURLToPath(new URL("..", import.meta.url))
 
 const grammarPaths: Record<string, string> = {
-  "source.hn": `${packageRoot}syntaxes/hannam.tmLanguage.json`,
+  "source.mz": `${packageRoot}syntaxes/mzscript.tmLanguage.json`,
   // VS Code 1.140.0 내장 JavaScript 문법 (MIT, 같은 폴더의 LICENSE.txt 참고)
   "source.js": `${packageRoot}test/fixtures/vscode-javascript/JavaScript.tmLanguage.json`,
 }
@@ -43,8 +43,8 @@ function createRegistry(): Promise<textmate.Registry> {
 
 export async function tokenize(source: string): Promise<Token[]> {
   registryPromise ??= createRegistry()
-  const grammar = await (await registryPromise).loadGrammar("source.hn")
-  if (!grammar) throw new Error("source.hn 문법을 불러오지 못함")
+  const grammar = await (await registryPromise).loadGrammar("source.mz")
+  if (!grammar) throw new Error("source.mz 문법을 불러오지 못함")
   const tokens: Token[] = []
   let ruleStack = textmate.INITIAL
   source.split(/\r?\n/).forEach((text, index) => {

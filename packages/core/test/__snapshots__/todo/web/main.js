@@ -16,10 +16,10 @@ function 글자만(문자열) {
 }
 
 function 보이는할일() {
-  { const __hn_s0 = 필터;
-    if (__hn_s0 === "전체") { return 할일들 }
-    else if (__hn_s0 === "완료") { return 할일들.filter(할일 => 할일.완료) }
-    else if (__hn_s0 === "남음") { return 할일들.filter(할일 => !할일.완료) }
+  { const __mz_s0 = 필터;
+    if (__mz_s0 === "전체") { return 할일들 }
+    else if (__mz_s0 === "완료") { return 할일들.filter(할일 => 할일.완료) }
+    else if (__mz_s0 === "남음") { return 할일들.filter(할일 => !할일.완료) }
   }
   throw new Error(`알 수 없는 필터: ${필터}`)
 }
@@ -62,7 +62,7 @@ function 그리기() {
 
   try {
     if (e.target.matches("[data-action=삭제]")) {
-      if (__hn.confirm("이 할 일을 지울까요?")) {
+      if (__mz.confirm("이 할 일을 지울까요?")) {
         await 삭제하기(id)
         할일들 = 할일들.filter(할일 => 할일.id !== id)
       }
@@ -89,4 +89,4 @@ try {
 } catch (에러) {
   console.log("불러오기 실패:", 에러.message)
 }
-import { __hn } from "hannam-lang/runtime"
+import { __mz } from "mzscript/runtime"

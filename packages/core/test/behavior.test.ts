@@ -1,15 +1,15 @@
 import { afterEach, describe, expect, it } from "vitest"
 import { compile } from "../src/index.js"
-import { __hn } from "../src/runtime.js"
+import { __mz } from "../src/runtime.js"
 
 // 변환한 코드를 실제로 실행해서 동작을 확인한다
 const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor as new (...args: string[]) => (...args: unknown[]) => Promise<unknown>
 
 async function run(source: string): Promise<unknown[]> {
-  const code = compile(source).code.replace(/^import \{ __hn \} from .*$/m, "")
+  const code = compile(source).code.replace(/^import \{ __mz \} from .*$/m, "")
   const logs: unknown[] = []
   const fakeConsole = { log: (...args: unknown[]) => logs.push(args.length === 1 ? args[0] : args) }
-  await new AsyncFunction("__hn", "console", code)(__hn, fakeConsole)
+  await new AsyncFunction("__mz", "console", code)(__mz, fakeConsole)
   return logs
 }
 

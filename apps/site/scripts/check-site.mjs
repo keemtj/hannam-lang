@@ -1,6 +1,6 @@
 // 빌드된 사이트를 next start로 띄워서 확인한다.
 // 1. 메인·문서·/playground가 200인지
-// 2. 문서의 ```hn 블록이 하이라이팅 span으로 칠해졌는지
+// 2. 문서의 ```mz 블록이 하이라이팅 span으로 칠해졌는지
 // 3. 사이트 안 링크(전체 크롤링)가 404가 아닌지
 // 4. headless 브라우저로 /playground와 문서 TryIt에서 코드를 실행해 콘솔 출력이 나오는지
 // 5. 메인 페이지 데스크톱·모바일 스크린샷 (라이트·다크)
@@ -135,7 +135,7 @@ try {
     r.status === 200 ? ok(`${path} 200`) : fail(`${path} ${r.status}`)
   }
 
-  // 2. hn 하이라이팅: 한남랭 키워드가 JS 키워드 색(github 테마의 keyword 색)을 받은 span으로 나오는지
+  // 2. hn 하이라이팅: 엠지스크립트 키워드가 JS 키워드 색(github 테마의 keyword 색)을 받은 span으로 나오는지
   {
     const html = await (await fetch(`${base}/docs/syntax/conditionals`)).text()
     // 키워드 글자만 담은 span이 기본 글자색(#24292E)이 아닌 색을 받았는지 본다 (줄 앞 공백은 span에 함께 들어갈 수 있음)
@@ -191,12 +191,12 @@ try {
     await editor.click()
     await page.keyboard.press("ControlOrMeta+A")
     await page.keyboard.press("Backspace")
-    await page.keyboard.insertText('엄.. 이름 = "한남랭"\n요이~ i 0..3 {\n무슨 발언이세요? `${이름} ${i}번`\n}\n')
+    await page.keyboard.insertText('엄.. 이름 = "엠지스크립트"\n요이~ i 0..3 {\n무슨 발언이세요? `${이름} ${i}번`\n}\n')
     await page.locator('[data-testid="js-output"]').getByText("for (let i = 0; i < 3; i++)").waitFor({ timeout: 10000 })
-    ok("/playground: 입력한 .hn이 JS로 변환되어 보임")
+    ok("/playground: 입력한 .mz가 JS로 변환되어 보임")
     await page.getByRole("button", { name: /실행/ }).first().click()
     const consoleBox = page.locator('[data-testid="console"]')
-    await consoleBox.getByText("한남랭 2번").waitFor({ timeout: 15000 })
+    await consoleBox.getByText("엠지스크립트 2번").waitFor({ timeout: 15000 })
     const lines = (await consoleBox.innerText()).trim()
     ok(`/playground: 실행 후 콘솔 출력\n${lines.replace(/^/gm, "    ")}`)
     // 코드는 입력이 멈추고 300ms 뒤에 해시로 저장된다

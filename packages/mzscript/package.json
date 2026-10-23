@@ -1,21 +1,21 @@
 {
-  "name": "hannam-lang",
+  "name": "mzscript",
   "version": "0.1.0",
-  "description": "hannam-lang(.hn) 실행기(hannam)와 컴파일러(hnc), Node 로더 훅, Bun 플러그인",
+  "description": "mzscript(.mz) 실행기(mz)와 컴파일러(mzc), Node 로더 훅, Bun 플러그인",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keemtj/hannam-lang.git",
-    "directory": "packages/hannam-lang"
+    "url": "git+https://github.com/keemtj/mzscript.git",
+    "directory": "packages/mzscript"
   },
-  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "homepage": "https://github.com/keemtj/mzscript#readme",
   "bugs": {
-    "url": "https://github.com/keemtj/hannam-lang/issues"
+    "url": "https://github.com/keemtj/mzscript/issues"
   },
   "type": "module",
   "bin": {
-    "hannam": "./bin/hannam.js",
-    "hnc": "./bin/hnc.js"
+    "mzscript": "./bin/mz.js",
+    "mzc": "./bin/mzc.js"
   },
   "exports": {
     ".": {
@@ -43,7 +43,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@hannam-lang/core": "workspace:*"
+    "@mzscript/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

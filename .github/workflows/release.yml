@@ -116,7 +116,7 @@ jobs:
         with:
           script: pnpm release
           # 세 패키지는 버전을 묶어 함께 내므로 패키지별 릴리스 대신 아래에서 버전당 하나만 만든다.
-          # 버전 태그(hannam-lang@x.y.z 등)는 그대로 push한다
+          # 버전 태그(mzscript@x.y.z 등)는 그대로 push한다
           create-github-releases: false
           push-git-tags: true
         env:
@@ -131,6 +131,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PUBLISHED: ${{ steps.publish.outputs.published-packages }}
         run: |
-          version=$(node -p "JSON.parse(process.env.PUBLISHED).find((p) => p.name === 'hannam-lang').version")
+          version=$(node -p "JSON.parse(process.env.PUBLISHED).find((p) => p.name === 'mzscript').version")
           node scripts/release-notes.mjs "$version" > release-notes.md
-          gh release create "hannam-lang@$version" --title "v$version" --notes-file release-notes.md --latest
+          gh release create "mzscript@$version" --title "v$version" --notes-file release-notes.md --latest

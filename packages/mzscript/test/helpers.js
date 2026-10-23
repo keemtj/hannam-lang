@@ -5,8 +5,8 @@ import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
 export const PKG_DIR = fileURLToPath(new URL("..", import.meta.url))
-export const HANNAM = join(PKG_DIR, "bin/hannam.js")
-export const HNC = join(PKG_DIR, "bin/hnc.js")
+export const MZ = join(PKG_DIR, "bin/mz.js")
+export const MZC = join(PKG_DIR, "bin/mzc.js")
 
 /** @type {string[]} */
 const dirs = []
@@ -16,7 +16,7 @@ const dirs = []
  * @param {Record<string, string>} files 상대 경로 → 내용
  */
 export function project(files) {
-  const root = mkdtempSync(join(tmpdir(), "hannam-lang-test-"))
+  const root = mkdtempSync(join(tmpdir(), "mzscript-test-"))
   dirs.push(root)
   for (const [path, content] of Object.entries(files)) {
     const full = join(root, path)

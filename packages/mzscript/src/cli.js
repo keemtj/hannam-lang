@@ -1,6 +1,6 @@
-// hannam, hnc가 함께 쓰는 CLI 도우미
+// mz, mzc가 함께 쓰는 CLI 도우미
 import { readFileSync } from "node:fs"
-import { isHannamSyntaxError } from "./transform.js"
+import { isMzScriptSyntaxError } from "./transform.js"
 
 /** @returns {string} */
 export function version() {
@@ -13,7 +13,7 @@ export function version() {
  * @param {unknown} error
  */
 export function reportSyntaxError(error) {
-  if (!isHannamSyntaxError(error)) return false
+  if (!isMzScriptSyntaxError(error)) return false
   process.stderr.write(`${error.message}\n`)
   return true
 }

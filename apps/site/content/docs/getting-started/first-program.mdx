@@ -1,6 +1,6 @@
 ---
 title: 첫 프로그램
-description: hello.hn을 만들어 실행하고, 변환된 JS를 확인합니다.
+description: hello.mz를 만들어 실행하고, 변환된 JS를 확인합니다.
 ---
 
 <Steps>
@@ -8,11 +8,11 @@ description: hello.hn을 만들어 실행하고, 변환된 JS를 확인합니다
 
 ### 파일 만들기
 
-`hello.hn` 파일을 만들고 다음 코드를 적습니다.
+`hello.mz` 파일을 만들고 다음 코드를 적습니다.
 
-```hn title="hello.hn"
-엄... 첫 한남랭 프로그램
-엄.. 이름 = "한남랭"
+```mz title="hello.mz"
+엄... 첫 엠지스크립트 프로그램
+엄.. 이름 = "엠지스크립트"
 엄. 개수 = 3
 
 티-원 인사(누구) {
@@ -34,14 +34,14 @@ description: hello.hn을 만들어 실행하고, 변환된 JS를 확인합니다
 
 ### 실행하기
 
-`hannam`은 `.hn`을 메모리에서 JS로 바꿔 바로 실행합니다. Node의 `node`나 `tsx`와 같은 역할입니다.
+`mz`는 `.mz`를 메모리에서 JS로 바꿔 바로 실행합니다. Node의 `node`나 `tsx`와 같은 역할입니다.
 
 ```sh
-hannam hello.hn
+mz hello.mz
 ```
 
 ```txt
-안녕, 한남랭!
+안녕, 엠지스크립트!
 0번째 반복
 2번째 반복
 ```
@@ -51,17 +51,17 @@ hannam hello.hn
 
 ### 변환 결과 보기
 
-`hnc`는 `.hn`을 `.js` 파일로 컴파일합니다. TypeScript의 `tsc`와 같은 역할입니다.
+`mzc`는 `.mz`를 `.js` 파일로 컴파일합니다. TypeScript의 `tsc`와 같은 역할입니다.
 
 ```sh
-hnc hello.hn
+mzc hello.mz
 ```
 
-원본 옆에 생긴 `hello.js`는 다음과 같습니다. 한남랭 키워드만 JS로 바뀌고 나머지는 그대로입니다.
+원본 옆에 생긴 `hello.js`는 다음과 같습니다. 엠지스크립트 키워드만 JS로 바뀌고 나머지는 그대로입니다.
 
 ```js title="hello.js"
-// 첫 한남랭 프로그램
-const 이름 = "한남랭"
+// 첫 엠지스크립트 프로그램
+const 이름 = "엠지스크립트"
 let 개수 = 3
 
 function 인사(누구) {
@@ -85,10 +85,10 @@ for (let i = 0; i < 개수; i++) {
 
 아래 블록에서 코드를 고치고 실행해 볼 수 있습니다. 더 넓은 화면은 [Playground](/playground)에서 씁니다.
 
-<TryIt code={"엄.. 이름 = \"한남랭\"\n\n티-원 인사(누구) {\n  아! 줴줴이야~ \"안녕, \" + 누구 + \"!\"\n}\n\n무슨 발언이세요? 인사(이름)\n"} />
+<TryIt code={"엄.. 이름 = \"엠지스크립트\"\n\n티-원 인사(누구) {\n  아! 줴줴이야~ \"안녕, \" + 누구 + \"!\"\n}\n\n무슨 발언이세요? 인사(이름)\n"} />
 
 ## 다음 단계
 
-- 명령어 옵션은 [CLI: hannam과 hnc](/docs/getting-started/cli)에 있습니다.
+- 명령어 옵션은 [CLI: mz와 mzc](/docs/getting-started/cli)에 있습니다.
 - 브라우저 앱은 [Vite로 웹 앱 만들기](/docs/getting-started/vite)에서 시작합니다.
 - 키워드별 문법은 [문법 레퍼런스](/docs/syntax)에서 확인합니다.

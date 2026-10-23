@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest"
 import { compile } from "../src/index.js"
-import { __hn } from "../src/runtime.js"
+import { __mz } from "../src/runtime.js"
 
 // 독립 리뷰에서 재현된 문제들. 번호는 리뷰 보고서의 항목 번호
-const code = (src: string) => compile(src).code.replace(/\nimport \{ __hn \} from .*\n$/, "")
+const code = (src: string) => compile(src).code.replace(/\nimport \{ __mz \} from .*\n$/, "")
 
 const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor as new (...args: string[]) => (...args: unknown[]) => Promise<unknown>
 async function run(src: string): Promise<unknown[]> {
   const logs: unknown[] = []
-  await new AsyncFunction("__hn", "console", code(src))(__hn, { log: (v: unknown) => logs.push(v) })
+  await new AsyncFunction("__mz", "console", code(src))(__mz, { log: (v: unknown) => logs.push(v) })
   return logs
 }
 
@@ -24,22 +24,22 @@ describe("리뷰 회귀 테스트", () => {
     expect(code("무슨 발언이세요? 목록\n  .map(x => x * 2)\n  .length")).toBe("console.log(목록\n  .map(x => x * 2)\n  .length)")
     expect(code("무슨 발언이세요? a,\n  b")).toBe("console.log(a,\n  b)")
     expect(code("무슨 발언이세요? a +\n  b\n엄.. c = 1")).toBe("console.log(a +\n  b)\nconst c = 1")
-    expect(code('아... 줴줴이야... 값\n  ?? "기본"')).toBe('throw __hn.toError(값\n  ?? "기본")')
+    expect(code('아... 줴줴이야... 값\n  ?? "기본"')).toBe('throw __mz.toError(값\n  ?? "기본")')
   })
 
   it("H3: 갈래 값과 범위 끝값은 연산자가 있으면 괄호로 감싼다", async () => {
     expect(await run('예??? 5 { 1 || 5 { 무슨 발언이세요? "갈래" } 아뇨아뇨아뇨아뇨 { 무슨 발언이세요? "기본" } }')).toEqual(["기본"])
     expect(await run('예??? 2 { 1 | 2 { 무슨 발언이세요? "갈래" } 아뇨아뇨아뇨아뇨 { 무슨 발언이세요? "기본" } }')).toEqual(["기본"])
     expect(code('예??? x {\n  c ? 1 : 2, a ?? b {\n  }\n  -1, 팀.이름, "a" {\n  }\n}')).toBe(
-      '{ const __hn_s0 = x;\n  if (__hn_s0 === (c ? 1 : 2) || __hn_s0 === (a ?? b)) {\n  }\n  else if (__hn_s0 === -1 || __hn_s0 === 팀.이름 || __hn_s0 === "a") {\n  }\n}',
+      '{ const __mz_s0 = x;\n  if (__mz_s0 === (c ? 1 : 2) || __mz_s0 === (a ?? b)) {\n  }\n  else if (__mz_s0 === -1 || __mz_s0 === 팀.이름 || __mz_s0 === "a") {\n  }\n}',
     )
     expect(code("요이~ i 0..n || 10 {\n}")).toBe("for (let i = 0; i < (n || 10); i++) {\n}")
     expect(await run("엄.. n = 0\n요이~ i 0..n || 3 {\n  무슨 발언이세요? i\n}")).toEqual([0, 1, 2])
   })
 
   it("M1·M2: 여러 줄 헤더의 이어지는 줄은 문장 시작이 아니다", () => {
-    expect(code('예??? x {\n  "a",\n  "b" {\n    f()\n  }\n}')).toBe('{ const __hn_s0 = x;\n  if (__hn_s0 === "a" || __hn_s0 === "b") {\n    f()\n  }\n}')
-    expect(code('예? 준비 &&\n  예? 무슨 발언이세요?("q") {\n  f()\n}')).toBe('if (준비 &&\n  __hn.confirm("q")) {\n  f()\n}')
+    expect(code('예??? x {\n  "a",\n  "b" {\n    f()\n  }\n}')).toBe('{ const __mz_s0 = x;\n  if (__mz_s0 === "a" || __mz_s0 === "b") {\n    f()\n  }\n}')
+    expect(code('예? 준비 &&\n  예? 무슨 발언이세요?("q") {\n  f()\n}')).toBe('if (준비 &&\n  __mz.confirm("q")) {\n  f()\n}')
   })
 
   it("M3: 헤더 끝 줄 주석과 다음 줄의 { (Allman 스타일)", () => {
@@ -68,7 +68,7 @@ describe("리뷰 회귀 테스트", () => {
     expect(code("무슨 발언이세요?;")).toBe("console.log();")
     expect(code("요이이이~ (x) {\n}")).toBe("while (x) {\n}")
     expect(code('const s = "a\\\r\nb"')).toBe('const s = "a\\\r\nb"')
-    expect(code("예??? x {\n  티~원! f() {\n  }\n}")).toBe("{ const __hn_s0 = x;\n  if (__hn_s0 === (await f())) {\n  }\n}")
+    expect(code("예??? x {\n  티~원! f() {\n  }\n}")).toBe("{ const __mz_s0 = x;\n  if (__mz_s0 === (await f())) {\n  }\n}")
   })
 })
 
@@ -84,7 +84,7 @@ describe("재검증 회귀 테스트", () => {
     expect(code("무슨 발언이세요? `${엄.a}`")).toBe("console.log(`${엄.a}`)")
     expect(code("무슨 발언이세요? `${아뇨값}개`")).toBe("console.log(`${아뇨값}개`)")
     expect(code("무슨 발언이세요? `${엄 + 1}`")).toBe("console.log(`${엄 + 1}`)")
-    expect(code("예??? x {\n  아뇨값, 엄.a {\n  }\n}")).toBe("{ const __hn_s0 = x;\n  if (__hn_s0 === 아뇨값 || __hn_s0 === 엄.a) {\n  }\n}")
+    expect(code("예??? x {\n  아뇨값, 엄.a {\n  }\n}")).toBe("{ const __mz_s0 = x;\n  if (__mz_s0 === 아뇨값 || __mz_s0 === 엄.a) {\n  }\n}")
   })
 
   it("N3: 다음 줄이 =>로 시작해도 console.log 인자에 붙이지 않는다", () => {
@@ -103,11 +103,11 @@ describe("명세 변형 에러의 경계", () => {
 
 describe("상위 호환: 확장자 없는 상대 경로 import", () => {
   it("에러 없이 그대로 두고 경고만 남긴다", () => {
-    const r = compile('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.hn"', { filename: "t.hn" })
-    expect(r.code).toBe('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.hn"')
+    const r = compile('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.mz"', { filename: "t.mz" })
+    expect(r.code).toBe('import { a } from "./store"\nimport b from "../lib/b"\nimport c from "pkg"\nimport d from "./d.mz"')
     expect(r.warnings.map((w) => w.line)).toEqual([1, 2])
     expect(r.warnings.every((w) => w.message.startsWith("확장자가 없는 상대 경로 import입니다"))).toBe(true)
-    expect(r.warnings[0]?.text).toContain("t.hn:1:19")
+    expect(r.warnings[0]?.text).toContain("t.mz:1:19")
   })
 
   it("경고가 없으면 빈 배열이다", () => {

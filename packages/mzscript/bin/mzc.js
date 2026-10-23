@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-// hnc(hannam compiler) <파일|디렉터리...> [--out-dir <dir>] [--source-map]: .hn을 .js로 컴파일한다 (tsc 역할)
+// mzc(mzscript compiler) <파일|디렉터리...> [--out-dir <dir>] [--source-map]: .mz를 .js로 컴파일한다 (tsc 역할)
 import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs"
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path"
-import { compile } from "@hannam-lang/core"
+import { compile } from "@mzscript/core"
 import { reportSyntaxError, version } from "../src/cli.js"
 
-const HELP = `hnc: hannam compiler
+const HELP = `mzc: mzscript compiler
 
-사용법: hnc <파일|디렉터리...> [옵션]
+사용법: mzc <파일|디렉터리...> [옵션]
 
-.hn 파일을 .js로 컴파일합니다. 디렉터리를 주면 그 안의 .hn을 모두 찾습니다 (node_modules 제외).
+.mz 파일을 .js로 컴파일합니다. 디렉터리를 주면 그 안의 .mz를 모두 찾습니다 (node_modules 제외).
 기본으로 원본 옆에 .js를 만듭니다.
 
 옵션:
@@ -20,7 +20,7 @@ const HELP = `hnc: hannam compiler
 
 /** @param {string} message */
 function usageError(message) {
-  process.stderr.write(`hnc: ${message}\n\n${HELP}\n`)
+  process.stderr.write(`mzc: ${message}\n\n${HELP}\n`)
   process.exit(1)
 }
 
@@ -68,7 +68,7 @@ for (const input of inputs) {
   try {
     stat = statSync(abs)
   } catch {
-    process.stderr.write(`hnc: 파일을 찾을 수 없습니다: ${input}\n`)
+    process.stderr.write(`mzc: 파일을 찾을 수 없습니다: ${input}\n`)
     failed = true
     continue
   }
@@ -80,11 +80,11 @@ for (const input of inputs) {
       continue
     }
     bases.push(abs)
-  } else if (abs.endsWith(".hn")) {
+  } else if (abs.endsWith(".mz")) {
     sources.push(abs)
     bases.push(dirname(abs))
   } else {
-    process.stderr.write(`hnc: .hn 파일이 아닙니다: ${input}\n`)
+    process.stderr.write(`mzc: .mz 파일이 아닙니다: ${input}\n`)
     failed = true
   }
 }
@@ -97,7 +97,7 @@ for (const src of new Set(sources)) {
   const out = toJs(outDir ? join(resolve(outDir), relative(root, src)) : src)
   const other = jobs.get(out)
   if (other) {
-    process.stderr.write(`hnc: 출력 경로가 겹칩니다: ${relative(process.cwd(), other)}, ${relative(process.cwd(), src)} → ${relative(process.cwd(), out)}\n`)
+    process.stderr.write(`mzc: 출력 경로가 겹칩니다: ${relative(process.cwd(), other)}, ${relative(process.cwd(), src)} → ${relative(process.cwd(), out)}\n`)
     failed = true
     continue
   }
@@ -120,7 +120,7 @@ if (failed) process.exitCode = 1
  * @param {unknown} error
  */
 function reportFsError(where, error) {
-  process.stderr.write(`hnc: ${where}: ${error instanceof Error ? error.message : String(error)}\n`)
+  process.stderr.write(`mzc: ${where}: ${error instanceof Error ? error.message : String(error)}\n`)
   failed = true
 }
 
@@ -139,7 +139,7 @@ function commonDir(dirs) {
 
 /** @param {string} path */
 function toJs(path) {
-  return path.replace(/\.hn$/, ".js")
+  return path.replace(/\.mz$/, ".js")
 }
 
 /**
@@ -153,7 +153,7 @@ function findHn(dir) {
     if (entry.name === "node_modules" || entry.name.startsWith(".")) continue
     const full = join(dir, entry.name)
     if (entry.isDirectory()) found.push(...findHn(full))
-    else if (entry.isFile() && entry.name.endsWith(".hn")) found.push(full)
+    else if (entry.isFile() && entry.name.endsWith(".mz")) found.push(full)
   }
   return found.sort()
 }
@@ -166,7 +166,7 @@ function compileFile(src, out) {
   const source = readFileSync(src, "utf8")
   // 에러 메시지에는 현재 디렉터리 기준 경로를 보여 준다
   const { code, map, warnings } = compile(source, { filename: relative(process.cwd(), src), rewriteImports: true })
-  for (const w of warnings) process.stderr.write(`hnc: 경고: ${w.text}\n`)
+  for (const w of warnings) process.stderr.write(`mzc: 경고: ${w.text}\n`)
   mkdirSync(dirname(out), { recursive: true })
   if (sourceMap) {
     // 소스맵은 .map 파일 위치 기준 상대 경로로 원본을 가리켜야 한다

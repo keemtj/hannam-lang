@@ -13,7 +13,7 @@ async function 불러오기() {
     if (에러.code === "ENOENT") {
       return []
     }
-    throw __hn.toError(에러)
+    throw __mz.toError(에러)
   }
 }
 
@@ -41,11 +41,11 @@ const 서버 = http.createServer(async (req, res) => {
 
   try {
     if (pathname === "/api/todos") {
-      { const __hn_s0 = req.method;
-        if (__hn_s0 === "GET") {
+      { const __mz_s0 = req.method;
+        if (__mz_s0 === "GET") {
           return 응답(res, 200, await 불러오기())
         }
-        else if (__hn_s0 === "POST") {
+        else if (__mz_s0 === "POST") {
           const { 내용 } = await 본문읽기(req)
           if (typeof 내용 !== "string" || !내용.trim()) {
             return 응답(res, 400, { 에러: "빈 할 일" })
@@ -66,13 +66,13 @@ const 서버 = http.createServer(async (req, res) => {
       if (위치 === -1) {
         return 응답(res, 404, { 에러: "없는 할 일" })
       }
-      { const __hn_s1 = req.method;
-        if (__hn_s1 === "PATCH") {
+      { const __mz_s1 = req.method;
+        if (__mz_s1 === "PATCH") {
           할일들[위치].완료 = !할일들[위치].완료
           await 저장하기(할일들)
           return 응답(res, 200, 할일들[위치])
         }
-        else if (__hn_s1 === "DELETE") {
+        else if (__mz_s1 === "DELETE") {
           할일들.splice(위치, 1)
           await 저장하기(할일들)
           res.writeHead(204).end()
@@ -93,4 +93,4 @@ const 서버 = http.createServer(async (req, res) => {
 서버.listen(포트, () => {
   console.log(`할 일 서버: http://localhost:${포트}`)
 })
-import { __hn } from "hannam-lang/runtime"
+import { __mz } from "mzscript/runtime"

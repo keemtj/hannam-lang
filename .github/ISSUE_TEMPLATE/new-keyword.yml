@@ -1,12 +1,12 @@
 name: 새 키워드 제안
-description: 새 한남랭 키워드(문법 설탕)를 제안할 때
+description: 새 엠지스크립트 키워드(문법 설탕)를 제안할 때
 labels: [new-keyword]
 body:
   - type: markdown
     attributes:
       value: |
         제안하기 전에 `CONTRIBUTING.md`의 "새 키워드 제안 기준"을 읽어 주세요.
-        명세(`docs/hannam-lang-syntax.md`)의 "다음 버전 후보"에 이미 있는 항목이면 그 항목 번호나 문구를 함께 적어 주세요.
+        명세(`docs/mzscript-syntax.md`)의 "다음 버전 후보"에 이미 있는 항목이면 그 항목 번호나 문구를 함께 적어 주세요.
 
   - type: input
     id: keyword
@@ -28,11 +28,11 @@ body:
   - type: textarea
     id: example
     attributes:
-      label: 변환 예시 (.hn → .js)
-      description: 명세처럼 .hn 코드와 바뀐 JS 코드를 짝으로 적어 주세요
+      label: 변환 예시 (.mz → .js)
+      description: 명세처럼 .mz 코드와 바뀐 JS 코드를 짝으로 적어 주세요
       value: |
         ```
-        // .hn
+        // .mz
         ```
 
         ```js

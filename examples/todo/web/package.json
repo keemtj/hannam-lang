@@ -1,5 +1,5 @@
 {
-  "name": "@hannam-lang/example-todo-web",
+  "name": "@mzscript/example-todo-web",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@hannam-lang/vite-plugin": "workspace:*",
+    "@mzscript/vite-plugin": "workspace:*",
     "vite": "8.3.3"
   }
 }

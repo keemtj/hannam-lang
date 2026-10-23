@@ -3,7 +3,7 @@
 import { ThemedPlayground } from "./playground-client"
 
 interface TryItProps {
-  /** 처음 보여 줄 .hn 코드 */
+  /** 처음 보여 줄 .mz 코드 */
   code: string
   /** 높이(px). 기본 340 */
   height?: number

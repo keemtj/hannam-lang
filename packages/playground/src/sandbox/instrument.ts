@@ -5,7 +5,7 @@ type AnyNode = { type: string; start: number; end: number; [key: string]: unknow
 const LOOPS = new Set(["ForStatement", "ForInStatement", "ForOfStatement", "WhileStatement", "DoWhileStatement"])
 
 /**
- * 반복문 몸체 맨 앞에 `__hn_loop();`를 넣어 iframe 안에서 무한 루프를 끊을 수 있게 한다.
+ * 반복문 몸체 맨 앞에 `__mz_loop();`를 넣어 iframe 안에서 무한 루프를 끊을 수 있게 한다.
  * 같은 줄 안에서만 글자를 넣으므로 줄 번호는 그대로다.
  * 파싱에 실패하면 원본을 돌려준다 (실행하면 같은 SyntaxError가 콘솔에 나온다).
  */
@@ -22,9 +22,9 @@ export function instrumentLoops(code: string): string {
     if (!LOOPS.has(node.type)) return
     const body = node.body as AnyNode
     if (body.type === "BlockStatement") {
-      inserts.push({ at: body.start + 1, text: "__hn_loop();" })
+      inserts.push({ at: body.start + 1, text: "__mz_loop();" })
     } else {
-      inserts.push({ at: body.start, text: "{__hn_loop();" }, { at: body.end, text: "}" })
+      inserts.push({ at: body.start, text: "{__mz_loop();" }, { at: body.end, text: "}" })
     }
   })
 

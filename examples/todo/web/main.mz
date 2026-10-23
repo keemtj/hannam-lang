@@ -1,5 +1,5 @@
 엄... 할 일 화면: 추가, 완료 토글, 삭제, 필터
-import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.hn"
+import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.mz"
 
 엄.. 폼 = document.querySelector("#새할일")
 엄.. 입력 = document.querySelector("#내용")

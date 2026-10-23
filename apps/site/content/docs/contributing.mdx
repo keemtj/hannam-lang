@@ -3,7 +3,7 @@ title: 기여하기
 description: 개발 환경, 테스트, changeset, 커밋 규칙, 새 키워드 제안 기준을 요약합니다.
 ---
 
-한남랭에 관심 가져 줘서 고마워요. 이 페이지는 저장소의 [CONTRIBUTING.md](https://github.com/keemtj/hannam-lang/blob/main/CONTRIBUTING.md)를 요약한 것입니다. 자세한 내용은 원문을 봐 주세요.
+엠지스크립트에 관심 가져 줘서 고마워요. 이 페이지는 저장소의 [CONTRIBUTING.md](https://github.com/keemtj/mzscript/blob/main/CONTRIBUTING.md)를 요약한 것입니다. 자세한 내용은 원문을 봐 주세요.
 
 ## 개발 환경
 
@@ -24,13 +24,13 @@ pnpm -r typecheck   # 타입 검사
 pnpm -r test        # 테스트 (vitest)
 ```
 
-- 변환 결과는 `packages/core/test/fixtures/`의 `.hn` ↔ `.js` 짝으로 테스트합니다. 명세의 예제가 곧 테스트 케이스입니다.
+- 변환 결과는 `packages/core/test/fixtures/`의 `.mz` ↔ `.js` 짝으로 테스트합니다. 명세의 예제가 곧 테스트 케이스입니다.
 - 버그를 고칠 때는 먼저 그 버그를 재현하는 테스트를 추가합니다.
 - `test.skip`, `.only`, 비어 있는 테스트는 커밋하지 않습니다.
 
 ## changeset
 
-배포하는 npm 패키지(`hannam-lang`, `@hannam-lang/core`, `@hannam-lang/vite-plugin`)에 사용자에게 보이는 변경을 했다면 `pnpm changeset`으로 changeset을 하나 추가합니다.
+배포하는 npm 패키지(`mzscript`, `@mzscript/core`, `@mzscript/vite-plugin`)에 사용자에게 보이는 변경을 했다면 `pnpm changeset`으로 changeset을 하나 추가합니다.
 
 - 요약은 그대로 CHANGELOG와 GitHub 릴리스에 들어가므로 사용자 입장에서 씁니다. **한국어 한 문단, 영어 한 문단**으로 쓰고 두 문단의 내용은 같아야 합니다. 영어가 어렵다면 한국어만 써도 되고, 메인테이너가 병합 전에 영어 문단을 채웁니다.
 - 세 패키지는 버전을 묶어서 냅니다. 실제로 바뀐 패키지만 적어도 세 패키지가 같은 버전으로 오릅니다.
@@ -41,7 +41,7 @@ pnpm -r test        # 테스트 (vitest)
 - 커밋 메시지, 코드 주석, 문서는 한국어로 씁니다.
 - 제목은 `분류: 요약` 형태로 짧게 씁니다(예: `변환기: 예??? 블록 안 빈 줄 보존`).
 - 한 커밋에는 한 가지 일만 담습니다.
-- **문법을 바꾸는 PR은 명세(`docs/hannam-lang-syntax.md`)와 fixture를 함께 고칩니다.** 명세와 구현이 어긋나면 명세가 기준입니다.
+- **문법을 바꾸는 PR은 명세(`docs/mzscript-syntax.md`)와 fixture를 함께 고칩니다.** 명세와 구현이 어긋나면 명세가 기준입니다.
 - 새 의존성은 `^`, `~` 없이 정확한 버전으로 고정합니다.
 
 ## 새 키워드 제안
@@ -53,11 +53,11 @@ pnpm -r test        # 테스트 (vitest)
 제안에는 다음을 담아 주세요.
 
 1. 키워드 형태(글자 그대로)와 대응하는 JS 문법
-2. `.hn` → `.js` 변환 예시 짝
+2. `.mz` → `.js` 변환 예시 짝
 3. 말투가 그 역할과 어울리는 이유
 4. 일반 JS 문법이나 기존 키워드와 충돌하지 않는다는 검토([인식 규칙](/docs/syntax/recognition) 참고)
 5. 오래 쓰일 말투라는 근거
 
 ## 버그 신고
 
-**버그 신고** 양식으로 이슈를 열어 주세요. 재현할 수 있는 가장 짧은 `.hn` 코드가 있으면 가장 빨리 고칠 수 있습니다.
+**버그 신고** 양식으로 이슈를 열어 주세요. 재현할 수 있는 가장 짧은 `.mz` 코드가 있으면 가장 빨리 고칠 수 있습니다.

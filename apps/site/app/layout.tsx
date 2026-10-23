@@ -15,10 +15,10 @@ const display = Black_Han_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "한남랭 (hannam-lang)",
-    template: "%s | 한남랭",
+    default: "엠지스크립트 (mzscript)",
+    template: "%s | 엠지스크립트",
   },
-  description: "그냥 JavaScript입니다. 말투만 한남입니다. .hn으로 쓰고 JS로 바꿔 브라우저와 Node에서 실행합니다.",
+  description: "그냥 JavaScript입니다. 말투만 다릅니다. .mz로 쓰고 JS로 바꿔 브라우저와 Node에서 실행합니다.",
 }
 
 export default function Layout({ children }: LayoutProps<"/">) {

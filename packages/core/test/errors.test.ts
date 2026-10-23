@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
-import { HannamSyntaxError, compile } from "../src/index.js"
+import { MzScriptSyntaxError, compile } from "../src/index.js"
 
-function errorOf(source: string): HannamSyntaxError {
+function errorOf(source: string): MzScriptSyntaxError {
   try {
-    compile(source, { filename: "t.hn" })
+    compile(source, { filename: "t.mz" })
   } catch (e) {
-    if (e instanceof HannamSyntaxError) return e
+    if (e instanceof MzScriptSyntaxError) return e
     throw e
   }
   throw new Error(`에러가 나야 하는데 변환됐습니다:\n${source}`)
@@ -63,7 +63,7 @@ describe("컴파일 에러", () => {
     const e = errorOf(source)
     expect(e.message).toContain(message)
     expect(e.line).toBe(line)
-    expect(e.filename).toBe("t.hn")
+    expect(e.filename).toBe("t.mz")
   })
 
   it("코드 조각의 ^는 한글을 두 칸으로 세어 위치를 맞춘다", () => {
@@ -74,14 +74,14 @@ describe("컴파일 에러", () => {
 
   it("rawMessage는 위치와 코드 조각이 없는 원래 문구다", () => {
     const e = errorOf("엄. a = 1\n예???? a {\n}")
-    expect(e.rawMessage).not.toContain("t.hn:")
+    expect(e.rawMessage).not.toContain("t.mz:")
     expect(e.message.startsWith(e.rawMessage)).toBe(true)
     expect(e.rawMessage).toContain("물음표는 1~3개")
   })
 
   it("에러 메시지에 위치와 코드 조각이 들어간다", () => {
     const e = errorOf("엄. a = 1\n예???? a {\n}")
-    expect(e.message).toContain("t.hn:2:1")
+    expect(e.message).toContain("t.mz:2:1")
     expect(e.frame).toBe("2 | 예???? a {\n    ^")
   })
 })

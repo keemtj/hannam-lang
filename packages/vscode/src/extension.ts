@@ -1,20 +1,20 @@
 import * as vscode from "vscode"
 import { collectDiagnostics } from "./diagnostics.ts"
 
-// .hn 문서를 열거나 고칠 때 컴파일해서 에러는 빨간 밑줄, 경고는 노란 밑줄로 보여 준다
+// .mz 문서를 열거나 고칠 때 컴파일해서 에러는 빨간 밑줄, 경고는 노란 밑줄로 보여 준다
 const DEBOUNCE_MS = 250
 
 export function activate(context: vscode.ExtensionContext): void {
-  const collection = vscode.languages.createDiagnosticCollection("hannam")
+  const collection = vscode.languages.createDiagnosticCollection("mzscript")
   const timers = new Map<string, ReturnType<typeof setTimeout>>()
 
   const refresh = (doc: vscode.TextDocument) => {
-    if (doc.languageId !== "hannam") return
+    if (doc.languageId !== "mzscript") return
     const items = collectDiagnostics(doc.getText(), doc.fileName).map((d) => {
       const range = new vscode.Range(d.line, d.startColumn, d.line, d.endColumn)
       const severity = d.severity === "error" ? vscode.DiagnosticSeverity.Error : vscode.DiagnosticSeverity.Warning
       const diagnostic = new vscode.Diagnostic(range, d.message, severity)
-      diagnostic.source = "hannam-lang"
+      diagnostic.source = "mzscript"
       return diagnostic
     })
     collection.set(doc.uri, items)

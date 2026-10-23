@@ -1,12 +1,12 @@
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { HNC, cleanup, node, project } from "./helpers.js"
+import { MZC, cleanup, node, project } from "./helpers.js"
 
 afterEach(cleanup)
 
-const MAIN = `import { 인사 } from "./util.hn"
-엄.. 이름 = "한남"
+const MAIN = `import { 인사 } from "./util.mz"
+엄.. 이름 = "엠지"
 무슨 발언이세요? 인사(이름)
 `
 const UTIL = `export 티-원 인사(이름) {
@@ -18,10 +18,10 @@ const UTIL = `export 티-원 인사(이름) {
 }
 `
 
-describe("hnc", () => {
+describe("mzc", () => {
   it("원본 옆에 .js와 .js.map을 만들고 import 경로를 .js로 바꾼다", () => {
-    const root = project({ "main.hn": MAIN, "util.hn": UTIL })
-    const r = node([HNC, "main.hn", "util.hn", "--source-map"], root)
+    const root = project({ "main.mz": MAIN, "util.mz": UTIL })
+    const r = node([MZC, "main.mz", "util.mz", "--source-map"], root)
     expect(r.stderr).toBe("")
     expect(r.status).toBe(0)
 
@@ -31,18 +31,18 @@ describe("hnc", () => {
     expect(main.trimEnd().endsWith("//# sourceMappingURL=main.js.map")).toBe(true)
 
     const map = JSON.parse(readFileSync(join(root, "main.js.map"), "utf8"))
-    expect(map.sources).toEqual(["main.hn"])
+    expect(map.sources).toEqual(["main.mz"])
     expect(map.file).toBe("main.js")
     expect(map.mappings).not.toBe("")
 
     const util = readFileSync(join(root, "util.js"), "utf8")
-    expect(util).toContain(`throw __hn.toError(에러)`)
-    expect(util).toContain(`import { __hn } from "hannam-lang/runtime"`)
+    expect(util).toContain(`throw __mz.toError(에러)`)
+    expect(util).toContain(`import { __mz } from "mzscript/runtime"`)
   })
 
   it("--source-map 없이는 .map을 만들지 않는다", () => {
-    const root = project({ "main.hn": MAIN })
-    expect(node([HNC, "main.hn"], root).status).toBe(0)
+    const root = project({ "main.mz": MAIN })
+    expect(node([MZC, "main.mz"], root).status).toBe(0)
     expect(existsSync(join(root, "main.js"))).toBe(true)
     expect(existsSync(join(root, "main.js.map"))).toBe(false)
     expect(readFileSync(join(root, "main.js"), "utf8")).not.toContain("sourceMappingURL")
@@ -50,12 +50,12 @@ describe("hnc", () => {
 
   it("디렉터리를 받으면 --out-dir 아래에 구조를 유지하고 소스맵은 원본을 상대 경로로 가리킨다", () => {
     const root = project({
-      "src/main.hn": MAIN,
-      "src/lib/util.hn": UTIL,
-      "src/node_modules/skip/x.hn": "엄.. 무시 = 1\n",
+      "src/main.mz": MAIN,
+      "src/lib/util.mz": UTIL,
+      "src/node_modules/skip/x.mz": "엄.. 무시 = 1\n",
       "src/readme.txt": "hn 아님",
     })
-    const r = node([HNC, "src", "--out-dir", "dist", "--source-map"], root)
+    const r = node([MZC, "src", "--out-dir", "dist", "--source-map"], root)
     expect(r.stderr).toBe("")
     expect(r.status).toBe(0)
     expect(existsSync(join(root, "dist/main.js"))).toBe(true)
@@ -63,16 +63,16 @@ describe("hnc", () => {
     expect(existsSync(join(root, "dist/node_modules"))).toBe(false)
     expect(existsSync(join(root, "dist/readme.txt"))).toBe(false)
     const map = JSON.parse(readFileSync(join(root, "dist/lib/util.js.map"), "utf8"))
-    expect(map.sources).toEqual(["../../src/lib/util.hn"])
+    expect(map.sources).toEqual(["../../src/lib/util.mz"])
   })
 
   it("파일 인자 여러 개와 --out-dir을 함께 쓰면 공통 조상 기준으로 구조를 유지한다", () => {
     const root = project({
-      "a/main.hn": MAIN.replace("./util.hn", "./lib/util.hn"),
-      "a/lib/util.hn": UTIL,
-      "b/main.hn": `엄.. b = 1\n`,
+      "a/main.mz": MAIN.replace("./util.mz", "./lib/util.mz"),
+      "a/lib/util.mz": UTIL,
+      "b/main.mz": `엄.. b = 1\n`,
     })
-    const r = node([HNC, "a/main.hn", "a/lib/util.hn", "b/main.hn", "-o", "out"], root)
+    const r = node([MZC, "a/main.mz", "a/lib/util.mz", "b/main.mz", "-o", "out"], root)
     expect(r.stderr).toBe("")
     expect(r.status).toBe(0)
     expect(readFileSync(join(root, "out/a/main.js"), "utf8")).toContain(`from "./lib/util.js"`)
@@ -81,27 +81,27 @@ describe("hnc", () => {
   })
 
   it("--out-dir 뒤에 값이 없거나 옵션이 오면 종료 코드 1", () => {
-    const root = project({ "main.hn": MAIN })
-    expect(node([HNC, "main.hn", "-o", "--source-map"], root).status).toBe(1)
-    expect(node([HNC, "main.hn", "--out-dir="], root).status).toBe(1)
+    const root = project({ "main.mz": MAIN })
+    expect(node([MZC, "main.mz", "-o", "--source-map"], root).status).toBe(1)
+    expect(node([MZC, "main.mz", "--out-dir="], root).status).toBe(1)
     expect(existsSync(join(root, "--source-map"))).toBe(false)
   })
 
   it("쓰기에 실패한 파일은 에러 메시지만 출력하고 나머지는 계속 컴파일한다", () => {
-    const root = project({ "a.hn": `엄.. a = 1\n`, "b/c.hn": `엄.. c = 1\n`, "out/b": "디렉터리 자리에 있는 파일" })
-    const r = node([HNC, ".", "-o", "out"], root)
+    const root = project({ "a.mz": `엄.. a = 1\n`, "b/c.mz": `엄.. c = 1\n`, "out/b": "디렉터리 자리에 있는 파일" })
+    const r = node([MZC, ".", "-o", "out"], root)
     expect(r.status).toBe(1)
-    // 경로는 OS 형식으로 출력한다 (Windows에서는 b\c.hn)
-    expect(r.stderr).toMatch(/^hnc: b[\\/]c\.hn: /m)
+    // 경로는 OS 형식으로 출력한다 (Windows에서는 b\c.mz)
+    expect(r.stderr).toMatch(/^mzc: b[\\/]c\.mz: /m)
     expect(r.stderr).not.toMatch(/^\s+at /m)
     expect(existsSync(join(root, "out/a.js"))).toBe(true)
   })
 
   it("컴파일 에러가 있으면 코드 조각을 출력하고 종료 코드 1, 나머지 파일은 계속 컴파일한다", () => {
-    const root = project({ "a-bad.hn": "엄.. x = 1\n예???? x {\n}\n", "b-good.hn": "엄.. y = 2\n" })
-    const r = node([HNC, "."], root)
+    const root = project({ "a-bad.mz": "엄.. x = 1\n예???? x {\n}\n", "b-good.mz": "엄.. y = 2\n" })
+    const r = node([MZC, "."], root)
     expect(r.status).toBe(1)
-    expect(r.stderr).toContain("a-bad.hn:2:1")
+    expect(r.stderr).toContain("a-bad.mz:2:1")
     expect(r.stderr).toContain("2 | 예???? x {")
     expect(r.stderr).not.toMatch(/^\s+at /m)
     expect(existsSync(join(root, "a-bad.js"))).toBe(false)
@@ -109,26 +109,26 @@ describe("hnc", () => {
   })
 
   it("확장자 없는 상대 import는 경고만 내고 그대로 컴파일한다", () => {
-    const root = project({ "main.hn": `import { 인사 } from "./util"\n` })
-    const r = node([HNC, "main.hn"], root)
+    const root = project({ "main.mz": `import { 인사 } from "./util"\n` })
+    const r = node([MZC, "main.mz"], root)
     expect(r.status).toBe(0)
-    expect(r.stderr).toMatch(/^hnc: 경고: 확장자가 없는 상대 경로 import입니다/m)
-    expect(r.stderr).toContain("main.hn:1:")
+    expect(r.stderr).toMatch(/^mzc: 경고: 확장자가 없는 상대 경로 import입니다/m)
+    expect(r.stderr).toContain("main.mz:1:")
     expect(readFileSync(join(root, "main.js"), "utf8")).toContain(`from "./util"`)
   })
 
-  it("없는 파일, .hn이 아닌 파일, 알 수 없는 옵션은 종료 코드 1", () => {
+  it("없는 파일, .mz가 아닌 파일, 알 수 없는 옵션은 종료 코드 1", () => {
     const root = project({ "x.js": "" })
-    expect(node([HNC, "없음.hn"], root).status).toBe(1)
-    expect(node([HNC, "x.js"], root).status).toBe(1)
-    expect(node([HNC, "--wat"], root).status).toBe(1)
-    expect(node([HNC], root).status).toBe(1)
+    expect(node([MZC, "없음.mz"], root).status).toBe(1)
+    expect(node([MZC, "x.js"], root).status).toBe(1)
+    expect(node([MZC, "--wat"], root).status).toBe(1)
+    expect(node([MZC], root).status).toBe(1)
   })
 
   it("--version과 --help", () => {
     const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"))
-    expect(node([HNC, "--version"]).stdout.trim()).toBe(pkg.version)
-    const help = node([HNC, "--help"])
+    expect(node([MZC, "--version"]).stdout.trim()).toBe(pkg.version)
+    const help = node([MZC, "--help"])
     expect(help.status).toBe(0)
     expect(help.stdout).toContain("--out-dir")
   })

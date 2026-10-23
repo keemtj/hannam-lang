@@ -8,15 +8,15 @@ const readJson = (path: string) => JSON.parse(readFileSync(`${packageRoot}${path
 
 const manifest = readJson("package.json")
 const languageConfig = readJson("language-configuration.json")
-const snippets: Record<string, { prefix: string[]; body: string[] }> = readJson("snippets/hannam.code-snippets")
+const snippets: Record<string, { prefix: string[]; body: string[] }> = readJson("snippets/mzscript.code-snippets")
 
 describe("package.json contributes", () => {
-  test(".hn 파일을 hannam 언어로 등록하고 source.hn 문법을 연결한다", () => {
+  test(".mz 파일을 mzscript 언어로 등록하고 source.mz 문법을 연결한다", () => {
     const [language] = manifest.contributes.languages
-    expect(language).toMatchObject({ id: "hannam", extensions: [".hn"] })
+    expect(language).toMatchObject({ id: "mzscript", extensions: [".mz"] })
     const [grammar] = manifest.contributes.grammars
-    expect(grammar).toMatchObject({ language: "hannam", scopeName: "source.hn" })
-    expect(readJson(grammar.path.replace(/^\.\//, "")).scopeName).toBe("source.hn")
+    expect(grammar).toMatchObject({ language: "mzscript", scopeName: "source.mz" })
+    expect(readJson(grammar.path.replace(/^\.\//, "")).scopeName).toBe("source.mz")
   })
 
   test("contributes가 가리키는 파일이 모두 있다", () => {
@@ -77,7 +77,7 @@ describe("스니펫", () => {
     const tokens = await tokenize(expand(snippet.body))
     // 스니펫 이름의 첫 키워드가 문법에서 키워드로 칠해진다
     const firstMeme = name.split(" ")[0]!
-    const isMeme = (scopes: string[]) => scopes.some((scope) => scope.endsWith(".hn") && scope !== "source.hn")
+    const isMeme = (scopes: string[]) => scopes.some((scope) => scope.endsWith(".mz") && scope !== "source.mz")
     expect(tokens.some((token) => token.text.startsWith(firstMeme) && isMeme(token.scopes)), name).toBe(true)
   })
 })

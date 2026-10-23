@@ -33,7 +33,7 @@ export function startRun(options: RunOptions): RunHandle {
 
   const iframe = host.ownerDocument.createElement("iframe")
   iframe.setAttribute("sandbox", "allow-scripts allow-modals")
-  iframe.setAttribute("title", "hannam-lang 실행 샌드박스")
+  iframe.setAttribute("title", "mzscript 실행 샌드박스")
   iframe.setAttribute("aria-hidden", "true")
   iframe.tabIndex = -1
   iframe.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden"

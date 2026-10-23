@@ -2,10 +2,10 @@ import { Tab, Tabs } from "fumadocs-ui/components/tabs"
 import { CopyCommand } from "./copy-command"
 
 const MANAGERS = [
-  { name: "npm", install: "npm i -D hannam-lang", run: "npx hannam app.hn" },
-  { name: "pnpm", install: "pnpm add -D hannam-lang", run: "pnpm exec hannam app.hn" },
-  { name: "yarn", install: "yarn add -D hannam-lang", run: "yarn hannam app.hn" },
-  { name: "bun", install: "bun add -d hannam-lang", run: "bun --preload hannam-lang/bun app.hn" },
+  { name: "npm", install: "npm i -D mzscript", run: "npx mz app.mz" },
+  { name: "pnpm", install: "pnpm add -D mzscript", run: "pnpm exec mz app.mz" },
+  { name: "yarn", install: "yarn add -D mzscript", run: "yarn mz app.mz" },
+  { name: "bun", install: "bun add -d mzscript", run: "bun --preload mzscript/bun app.mz" },
 ]
 
 export function InstallTabs() {

@@ -1,14 +1,16 @@
-# hannam-lang 프로젝트 맥락
+# mzscript 프로젝트 맥락
 
-> 문법 상세는 `hannam-lang-syntax.md` 참고. 이 문서는 그 외 논의 흐름, 결정 이유, 기각된 안, 로드맵을 정리한 것.
+> 2026-10-23: 프로젝트 이름을 hannam-lang(한남랭, `.hn`, `hannam`/`hnc`)에서 mzscript(엠지스크립트, `.mz`, `mz`/`mzc`)로 바꿨다. 키워드는 그대로다. 이 문서의 이전 기록에는 옛 이름 기준의 서술이 남아 있다.
+
+> 문법 상세는 `mzscript-syntax.md` 참고. 이 문서는 그 외 논의 흐름, 결정 이유, 기각된 안, 로드맵을 정리한 것.
 
 ## 한 줄 요약
 한남 말투 밈 11개로 쓰는 **JS 상위 호환 언어**. 엄준식랭(엄준식 랭)의 "시즌2" 콘셉트로, 장난 언어가 아니라 **웹 개발에 실제로 쓸 수 있는 수준**이 목표.
 
 ## 목표
-- `.hn`으로 쓰고 JS로 변환해서 브라우저와 Node 양쪽에서 실행
-- 최종 데모: **프론트와 서버 모두 `.hn`으로 짠 풀스택 투두** (CRUD, 완료 토글, 필터, 저장)
-- 순수 esolang은 "만들 수 있냐"가 퍼즐이지만, 한남랭은 "실제로 쓸 수 있냐"가 목표
+- `.mz`로 쓰고 JS로 변환해서 브라우저와 Node 양쪽에서 실행
+- 최종 데모: **프론트와 서버 모두 `.mz`로 짠 풀스택 투두** (CRUD, 완료 토글, 필터, 저장)
+- 순수 esolang은 "만들 수 있냐"가 퍼즐이지만, 엠지스크립트는 "실제로 쓸 수 있냐"가 목표
 
 ---
 
@@ -52,10 +54,10 @@
 | **엄준식랭 언급·크레딧 표기 안 함** | 처음에는 "rycont/umjunsik-lang에 영감을 받아 제작"을 적었으나 삭제(2026-10-22). 방향이 전혀 달라서(퍼즐 vs JS 말투) 사용자 문서·사이트·README에서 엄준식랭을 언급하지 않는다 |
 
 ### 이름 · 배포
-- 정식 명칭 **hannam-lang**, 확장자 **`.hn`**
-- 명령어: **`hannam app.hn`**(실행, node·tsx 역할) / **`hnc app.hn`**(컴파일 → `app.js`, tsc 역할)
-- npm 확인(2026-10-22): `hannam-lang`, `hannam`, `hnc` 비어 있음
-- 회피: `hnc`(해커뉴스 CLI 패키지, 등록 명령어가 `hn`), `hn`(Drupal 관련 패키지)
+- 정식 명칭 **mzscript**, 확장자 **`.mz`**
+- 명령어: **`mz app.mz`**(실행, node·tsx 역할) / **`mzc app.mz`**(컴파일 → `app.js`, tsc 역할)
+- npm 확인(2026-10-22): `mzscript`, `mz`, `mzc` 비어 있음
+- 회피: `mzc`(해커뉴스 CLI 패키지, 등록 명령어가 `hn`), `hn`(Drupal 관련 패키지)
 - 배포 전 재확인 필요. 선점돼 있으면 스코프 패키지로
 
 ---
@@ -82,8 +84,8 @@
 ```
 packages/
   core/          # 변환기 (렉서 → JS 출력, 소스맵)
-  cli/           # hannam, hnc
-  vite-plugin/   # .hn import → JS (HMR)
+  cli/           # mz, mzc
+  vite-plugin/   # .mz import → JS (HMR)
   vscode/        # 문법 하이라이팅
 apps/
   playground/    # 웹 플레이그라운드
@@ -97,23 +99,23 @@ examples/
 - 문법 키워드는 **문장 시작 위치에서만** 인식 (`a ? b : c`, `티 - 원` 같은 일반 JS와 충돌 방지)
 - 값 위치 인식은 JS에서 원래 문법 오류인 형태만 (`티~원!`, `예? 무슨 발언이세요?`)
 - 기호 충돌 주의 목록: `티-원`(뺄셈), `예?`(삼항·옵셔널 체이닝), `~`(비트 NOT), `엄.`(멤버 접근), `!`(논리 NOT), `...`(스프레드)
-- 런타임 헬퍼 `__hn`: `toError`(문자열이면 Error로 감싸고 Error면 그대로), `confirm`(브라우저는 window.confirm, Node는 y/n 입력 헬퍼). 텍스트 입력 `ask`는 삭제
-- 에러 위치가 `.hn` 원본에 맞게 나오도록 **소스맵** 필수
+- 런타임 헬퍼 `__mz`: `toError`(문자열이면 Error로 감싸고 Error면 그대로), `confirm`(브라우저는 window.confirm, Node는 y/n 입력 헬퍼). 텍스트 입력 `ask`는 삭제
+- 에러 위치가 `.mz` 원본에 맞게 나오도록 **소스맵** 필수
 - 변환 이후 검증은 필요하면 Babel/esbuild에 넘김
 
 ### 명세 = 테스트
-- 명세를 `.hn` ↔ `.js` 예제 짝으로 작성 → 그대로 vitest 스냅샷 테스트 케이스로 사용
+- 명세를 `.mz` ↔ `.js` 예제 짝으로 작성 → 그대로 vitest 스냅샷 테스트 케이스로 사용
 
 ### CLI
-- `package.json`의 `bin`에 `hannam`, `hnc` 등록 + 실행 파일 맨 위 `#!/usr/bin/env node`
-- `hannam`은 메모리에서 변환 후 실행, Node 로더 훅 등록으로 `.hn`끼리 import 지원
+- `package.json`의 `bin`에 `mz`, `mzc` 등록 + 실행 파일 맨 위 `#!/usr/bin/env node`
+- `mz`는 메모리에서 변환 후 실행, Node 로더 훅 등록으로 `.mz`끼리 import 지원
 - 로컬 테스트는 `npm link`
 
 ### 플레이그라운드
 - Monaco 또는 CodeMirror, 키워드 하이라이팅
 - Web Worker에서 실행 + 실행 스텝 제한(무한루프 방지)
 - URL 해시에 코드 압축 저장해 링크 공유
-- `.hn`과 변환된 JS 나란히 보기, 웹엄처럼 한 줄씩 실행 + 변수 상태 보기 (토큰·AST 시각화로 확장 가능)
+- `.mz`와 변환된 JS 나란히 보기, 웹엄처럼 한 줄씩 실행 + 변수 상태 보기 (토큰·AST 시각화로 확장 가능)
 
 ---
 
@@ -122,15 +124,15 @@ examples/
 | --- | --- | --- |
 | 0. 명세 | 11개 말투 → 문법 매핑, 충돌 규칙, 예제 짝 | 완료 (2026-10-22) |
 | 1. 코어 변환기 | `packages/core`: 렉서, JS 출력, 소스맵, 테스트 88개, 독립 리뷰 2회 | 완료 |
-| 2. CLI | `packages/hannam-lang`: `hannam`, `hnc`, Node 로더 훅, Bun 플러그인, 패키지 매니저 4종 설치 확인 | 완료 (npm 배포 전) |
+| 2. CLI | `packages/mzscript`: `mz`, `mzc`, Node 로더 훅, Bun 플러그인, 패키지 매니저 4종 설치 확인 | 완료 (npm 배포 전) |
 | 3. 웹 개발 환경 | `packages/vite-plugin`, `packages/vscode` | 완료 |
-| 4·5. 투두 풀스택 | `examples/todo`: `pnpm demo`로 서버(hannam)와 웹(Vite) 실행 | 완료 |
+| 4·5. 투두 풀스택 | `examples/todo`: `pnpm demo`로 서버(mz)와 웹(Vite) 실행 | 완료 |
 | 6. 홍보 | `packages/playground`(웹 IDE), `apps/site`(소개 랜딩 + 문서 23쪽, Fumadocs), 루트 README | 완료 (사이트 배포 전) |
 | 공통 | changesets, CI, 릴리스 워크플로(배포 꺼 둠), 설치 매트릭스, CONTRIBUTING, MIT 라이선스 | 완료 |
 
 ### 공개 (2026-10-22 완료)
 - 저장소 public 전환, `main` 보호 규칙(Ruleset "main 보호", 관리자 예외)
-- npm 조직 `hannam-lang` 생성, 0.1.0을 메인테이너가 로컬에서 직접 배포 (`hannam-lang`은 개인 계정 `keemtj` 소유, 나머지 둘은 조직 소유)
+- npm 조직 `mzscript` 생성, 0.1.0을 메인테이너가 로컬에서 직접 배포 (`mzscript`는 개인 계정 `keemtj` 소유, 나머지 둘은 조직 소유)
 - 세 패키지에 trusted publishing 등록, `NPM_PUBLISH_ENABLED=true`, `npm` environment 승인자 `keemtj`. 배포 토큰은 만들지 않음 (회사 조직 패키지 권한이 같은 계정에 있어서 All packages 토큰을 피함)
 - 세 패키지 버전을 묶고(fixed) GitHub 릴리스는 버전당 하나
 

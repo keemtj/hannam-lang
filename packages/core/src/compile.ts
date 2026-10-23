@@ -1,5 +1,5 @@
 import MagicString, { type SourceMap } from "magic-string"
-import { HannamSyntaxError, type HannamWarning, createWarning } from "./errors.js"
+import { MzScriptSyntaxError, type MzScriptWarning, createWarning } from "./errors.js"
 import {
   LexError,
   type Token,
@@ -15,9 +15,9 @@ import {
 export interface CompileOptions {
   /** 에러 메시지와 소스맵에 쓸 파일 이름 */
   filename?: string
-  /** 상대 경로 import의 `.hn`을 `.js`로 바꿀지 여부 (hnc 출력용) */
+  /** 상대 경로 import의 `.mz`를 `.js`로 바꿀지 여부 (mzc 출력용) */
   rewriteImports?: boolean
-  /** `__hn` 런타임을 가져올 모듈 이름 */
+  /** `__mz` 런타임을 가져올 모듈 이름 */
   runtimeImport?: string
 }
 
@@ -25,7 +25,7 @@ export interface CompileResult {
   code: string
   map: SourceMap
   /** 변환은 했지만 알려야 하는 내용. 없으면 빈 배열이다 */
-  warnings: HannamWarning[]
+  warnings: MzScriptWarning[]
 }
 
 type FrameKind = "top" | "block" | "obj" | "paren" | "bracket" | "switch" | "class" | "tmpl"
@@ -64,7 +64,7 @@ export function compile(source: string, options: CompileOptions = {}): CompileRe
 
 class Compiler {
   private readonly s: MagicString
-  private readonly warnings: HannamWarning[] = []
+  private readonly warnings: MzScriptWarning[] = []
   private readonly pending = new Map<number, PendingBrace>()
   private switchCount = 0
   private usesRuntime = false
@@ -89,16 +89,16 @@ class Compiler {
       throw e
     }
     if (this.usesRuntime) {
-      // import는 끌어올려지므로 맨 끝에 붙여서 .hn 원본과 줄 번호를 맞춘다
-      const from = this.opts.runtimeImport ?? "hannam-lang/runtime"
-      this.s.append(`${this.src.endsWith("\n") ? "" : "\n"}import { __hn } from ${JSON.stringify(from)}\n`)
+      // import는 끌어올려지므로 맨 끝에 붙여서 .mz 원본과 줄 번호를 맞춘다
+      const from = this.opts.runtimeImport ?? "mzscript/runtime"
+      this.s.append(`${this.src.endsWith("\n") ? "" : "\n"}import { __mz } from ${JSON.stringify(from)}\n`)
     }
     const file = this.opts.filename
     return {
       code: this.s.toString(),
       map: this.s.generateMap({
         source: file,
-        file: file?.replace(/\.hn$/, ".js"),
+        file: file?.replace(/\.mz$/, ".js"),
         includeContent: true,
         hires: true,
       }),
@@ -414,7 +414,7 @@ class Compiler {
     return headStart
   }
 
-  /** `예??? 값 {` → `{ const __hn_s0 = 값;` (갈래는 if-else 체인) */
+  /** `예??? 값 {` → `{ const __mz_s0 = 값;` (갈래는 if-else 체인) */
   private switchHead(pos: number, kwEnd: number, st: MemeState): number {
     const headStart = this.skipWs(kwEnd)
     const brace = this.findHeaderBrace(headStart)
@@ -422,7 +422,7 @@ class Compiler {
     if (headEnd <= headStart) throw this.error("비교할 값이 필요합니다", headStart)
     const comma = this.topLevelCommas(headStart, headEnd)[0]
     if (comma !== undefined) throw this.error("'예???'로 비교할 값은 하나만 씁니다", comma)
-    const switchVar = `__hn_s${this.switchCount++}`
+    const switchVar = `__mz_s${this.switchCount++}`
     this.s.update(pos, headStart, `{ const ${switchVar} = `)
     if (this.onlyWhitespace(headEnd, brace)) {
       this.s.update(headEnd, brace + 1, ";")
@@ -569,7 +569,7 @@ class Compiler {
       this.s.appendLeft(valueEnd, ")")
     } else if (!/^new\s/.test(src.slice(valueStart, valueEnd))) {
       this.usesRuntime = true
-      this.s.appendRight(valueStart, "__hn.toError(")
+      this.s.appendRight(valueStart, "__mz.toError(")
       this.s.appendLeft(valueEnd, ")")
     }
     st.guard(valueEnd)
@@ -715,9 +715,9 @@ class Compiler {
     if (src.startsWith(CONFIRM, pos) && !isIdContinue(src[pos - 1])) {
       const end = pos + CONFIRM.length
       if (src[end] !== "(") throw this.error("'예? 무슨 발언이세요?' 바로 뒤에 괄호로 질문을 넘깁니다", end)
-      this.s.update(pos, end, "__hn.confirm")
+      this.s.update(pos, end, "__mz.confirm")
       this.usesRuntime = true
-      st.setPrev(synthetic("__hn"))
+      st.setPrev(synthetic("__mz"))
       return end
     }
     return null
@@ -743,20 +743,20 @@ class Compiler {
     const spec = t.value.slice(1, -1)
     if (!/^\.\.?\//.test(spec)) return
     const last = spec.split("/").pop() ?? ""
-    // 일반 JS(번들러용 코드)는 확장자 없이 쓰는 경우가 많아서 막지 않는다. .hn을 가리키려던 실수일 수 있어 경고만 남긴다
+    // 일반 JS(번들러용 코드)는 확장자 없이 쓰는 경우가 많아서 막지 않는다. .mz를 가리키려던 실수일 수 있어 경고만 남긴다
     if (!last.includes(".")) {
       this.warnings.push(
-        createWarning(`확장자가 없는 상대 경로 import입니다. .hn 파일이라면 확장자를 붙여야 찾을 수 있습니다 (예: "${spec}.hn")`, this.src, t.start, this.opts.filename),
+        createWarning(`확장자가 없는 상대 경로 import입니다. .mz 파일이라면 확장자를 붙여야 찾을 수 있습니다 (예: "${spec}.mz")`, this.src, t.start, this.opts.filename),
       )
       return
     }
-    if (this.opts.rewriteImports && spec.endsWith(".hn")) this.s.update(t.end - 4, t.end - 1, ".js")
+    if (this.opts.rewriteImports && spec.endsWith(".mz")) this.s.update(t.end - 4, t.end - 1, ".js")
   }
 
   // ───────────────────────── 보조 함수 ─────────────────────────
 
-  private error(message: string, index: number): HannamSyntaxError {
-    return new HannamSyntaxError(message, this.src, index, this.opts.filename)
+  private error(message: string, index: number): MzScriptSyntaxError {
+    return new MzScriptSyntaxError(message, this.src, index, this.opts.filename)
   }
 
   private skipInlineWs(pos: number): number {

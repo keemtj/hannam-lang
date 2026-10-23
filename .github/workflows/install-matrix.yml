@@ -1,6 +1,6 @@
 name: Install matrix
 
-# packages/hannam-lang을 pnpm pack한 tarball을 npm, pnpm, yarn, bun으로 전역 설치해 확인한다.
+# packages/mzscript를 pnpm pack한 tarball을 npm, pnpm, yarn, bun으로 전역 설치해 확인한다.
 # 실제 단계는 scripts/install-matrix.sh에 있고, 로컬에서도 같은 스크립트로 돌릴 수 있다.
 
 on:
@@ -48,11 +48,11 @@ jobs:
       - name: CLI 패키지 확인
         id: package
         run: |
-          if [ -f packages/hannam-lang/package.json ]; then
+          if [ -f packages/mzscript/package.json ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::packages/hannam-lang이 아직 없어서 설치 매트릭스를 건너뛴다"
+            echo "::notice::packages/mzscript가 아직 없어서 설치 매트릭스를 건너뛴다"
           fi
 
       - uses: pnpm/action-setup@v6

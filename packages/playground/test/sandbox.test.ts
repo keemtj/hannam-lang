@@ -79,8 +79,8 @@ describe("iframeBootstrap: 출력 수집", () => {
     error.stack = "TypeError: x is null\n    at blob:null/1234-abcd:7:3"
     listeners.error![0]!({ error })
     listeners.unhandledrejection![0]!({ reason: "문자열 거부" })
-    call(win, "__hn_report", new Error("직접 보고"))
-    call(win, "__hn_done")
+    call(win, "__mz_report", new Error("직접 보고"))
+    call(win, "__mz_done")
     expect(sent).toEqual([
       { kind: "error", message: "TypeError: x is null", line: 7 },
       { kind: "error", message: '잡히지 않은 값: "문자열 거부"', line: undefined },
@@ -93,7 +93,7 @@ describe("iframeBootstrap: 출력 수집", () => {
 describe("iframeBootstrap: 무한 루프 감시", () => {
   test("한 매크로태스크에서 제한 시간을 넘기면 timeout을 알리고 에러를 던진다", () => {
     const { win, sent, clock } = fakeWindow()
-    const loop = () => call(win, "__hn_loop")
+    const loop = () => call(win, "__mz_loop")
     expect(() => {
       for (let i = 0; i < 100_000; i++) {
         clock.now += 0.1
@@ -107,14 +107,14 @@ describe("iframeBootstrap: 무한 루프 감시", () => {
     try {
       loop()
     } catch (e) {
-      call(win, "__hn_report", e)
+      call(win, "__mz_report", e)
     }
     expect(sent).toHaveLength(1)
   })
 
   test("다음 매크로태스크에서는 시간을 새로 센다", () => {
     const { win, clock, flushTimers } = fakeWindow()
-    const loop = () => call(win, "__hn_loop")
+    const loop = () => call(win, "__mz_loop")
     expect(() => {
       for (let task = 0; task < 5; task++) {
         for (let i = 0; i < 5000; i++) {
@@ -128,7 +128,7 @@ describe("iframeBootstrap: 무한 루프 감시", () => {
 
   test("confirm 창이 떠 있던 시간은 빼고 세고, 닫히면 resume을 보낸다", () => {
     const { win, sent, clock } = fakeWindow()
-    const loop = () => call(win, "__hn_loop")
+    const loop = () => call(win, "__mz_loop")
     for (let i = 0; i < 3000; i++) {
       clock.now += 0.1
       loop()
@@ -151,19 +151,19 @@ describe("instrumentLoops", () => {
     const out = instrumentLoops(code)
     expect(out).toBe(
       [
-        "for (let i = 0; i < 3; i++) {__hn_loop();",
-        "  while (x) {__hn_loop();x--}",
+        "for (let i = 0; i < 3; i++) {__mz_loop();",
+        "  while (x) {__mz_loop();x--}",
         "}",
-        "for (const a of b) {__hn_loop();for (const k in a) {__hn_loop();}}",
-        "do {__hn_loop(); y++ } while (y < 3)",
+        "for (const a of b) {__mz_loop();for (const k in a) {__mz_loop();}}",
+        "do {__mz_loop(); y++ } while (y < 3)",
         "const s = 'while (true) {}'",
       ].join("\n"),
     )
   })
 
   test("최상위 await와 import가 있는 모듈도 처리하고, 문법 에러면 원본을 돌려준다", () => {
-    const code = 'const a = await f()\nwhile (a) {}\nimport { __hn } from "hannam-lang/runtime"\n'
-    expect(instrumentLoops(code)).toContain("while (a) {__hn_loop();}")
+    const code = 'const a = await f()\nwhile (a) {}\nimport { __mz } from "mzscript/runtime"\n'
+    expect(instrumentLoops(code)).toContain("while (a) {__mz_loop();}")
     expect(instrumentLoops("while (")).toBe("while (")
   })
 })
@@ -174,9 +174,9 @@ describe("buildSrcdoc", () => {
       runId: "run-9",
       loopLimitMs: 3000,
     })
-    expect(html).toContain('<script type="importmap">{"imports":{"hannam-lang/runtime":"data:text/javascript;charset=utf-8,')
+    expect(html).toContain('<script type="importmap">{"imports":{"mzscript/runtime":"data:text/javascript;charset=utf-8,')
     expect(html.match(/<\/script>/g)).toHaveLength(3)
-    expect(html).toContain("while (true) {__hn_loop();}")
+    expect(html).toContain("while (true) {__mz_loop();}")
     expect(html).toContain('"runId":"run-9"')
     expect(html).toContain('"loopLimitMs":3000')
   })

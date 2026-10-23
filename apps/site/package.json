@@ -1,8 +1,8 @@
 {
-  "name": "@hannam-lang/site",
+  "name": "@mzscript/site",
   "version": "0.0.0",
   "private": true,
-  "description": "hannam-lang 소개·문서 사이트 (Next.js + Fumadocs)",
+  "description": "mzscript 소개·문서 사이트 (Next.js + Fumadocs)",
   "type": "module",
   "scripts": {
     "dev": "node scripts/gen-changelog.mjs && next dev",
@@ -13,12 +13,12 @@
     "check": "node scripts/gen-changelog.mjs && node scripts/check-docs.mjs && node scripts/check-site.mjs"
   },
   "dependencies": {
-    "@hannam-lang/core": "workspace:*",
-    "@hannam-lang/playground": "workspace:*",
+    "@mzscript/core": "workspace:*",
+    "@mzscript/playground": "workspace:*",
     "fumadocs-core": "16.16.2",
     "fumadocs-mdx": "15.4.6",
     "fumadocs-ui": "16.16.2",
-    "hannam-lang-vscode": "workspace:*",
+    "mzscript-vscode": "workspace:*",
     "lucide-react": "1.52.0",
     "next": "16.4.0",
     "next-themes": "0.4.6",

@@ -1,14 +1,14 @@
 ---
 title: Vite로 웹 앱 만들기
-description: "@hannam-lang/vite-plugin으로 브라우저 앱을 .hn으로 만듭니다."
+description: "@mzscript/vite-plugin으로 브라우저 앱을 .mz로 만듭니다."
 ---
 
-Vite 플러그인을 쓰면 `.hn` 파일을 일반 JS 모듈처럼 import하고, `index.html`에서 진입점으로 바로 불러올 수 있습니다.
+Vite 플러그인을 쓰면 `.mz` 파일을 일반 JS 모듈처럼 import하고, `index.html`에서 진입점으로 바로 불러올 수 있습니다.
 
 ## 설치
 
 ```npm
-npm i -D vite @hannam-lang/vite-plugin
+npm i -D vite @mzscript/vite-plugin
 ```
 
 Vite `7` 또는 `8`, Node `20.19` 이상(또는 `22.12` 이상)에서 동작합니다.
@@ -16,11 +16,11 @@ Vite `7` 또는 `8`, Node `20.19` 이상(또는 `22.12` 이상)에서 동작합�
 ## 설정
 
 ```js title="vite.config.js"
-import hannam from "@hannam-lang/vite-plugin"
+import mzscript from "@mzscript/vite-plugin"
 import { defineConfig } from "vite"
 
 export default defineConfig({
-  plugins: [hannam()],
+  plugins: [mzscript()],
 })
 ```
 
@@ -29,14 +29,14 @@ export default defineConfig({
 <html lang="ko">
   <body>
     <ul id="목록"></ul>
-    <!-- .hn을 진입점으로 바로 불러올 수 있습니다 -->
-    <script type="module" src="./main.hn"></script>
+    <!-- .mz를 진입점으로 바로 불러올 수 있습니다 -->
+    <script type="module" src="./main.mz"></script>
   </body>
 </html>
 ```
 
-```hn title="main.hn"
-import { 할일들 } from "./data.hn"
+```mz title="main.mz"
+import { 할일들 } from "./data.mz"
 
 엄.. 목록 = document.querySelector("#목록")
 
@@ -47,11 +47,11 @@ import { 할일들 } from "./data.hn"
 }
 ```
 
-```hn title="data.hn"
+```mz title="data.mz"
 export 엄.. 할일들 = ["장보기", "빨래", "운동"]
 ```
 
-`.hn` 안에서는 다른 `.hn`을 확장자까지 적어 가져옵니다. 확장자를 빼면 그대로 통과하지만, `.hn`을 찾지 못할 수 있어 Vite 경고로 알려 줍니다.
+`.mz` 안에서는 다른 `.mz`를 확장자까지 적어 가져옵니다. 확장자를 빼면 그대로 통과하지만, `.mz`를 찾지 못할 수 있어 Vite 경고로 알려 줍니다.
 
 ```sh
 npx vite          # 개발 서버
@@ -60,15 +60,15 @@ npx vite build    # 정적 빌드 (dist/)
 
 ## 플러그인이 하는 일
 
-- **변환과 소스맵**: `.hn`을 JS로 바꾸고 소스맵을 넘깁니다. 브라우저 개발자 도구에서 `.hn` 원본을 보고 중단점을 걸 수 있습니다.
-- **런타임 연결**: 변환 결과가 `hannam-lang/runtime`을 쓰면 플러그인이 자기 의존성의 런타임 파일로 연결합니다. 앱에 런타임 패키지를 따로 설치하지 않아도 됩니다.
-- **에러 오버레이**: 컴파일 에러가 나면 dev 서버 화면에 `.hn` 파일·줄·칸과 코드 조각이 뜹니다.
-- **갱신**: `.hn`을 고치면 해당 모듈을 다시 변환하고, HMR 경계가 없으면 페이지를 새로 고칩니다.
+- **변환과 소스맵**: `.mz`를 JS로 바꾸고 소스맵을 넘깁니다. 브라우저 개발자 도구에서 `.mz` 원본을 보고 중단점을 걸 수 있습니다.
+- **런타임 연결**: 변환 결과가 `mzscript/runtime`을 쓰면 플러그인이 자기 의존성의 런타임 파일로 연결합니다. 앱에 런타임 패키지를 따로 설치하지 않아도 됩니다.
+- **에러 오버레이**: 컴파일 에러가 나면 dev 서버 화면에 `.mz` 파일·줄·칸과 코드 조각이 뜹니다.
+- **갱신**: `.mz`를 고치면 해당 모듈을 다시 변환하고, HMR 경계가 없으면 페이지를 새로 고칩니다.
 
 ## 옵션
 
 | 이름 | 기본값 | 설명 |
 | --- | --- | --- |
-| `runtimeImport` | `"hannam-lang/runtime"` | 변환 결과가 런타임을 가져올 모듈 이름 |
+| `runtimeImport` | `"mzscript/runtime"` | 변환 결과가 런타임을 가져올 모듈 이름 |
 
 실제 앱 예제는 [투두 풀스택 만들기](/docs/guides/todo-fullstack)에서 이어집니다.

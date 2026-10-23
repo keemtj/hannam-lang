@@ -3,7 +3,7 @@ export interface Position {
   column: number
 }
 
-export class HannamSyntaxError extends SyntaxError {
+export class MzScriptSyntaxError extends SyntaxError {
   /** 위치와 코드 조각을 붙이기 전의 문구. 에디터 진단처럼 위치를 따로 보여 주는 곳에서 쓴다 */
   readonly rawMessage: string
   readonly line: number
@@ -16,7 +16,7 @@ export class HannamSyntaxError extends SyntaxError {
     const where = `${filename ?? "<입력>"}:${line}:${column + 1}`
     const frame = codeFrame(source, line, column)
     super(`${message} (${where})\n${frame}`)
-    this.name = "HannamSyntaxError"
+    this.name = "MzScriptSyntaxError"
     this.rawMessage = message
     this.line = line
     this.column = column
@@ -26,7 +26,7 @@ export class HannamSyntaxError extends SyntaxError {
 }
 
 /** 변환은 계속하지만 사용자에게 알려야 하는 내용 (예: 확장자 없는 상대 경로 import) */
-export interface HannamWarning {
+export interface MzScriptWarning {
   message: string
   line: number
   column: number
@@ -36,7 +36,7 @@ export interface HannamWarning {
   text: string
 }
 
-export function createWarning(message: string, source: string, index: number, filename?: string): HannamWarning {
+export function createWarning(message: string, source: string, index: number, filename?: string): MzScriptWarning {
   const { line, column } = positionAt(source, index)
   const frame = codeFrame(source, line, column)
   const text = `${message} (${filename ?? "<입력>"}:${line}:${column + 1})\n${frame}`

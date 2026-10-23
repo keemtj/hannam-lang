@@ -1,52 +1,52 @@
 ---
 title: 설치
-description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 hannam-lang을 설치합니다.
+description: 패키지 매니저 4종(npm, pnpm, yarn, bun)으로 mzscript를 설치합니다.
 ---
 
 ## 요구 사항
 
 - **Node.js 20.16 이상**. 터미널 확인 창(`예? 무슨 발언이세요?(...)`)이 쓰는 `process.getBuiltinModule`이 이 버전부터 있습니다.
-- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `hannam`, `hnc` 명령 자체는 Node로 실행됩니다.
+- Bun에서 실행하려면 Node 로더 훅 대신 Bun 플러그인을 씁니다([Bun에서 실행](/docs/getting-started/bun)). `mz`, `mzc` 명령 자체는 Node로 실행됩니다.
 
 ## 프로젝트에 설치
 
-`hannam-lang` 패키지 하나에 실행기 `hannam`, 컴파일러 `hnc`(hannam compiler), 런타임 헬퍼가 모두 들어 있습니다.
+`mzscript` 패키지 하나에 실행기 `mz`, 컴파일러 `mzc`(mzscript compiler), 런타임 헬퍼가 모두 들어 있습니다.
 
 ```npm
-npm i -D hannam-lang
+npm i -D mzscript
 ```
 
 처음 설치하면 그 시점의 최신 버전이 깔리고, `package.json`에는 `^0.1.0` 같은 범위가 기록됩니다. 그래서 새로 설치할 때는 `@latest`를 붙이지 않아도 됩니다. 이미 설치한 프로젝트를 최신 버전으로 올릴 때는 범위를 새로 쓰도록 `@latest`를 붙입니다.
 
 ```npm
-npm i -D hannam-lang@latest
+npm i -D mzscript@latest
 ```
 
-`hnc`로 컴파일한 `.js`를 배포한다면, 출력물이 `hannam-lang/runtime`을 import할 수 있으므로 `-D` 없이 일반 의존성으로 설치합니다.
+`mzc`로 컴파일한 `.js`를 배포한다면, 출력물이 `mzscript/runtime`을 import할 수 있으므로 `-D` 없이 일반 의존성으로 설치합니다.
 
 ## 전역으로 설치
 
-어느 폴더에서나 `hannam app.hn`을 실행하고 싶다면 전역으로 설치합니다.
+어느 폴더에서나 `mz app.mz`를 실행하고 싶다면 전역으로 설치합니다.
 
 <Tabs items={["npm", "pnpm", "yarn", "bun"]}>
   <Tab value="npm">
     ```sh
-    npm install -g hannam-lang
+    npm install -g mzscript
     ```
   </Tab>
   <Tab value="pnpm">
     ```sh
-    pnpm add -g hannam-lang
+    pnpm add -g mzscript
     ```
   </Tab>
   <Tab value="yarn">
     ```sh
-    yarn global add hannam-lang
+    yarn global add mzscript
     ```
   </Tab>
   <Tab value="bun">
     ```sh
-    bun add -g hannam-lang
+    bun add -g mzscript
     ```
   </Tab>
 </Tabs>
@@ -56,14 +56,14 @@ npm i -D hannam-lang@latest
 설치가 끝나면 버전을 확인합니다.
 
 ```sh
-hannam --version
-hnc --version
+mz --version
+mzc --version
 ```
 
 ## 함께 쓰면 좋은 것
 
 | 패키지 | 하는 일 |
 | --- | --- |
-| `@hannam-lang/vite-plugin` | Vite에서 `.hn`을 바로 import합니다. [Vite로 웹 앱 만들기](/docs/getting-started/vite) |
-| VS Code 확장 | `.hn` 문법 하이라이팅, 컴파일 에러 표시, 스니펫. 저장소에서 `.vsix`로 설치합니다. [VS Code 확장](/docs/tools/vscode) |
-| `@hannam-lang/core` | 변환기 API(`compile`)를 직접 쓸 때 |
+| `@mzscript/vite-plugin` | Vite에서 `.mz`를 바로 import합니다. [Vite로 웹 앱 만들기](/docs/getting-started/vite) |
+| VS Code 확장 | `.mz` 문법 하이라이팅, 컴파일 에러 표시, 스니펫. 저장소에서 `.vsix`로 설치합니다. [VS Code 확장](/docs/tools/vscode) |
+| `@mzscript/core` | 변환기 API(`compile`)를 직접 쓸 때 |

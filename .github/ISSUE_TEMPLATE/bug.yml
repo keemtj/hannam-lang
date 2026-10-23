@@ -5,16 +5,16 @@ body:
   - type: markdown
     attributes:
       value: |
-        신고 고마워요. 재현할 수 있는 가장 짧은 `.hn` 코드가 있으면 가장 빨리 고칠 수 있어요.
-        문법이 원래 어떻게 동작해야 하는지는 `docs/hannam-lang-syntax.md`가 기준이에요.
+        신고 고마워요. 재현할 수 있는 가장 짧은 `.mz` 코드가 있으면 가장 빨리 고칠 수 있어요.
+        문법이 원래 어떻게 동작해야 하는지는 `docs/mzscript-syntax.md`가 기준이에요.
 
   - type: dropdown
     id: area
     attributes:
       label: 어디에서 생겼나요?
       options:
-        - 변환기 (@hannam-lang/core)
-        - CLI (hannam, hnc)
+        - 변환기 (@mzscript/core)
+        - CLI (mz, mzc)
         - Vite 플러그인
         - VS Code 하이라이팅
         - Playground
@@ -25,7 +25,7 @@ body:
   - type: textarea
     id: source
     attributes:
-      label: 재현 코드 (.hn)
+      label: 재현 코드 (.mz)
       description: 문제를 재현하는 가장 짧은 코드
       render: js
     validations:
@@ -52,7 +52,7 @@ body:
     id: version
     attributes:
       label: 버전
-      description: "`hannam --version` 결과나 패키지 버전, 또는 커밋 해시"
+      description: "`mz --version` 결과나 패키지 버전, 또는 커밋 해시"
     validations:
       required: true
 

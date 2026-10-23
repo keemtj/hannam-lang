@@ -78,7 +78,7 @@ export function iframeBootstrap(win: BootstrapWindow, config: BootstrapConfig): 
   }
 
   // ── 에러 보고 ──
-  // blob 모듈의 스택에서 줄 번호를 찾는다. 변환된 JS는 .hn 원본과 줄 번호가 같다
+  // blob 모듈의 스택에서 줄 번호를 찾는다. 변환된 JS는 .mz 원본과 줄 번호가 같다
   function lineOf(error: unknown): number | undefined {
     const stack = error instanceof Error ? error.stack ?? "" : ""
     const m = /blob:[^\s)]*?:(\d+):\d+/.exec(stack)
@@ -87,7 +87,7 @@ export function iframeBootstrap(win: BootstrapWindow, config: BootstrapConfig): 
 
   function reportError(error: unknown) {
     // 반복문 감시가 던진 에러는 이미 timeout으로 알렸다
-    if (error instanceof Error && (error as { __hnLoop?: boolean }).__hnLoop) return
+    if (error instanceof Error && (error as { __mzLoop?: boolean }).__mzLoop) return
     const message = error instanceof Error ? `${error.name}: ${error.message}` : `잡히지 않은 값: ${format(error, 1, [])}`
     send({ kind: "error", message, line: lineOf(error) })
   }
@@ -100,7 +100,7 @@ export function iframeBootstrap(win: BootstrapWindow, config: BootstrapConfig): 
   })
 
   // ── 무한 루프 감시 ──
-  // 반복문 몸체마다 `__hn_loop()`가 들어간다 (instrumentLoops 참고).
+  // 반복문 몸체마다 `__mz_loop()`가 들어간다 (instrumentLoops 참고).
   // 같은 매크로태스크 안에서 loopLimitMs를 넘기면 에러를 던져 멈춘다.
   // 확인 창이 떠 있던 시간은 빼고 센다.
   let taskStart = 0
@@ -115,11 +115,11 @@ export function iframeBootstrap(win: BootstrapWindow, config: BootstrapConfig): 
 
   function loopError() {
     const error = new Error(`반복문이 ${loopLimitMs / 1000}초 넘게 끝나지 않아 멈췄습니다`)
-    ;(error as { __hnLoop?: boolean }).__hnLoop = true
+    ;(error as { __mzLoop?: boolean }).__mzLoop = true
     return error
   }
 
-  win.__hn_loop = () => {
+  win.__mz_loop = () => {
     if (tripped) throw loopError()
     if (!inTask) {
       inTask = true
@@ -157,6 +157,6 @@ export function iframeBootstrap(win: BootstrapWindow, config: BootstrapConfig): 
     }
   }
 
-  win.__hn_report = reportError
-  win.__hn_done = () => send({ kind: "done" })
+  win.__mz_report = reportError
+  win.__mz_done = () => send({ kind: "done" })
 }

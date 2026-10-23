@@ -4,7 +4,7 @@ import { RangeSetBuilder, type Extension } from "@codemirror/state"
 import { Decoration, EditorView, ViewPlugin, type DecorationSet, type ViewUpdate } from "@codemirror/view"
 import { tags as t } from "@lezer/highlight"
 
-// .hn 문법 키워드. 가장 긴 형태가 먼저 맞도록 길이 순으로 둔다 (명세의 "가장 긴 형태 우선")
+// .mz 문법 키워드. 가장 긴 형태가 먼저 맞도록 길이 순으로 둔다 (명세의 "가장 긴 형태 우선")
 export const HN_KEYWORDS = [
   "예? 무슨 발언이세요?",
   "아... 줴줴이야...",
@@ -98,7 +98,7 @@ export function jsHighlighting(): Extension {
   return [javascript(), syntaxHighlighting(highlightStyle)]
 }
 
-/** .hn 편집기: JS 하이라이팅 위에 한남랭 키워드 강조를 얹는다 */
+/** .mz 편집기: JS 하이라이팅 위에 엠지스크립트 키워드 강조를 얹는다 */
 export function hnLanguage(): Extension {
   return [jsHighlighting(), hnKeywordPlugin]
 }
@@ -119,7 +119,7 @@ export const editorTheme = EditorView.theme({
   },
   ".cm-activeLine": { backgroundColor: "var(--hnpg-active-line)" },
   ".cm-activeLineGutter": { backgroundColor: "var(--hnpg-active-line)" },
-  // JS 파서가 한남랭 키워드 일부를 다른 토큰으로 보고 색을 입히므로, 안쪽 요소까지 덮어쓴다
+  // JS 파서가 엠지스크립트 키워드 일부를 다른 토큰으로 보고 색을 입히므로, 안쪽 요소까지 덮어쓴다
   ".cm-hn-keyword, .cm-hn-keyword *": { color: "var(--hnpg-syn-hn) !important", fontWeight: "600" },
   ".cm-hn-comment, .cm-hn-comment *": {
     color: "var(--hnpg-syn-comment) !important",

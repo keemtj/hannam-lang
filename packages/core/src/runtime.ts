@@ -1,8 +1,8 @@
-// 변환된 코드가 `import { __hn } from "hannam-lang/runtime"`으로 가져가는 헬퍼
+// 변환된 코드가 `import { __mz } from "mzscript/runtime"`으로 가져가는 헬퍼
 
 type ReadSync = (fd: number, buffer: Uint8Array) => number
 
-export const __hn = {
+export const __mz = {
   /** 타입을 모르는 값을 throw할 때: 문자열이면 Error로 감싸고, 그 외는 그대로 */
   toError(value: unknown): unknown {
     return typeof value === "string" ? new Error(value) : value

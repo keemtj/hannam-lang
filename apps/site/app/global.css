@@ -7,7 +7,7 @@
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
-/* 한남랭 색: T1을 떠올리게 하는 빨강을 강조색으로 쓴다 */
+/* 엠지스크립트 색: T1을 떠올리게 하는 빨강을 강조색으로 쓴다 */
 :root {
   --hn-accent: oklch(57% 0.22 20);
   --hn-accent-soft: oklch(57% 0.22 20 / 0.1);
@@ -309,7 +309,7 @@ body {
   margin-top: 1.25rem;
 }
 
-/* .hn ↔ .js 나란히 */
+/* .mz ↔ .js 나란히 */
 .hn-compare {
   position: relative;
   z-index: 1; /* 배경 말풍선보다 위에 그린다 */

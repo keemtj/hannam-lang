@@ -1,34 +1,34 @@
 ---
 title: 런타임
-description: 변환 결과가 쓰는 런타임 헬퍼 __hn과 자동 import 규칙을 설명합니다.
+description: 변환 결과가 쓰는 런타임 헬퍼 __mz와 자동 import 규칙을 설명합니다.
 ---
 
-대부분의 한남랭 키워드는 JS 문법으로 바로 바뀌어서 런타임이 필요 없습니다. 다음 두 경우에만 작은 런타임 헬퍼 `__hn`을 씁니다.
+대부분의 엠지스크립트 키워드는 JS 문법으로 바로 바뀌어서 런타임이 필요 없습니다. 다음 두 경우에만 작은 런타임 헬퍼 `__mz`를 씁니다.
 
 | 헬퍼 | 쓰는 곳 | 하는 일 |
 | --- | --- | --- |
-| `__hn.toError` | `아... 줴줴이야... 값`에서 값의 타입을 모를 때 | 문자열이면 `new Error(값)`, 그 밖의 값(Error 객체 등)은 그대로 |
-| `__hn.confirm` | `예? 무슨 발언이세요?(질문)` | 브라우저는 `window.confirm`, Node는 터미널에서 y/n 입력 |
+| `__mz.toError` | `아... 줴줴이야... 값`에서 값의 타입을 모를 때 | 문자열이면 `new Error(값)`, 그 밖의 값(Error 객체 등)은 그대로 |
+| `__mz.confirm` | `예? 무슨 발언이세요?(질문)` | 브라우저는 `window.confirm`, Node는 터미널에서 y/n 입력 |
 
 ## 자동 import
 
 헬퍼를 쓰는 파일에만 다음 한 줄이 **파일 맨 끝**에 붙습니다.
 
 ```js
-import { __hn } from "hannam-lang/runtime"
+import { __mz } from "mzscript/runtime"
 ```
 
-JS의 import 문은 끌어올려지므로 맨 끝에 있어도 동작합니다. 맨 끝에 붙이는 이유는 변환된 JS의 줄 번호를 `.hn` 원본과 똑같이 맞추기 위해서입니다. 그래서 소스맵 없이 스택 트레이스를 봐도 줄 위치가 맞습니다.
+JS의 import 문은 끌어올려지므로 맨 끝에 있어도 동작합니다. 맨 끝에 붙이는 이유는 변환된 JS의 줄 번호를 `.mz` 원본과 똑같이 맞추기 위해서입니다. 그래서 소스맵 없이 스택 트레이스를 봐도 줄 위치가 맞습니다.
 
 ## 모듈 이름 바꾸기
 
 가져올 모듈 이름은 변환기 옵션 `runtimeImport`로 바꿀 수 있습니다.
 
 ```js
-import { compile } from "hannam-lang"
+import { compile } from "mzscript"
 
-compile(source, { runtimeImport: "/vendor/hannam-runtime.js" })
+compile(source, { runtimeImport: "/vendor/mzscript-runtime.js" })
 ```
 
-- `hannam`, Bun 플러그인, Vite 플러그인은 런타임을 알아서 연결합니다.
-- `hnc`로 컴파일한 출력물을 실행하려면 그 프로젝트에 `hannam-lang`을 의존성으로 설치합니다.
+- `mz`, Bun 플러그인, Vite 플러그인은 런타임을 알아서 연결합니다.
+- `mzc`로 컴파일한 출력물을 실행하려면 그 프로젝트에 `mzscript`를 의존성으로 설치합니다.

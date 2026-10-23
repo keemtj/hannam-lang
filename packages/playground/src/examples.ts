@@ -1,4 +1,4 @@
-// 예제 목록. 명세(docs/hannam-lang-syntax.md)와 core 테스트 fixture를 바탕으로,
+// 예제 목록. 명세(docs/mzscript-syntax.md)와 core 테스트 fixture를 바탕으로,
 // 플레이그라운드에서 바로 실행되도록 필요한 값을 함께 선언했다.
 
 export interface PlaygroundExample {

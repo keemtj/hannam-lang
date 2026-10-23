@@ -4,7 +4,7 @@ import { version } from "@/lib/version"
 
 export const metadata: Metadata = {
   title: "Playground",
-  description: ".hn 코드를 쓰면 바로 JS로 바꿔 보여 주고 브라우저 샌드박스에서 실행한다.",
+  description: ".mz 코드를 쓰면 바로 JS로 바꿔 보여 주고 브라우저 샌드박스에서 실행한다.",
 }
 
 export default function PlaygroundPage() {

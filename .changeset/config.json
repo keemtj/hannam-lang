@@ -6,12 +6,12 @@
   "changelog": [
     "@changesets/changelog-github",
     {
-      "repo": "keemtj/hannam-lang"
+      "repo": "keemtj/mzscript"
     }
   ],
   "commit": false,
-  "ignore": ["@hannam-lang/site", "@hannam-lang/playground", "@hannam-lang/example-todo-web"],
-  "fixed": [["hannam-lang", "@hannam-lang/core", "@hannam-lang/vite-plugin"]],
+  "ignore": ["@mzscript/site", "@mzscript/playground", "@mzscript/example-todo-web"],
+  "fixed": [["mzscript", "@mzscript/core", "@mzscript/vite-plugin"]],
   "linked": [],
   "updateInternalDependencies": "patch",
   "privatePackages": {

@@ -1,21 +1,21 @@
 {
-  "name": "hannam-lang-vscode",
-  "displayName": "한남랭 (hannam-lang)",
-  "description": "한남랭(.hn) 문법 하이라이팅, 스니펫, 컴파일 에러 표시",
+  "name": "mzscript-vscode",
+  "displayName": "엠지스크립트 (mzscript)",
+  "description": "엠지스크립트(.mz) 문법 하이라이팅, 스니펫, 컴파일 에러 표시",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/keemtj/hannam-lang.git",
+    "url": "git+https://github.com/keemtj/mzscript.git",
     "directory": "packages/vscode"
   },
-  "homepage": "https://github.com/keemtj/hannam-lang#readme",
+  "homepage": "https://github.com/keemtj/mzscript#readme",
   "bugs": {
-    "url": "https://github.com/keemtj/hannam-lang/issues"
+    "url": "https://github.com/keemtj/mzscript/issues"
   },
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "publisher": "hannam-lang",
+  "publisher": "mzscript",
   "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#18181b",
@@ -29,34 +29,34 @@
     "Snippets"
   ],
   "keywords": [
-    "hannam",
-    "hannam-lang",
-    "hn",
-    "한남랭"
+    "mzscript",
+    "mzscript",
+    "mz",
+    "엠지스크립트"
   ],
   "main": "./dist/extension.cjs",
   "activationEvents": [
-    "onLanguage:hannam"
+    "onLanguage:mzscript"
   ],
   "contributes": {
     "languages": [
       {
-        "id": "hannam",
+        "id": "mzscript",
         "aliases": [
-          "hannam-lang",
-          "hannam"
+          "mzscript",
+          "mzscript"
         ],
         "extensions": [
-          ".hn"
+          ".mz"
         ],
         "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
       {
-        "language": "hannam",
-        "scopeName": "source.hn",
-        "path": "./syntaxes/hannam.tmLanguage.json",
+        "language": "mzscript",
+        "scopeName": "source.mz",
+        "path": "./syntaxes/mzscript.tmLanguage.json",
         "embeddedLanguages": {
           "meta.embedded.line.js": "javascript"
         }
@@ -64,8 +64,8 @@
     ],
     "snippets": [
       {
-        "language": "hannam",
-        "path": "./snippets/hannam.code-snippets"
+        "language": "mzscript",
+        "path": "./snippets/mzscript.code-snippets"
       }
     ]
   },
@@ -73,10 +73,10 @@
     "build": "esbuild src/extension.ts --bundle --platform=node --target=node20 --format=cjs --external:vscode --outfile=dist/extension.cjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "package": "pnpm build && vsce package --no-dependencies --out dist/hannam-lang-vscode.vsix"
+    "package": "pnpm build && vsce package --no-dependencies --out dist/mzscript-vscode.vsix"
   },
   "devDependencies": {
-    "@hannam-lang/core": "workspace:*",
+    "@mzscript/core": "workspace:*",
     "@types/node": "22.20.5",
     "@types/vscode": "1.90.0",
     "@vscode/vsce": "3.9.2",

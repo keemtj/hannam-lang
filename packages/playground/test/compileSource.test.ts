@@ -11,7 +11,7 @@ describe("compileSource", () => {
   test("confirm을 쓰면 런타임 import가 맨 끝에 붙는다", () => {
     const result = compileSource('엄.. 답 = 예? 무슨 발언이세요?("지울까요?")')
     expect(result.ok && result.code).toBe(
-      'const 답 = __hn.confirm("지울까요?")\nimport { __hn } from "hannam-lang/runtime"\n',
+      'const 답 = __mz.confirm("지울까요?")\nimport { __mz } from "mzscript/runtime"\n',
     )
   })
 
@@ -25,7 +25,7 @@ describe("compileSource", () => {
     expect(d.column).toBe(2)
     expect(source.slice(d.from, d.to)).toBe("예????")
     expect(d.message).toBe("'예'의 물음표는 1~3개만 쓸 수 있습니다 (4개)")
-    expect(d.fullMessage).toContain("playground.hn:2:3")
+    expect(d.fullMessage).toContain("playground.mz:2:3")
     expect(d.fullMessage).toContain("2 |   예???? 1 {")
   })
 
@@ -55,7 +55,7 @@ describe("offsetAt · shortMessage", () => {
   })
 
   test("위치 괄호와 코드 조각을 떼어 낸다", () => {
-    expect(shortMessage("무슨 문제 (playground.hn:3:5)\n3 | 코드\n    ^")).toBe("무슨 문제")
+    expect(shortMessage("무슨 문제 (playground.mz:3:5)\n3 | 코드\n    ^")).toBe("무슨 문제")
     expect(shortMessage("위치 없는 메시지")).toBe("위치 없는 메시지")
   })
 })

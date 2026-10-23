@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "hannam-lang 확장 실행",
+      "name": "mzscript 확장 실행",
       "type": "extensionHost",
       "request": "launch",
       "args": [

@@ -5,9 +5,9 @@ import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 
 export const PACKAGES = [
-  { name: "hannam-lang", dir: "hannam-lang" },
-  { name: "@hannam-lang/core", dir: "core" },
-  { name: "@hannam-lang/vite-plugin", dir: "vite-plugin" },
+  { name: "mzscript", dir: "mzscript" },
+  { name: "@mzscript/core", dir: "core" },
+  { name: "@mzscript/vite-plugin", dir: "vite-plugin" },
 ]
 export const KINDS = ["Major Changes", "Minor Changes", "Patch Changes"]
 

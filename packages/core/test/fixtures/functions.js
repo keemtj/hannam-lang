@@ -25,7 +25,7 @@ function 던지기(에러) {
   if (에러 instanceof 검증에러) {
     throw new 검증에러("검증 실패")
   }
-  throw __hn.toError(에러)
+  throw __mz.toError(에러)
 }
 
 function 객체돌려주기() {
@@ -34,4 +34,4 @@ function 객체돌려주기() {
 
 export function 내보내기() {}
 export default async function 기본() {}
-import { __hn } from "hannam-lang/runtime"
+import { __mz } from "mzscript/runtime"

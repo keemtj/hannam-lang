@@ -5,9 +5,9 @@ console.log((a + b) * 2)
 console.log()
 console.log(값) // 줄 주석
 
-const 지울까 = __hn.confirm("완료한 할 일을 지울까요?")
+const 지울까 = __mz.confirm("완료한 할 일을 지울까요?")
 
-if (__hn.confirm("전부 지울까요?")) {
+if (__mz.confirm("전부 지울까요?")) {
   할일들.length = 0
 }
-import { __hn } from "hannam-lang/runtime"
+import { __mz } from "mzscript/runtime"

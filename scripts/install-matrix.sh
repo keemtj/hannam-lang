@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# hannam-lang CLI 패키지를 npm, pnpm, yarn(classic), bun으로 각각 전역 설치해 확인한다.
+# mzscript CLI 패키지를 npm, pnpm, yarn(classic), bun으로 각각 전역 설치해 확인한다.
 #
 # 사용법:
 #   scripts/install-matrix.sh            # 4종 모두
@@ -8,14 +8,14 @@
 # 흐름:
 #   1. 워크스페이스 빌드 후 공개 패키지를 모두 pnpm pack (workspace:* 의존성이 실제 버전으로 바뀜)
 #   2. 임시 디렉터리에 로컬 레지스트리(verdaccio)를 띄우고 tarball을 올림
-#      CLI가 @hannam-lang/core 같은 아직 npm에 없는 패키지에 의존해도 설치되게 하려는 것
-#   3. 패키지 매니저마다 임시 prefix에 전역 설치하고 `hannam --version`, hello.hn 실행을 확인
+#      CLI가 @mzscript/core 같은 아직 npm에 없는 패키지에 의존해도 설치되게 하려는 것
+#   3. 패키지 매니저마다 임시 prefix에 전역 설치하고 `mz --version`, hello.mz 실행을 확인
 #
 # 실제 전역 디렉터리나 npm 레지스트리는 건드리지 않는다. 임시 디렉터리는 끝나면 지운다.
 # 레지스트리는 이 스크립트가 띄운 것인지 확인한 뒤에만 publish하고, 끝나면 그 프로세스만 종료한다.
 #
 # 환경 변수:
-#   HN_PACKAGE_DIR    확인할 CLI 패키지 (기본: packages/hannam-lang)
+#   HN_PACKAGE_DIR    확인할 CLI 패키지 (기본: packages/mzscript)
 #   HN_REGISTRY_PORT  로컬 레지스트리 포트 (기본: 비어 있는 포트를 자동으로 고름)
 #   HN_SKIP_BUILD=1   빌드 생략 (CI에서 이미 빌드한 경우)
 #   HN_KEEP_WORK=1    임시 디렉터리를 지우지 않음 (디버깅용)
@@ -27,7 +27,7 @@ YARN_VERSION="1.22.22"
 BUN_VERSION="1.4.2"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PACKAGE_DIR="$ROOT/${HN_PACKAGE_DIR:-packages/hannam-lang}"
+PACKAGE_DIR="$ROOT/${HN_PACKAGE_DIR:-packages/mzscript}"
 
 if [ "$#" -gt 0 ]; then
   MANAGERS=("$@")
@@ -47,7 +47,7 @@ done
 
 if [ ! -f "$PACKAGE_DIR/package.json" ]; then
   echo "CLI 패키지가 없다: $PACKAGE_DIR/package.json" >&2
-  echo "packages/hannam-lang이 생긴 뒤에 다시 실행하거나 HN_PACKAGE_DIR로 경로를 지정한다." >&2
+  echo "packages/mzscript가 생긴 뒤에 다시 실행하거나 HN_PACKAGE_DIR로 경로를 지정한다." >&2
   exit 1
 fi
 
@@ -211,12 +211,12 @@ done
 # ---------------------------------------------------------------------------
 
 mkdir -p "$WORK/hello"
-cat > "$WORK/hello/hello.hn" << 'EOF'
+cat > "$WORK/hello/hello.mz" << 'EOF'
 엄... 설치 매트릭스 확인용
-엄.. 이름 = "한남랭"
+엄.. 이름 = "엠지스크립트"
 무슨 발언이세요? `안녕, ${이름}!`
 EOF
-EXPECTED_HELLO="안녕, 한남랭!"
+EXPECTED_HELLO="안녕, 엠지스크립트!"
 
 run_bun() {
   if command -v bun > /dev/null 2>&1; then
@@ -288,31 +288,31 @@ install_with() {
   esac
 }
 
-# 설치된 bin이 임시 prefix 안의 것인지, 버전과 hello.hn 실행 결과가 맞는지 확인한다
+# 설치된 bin이 임시 prefix 안의 것인지, 버전과 hello.mz 실행 결과가 맞는지 확인한다
 verify_with() {
   local pm="$1"
   local bin_dir bin_path version_out hello_out
   bin_dir="$(bin_dir_for "$pm")"
   (
     export PATH="$bin_dir:$PATH"
-    bin_path="$(command -v hannam || true)"
+    bin_path="$(command -v mz || true)"
     case "$bin_path" in
       "$bin_dir"/*) ;;
       *)
-        echo "[$pm] hannam이 설치 위치($bin_dir)에서 잡히지 않는다: '${bin_path}'" >&2
+        echo "[$pm] mz가 설치 위치($bin_dir)에서 잡히지 않는다: '${bin_path}'" >&2
         exit 1
         ;;
     esac
-    case "$(command -v hnc || true)" in
+    case "$(command -v mzc || true)" in
       "$bin_dir"/*) ;;
       *)
-        echo "[$pm] hnc가 설치 위치($bin_dir)에서 잡히지 않는다" >&2
+        echo "[$pm] mzc가 설치 위치($bin_dir)에서 잡히지 않는다" >&2
         exit 1
         ;;
     esac
 
-    version_out="$(hannam --version)" || exit 1
-    echo "[$pm] hannam --version → $version_out"
+    version_out="$(mz --version)" || exit 1
+    echo "[$pm] mz --version → $version_out"
     case "$version_out" in
       *"$CLI_VERSION"*) ;;
       *)
@@ -321,11 +321,11 @@ verify_with() {
         ;;
     esac
 
-    hello_out="$(cd "$WORK/hello" && hannam hello.hn)" || exit 1
+    hello_out="$(cd "$WORK/hello" && mz hello.mz)" || exit 1
     hello_out="${hello_out%$'\r'}"
-    echo "[$pm] hannam hello.hn → $hello_out"
+    echo "[$pm] mz hello.mz → $hello_out"
     if [ "$hello_out" != "$EXPECTED_HELLO" ]; then
-      echo "[$pm] hello.hn 출력이 다르다. 기대값: $EXPECTED_HELLO" >&2
+      echo "[$pm] hello.mz 출력이 다르다. 기대값: $EXPECTED_HELLO" >&2
       exit 1
     fi
   )

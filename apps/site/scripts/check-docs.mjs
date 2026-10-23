@@ -1,10 +1,10 @@
-// 문서와 README의 ```hn 블록, <TryIt code={...}> 코드가 실제로 컴파일되는지 확인한다.
-// ```hn 바로 다음에 ```js 블록이 오면 변환 결과와 같은지도 비교한다.
+// 문서와 README의 ```mz 블록, <TryIt code={...}> 코드가 실제로 컴파일되는지 확인한다.
+// ```mz 바로 다음에 ```js 블록이 오면 변환 결과와 같은지도 비교한다.
 // 사용법: node scripts/check-docs.mjs
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs"
 import { join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
-import { compile } from "@hannam-lang/core"
+import { compile } from "@mzscript/core"
 
 const root = fileURLToPath(new URL("../content/docs", import.meta.url))
 const repoRoot = fileURLToPath(new URL("../../..", import.meta.url))
@@ -32,18 +32,18 @@ function walk(dir) {
 const normalize = (code) =>
   code
     .split("\n")
-    .filter((line) => !line.startsWith('import { __hn } from "hannam-lang/runtime"'))
+    .filter((line) => !line.startsWith('import { __mz } from "mzscript/runtime"'))
     .map((line) => line.trimEnd())
     .join("\n")
     .trim()
 
-// 짝: js 블록에 제목이 없거나, 제목이 hn 블록 파일 이름의 .js판으로 시작할 때 (hello.hn ↔ hello.js)
+// 짝: js 블록에 제목이 없거나, 제목이 mz 블록 파일 이름의 .js판으로 시작할 때 (hello.mz ↔ hello.js)
 const titleOf = (meta) => meta.match(/title="([^"]*)"/)?.[1]
 function isPair(hnMeta, jsMeta) {
   const jsTitle = titleOf(jsMeta)
   if (!jsTitle) return true
   const hnTitle = titleOf(hnMeta)
-  return Boolean(hnTitle) && jsTitle.startsWith(hnTitle.replace(/\.hn$/, ".js"))
+  return Boolean(hnTitle) && jsTitle.startsWith(hnTitle.replace(/\.mz$/, ".js"))
 }
 
 let failures = 0
@@ -59,40 +59,40 @@ for (const file of [...walk(root), ...readmes]) {
     code: m[4].replace(new RegExp(`^${m[1]}`, "gm"), ""),
   }))
   const tryIts = [...text.matchAll(/<TryIt code=\{("(?:[^"\\]|\\.)*")\}/g)].map((m) => ({
-    lang: "hn",
+    lang: "mz",
     meta: "TryIt",
     code: JSON.parse(m[1]),
   }))
 
   blocks.forEach((block, i) => {
-    if (block.lang !== "hn") return
+    if (block.lang !== "mz") return
     checked++
     const shouldFail = expectedErrors.some((s) => block.code.includes(s))
     let out
     try {
-      out = compile(block.code, { filename: "doc.hn", rewriteImports: block.meta.includes("hnc") }).code
+      out = compile(block.code, { filename: "doc.mz", rewriteImports: block.meta.includes("mzc") }).code
     } catch (e) {
       if (!shouldFail) {
         failures++
-        console.error(`✗ ${name} hn 블록 #${i}: ${e.message}`)
+        console.error(`✗ ${name} mz 블록 #${i}: ${e.message}`)
       }
       return
     }
     if (shouldFail) {
       failures++
-      console.error(`✗ ${name} hn 블록 #${i}: 에러가 나야 하는데 컴파일됨`)
+      console.error(`✗ ${name} mz 블록 #${i}: 에러가 나야 하는데 컴파일됨`)
       return
     }
     const next = blocks[i + 1]
     if (next?.lang === "js" && isPair(block.meta, next.meta)) {
       compared++
-      // hnc 출력 예시는 rewriteImports를 켜고 다시 비교한다
-      const expected = next.meta.includes("hnc")
-        ? compile(block.code, { filename: "doc.hn", rewriteImports: true }).code
+      // mzc 출력 예시는 rewriteImports를 켜고 다시 비교한다
+      const expected = next.meta.includes("mzc")
+        ? compile(block.code, { filename: "doc.mz", rewriteImports: true }).code
         : out
       if (normalize(expected) !== normalize(next.code)) {
         failures++
-        console.error(`✗ ${name} hn 블록 #${i}: 짝 js 블록과 변환 결과가 다름\n--- 변환 결과\n${expected}\n--- 문서\n${next.code}`)
+        console.error(`✗ ${name} mz 블록 #${i}: 짝 js 블록과 변환 결과가 다름\n--- 변환 결과\n${expected}\n--- 문서\n${next.code}`)
       }
     }
   })
@@ -100,7 +100,7 @@ for (const file of [...walk(root), ...readmes]) {
   for (const t of tryIts) {
     checked++
     try {
-      compile(t.code, { filename: "tryit.hn" })
+      compile(t.code, { filename: "tryit.mz" })
     } catch (e) {
       failures++
       console.error(`✗ ${name} TryIt: ${e.message}`)
@@ -108,5 +108,5 @@ for (const file of [...walk(root), ...readmes]) {
   }
 }
 
-console.log(`hn 코드 ${checked}개 컴파일, js 짝 ${compared}개 비교, 실패 ${failures}개`)
+console.log(`mz 코드 ${checked}개 컴파일, js 짝 ${compared}개 비교, 실패 ${failures}개`)
 process.exit(failures ? 1 : 0)

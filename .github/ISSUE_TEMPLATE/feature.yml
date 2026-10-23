@@ -34,5 +34,5 @@ body:
     attributes:
       label: 설계 원칙 확인
       options:
-        - label: "`docs/hannam-lang-syntax.md`의 설계 원칙(JS 상위 호환, 플랫폼 API는 JS 그대로)과 어긋나지 않는지 확인했어요"
+        - label: "`docs/mzscript-syntax.md`의 설계 원칙(JS 상위 호환, 플랫폼 API는 JS 그대로)과 어긋나지 않는지 확인했어요"
           required: true

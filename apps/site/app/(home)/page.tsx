@@ -1,4 +1,4 @@
-import { compile } from "@hannam-lang/core"
+import { compile } from "@mzscript/core"
 import { ArrowRight, Blocks, Globe, Play, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import type { CSSProperties } from "react"
@@ -26,19 +26,19 @@ const HERO_CODE = `티~원 할일불러오기() {
 }
 `
 
-// 배경에 흩뿌리는 한남 말투 말풍선
+// 배경에 흩뿌리는 키워드 말풍선
 const FLOATING = ["예???", "아! 줴줴이야~", "오호호호호~", "진~지?", "엄...", "요이~", "지~랄", "티~원!"]
 
 const FEATURES = [
   {
     icon: ShieldCheck,
     title: "JS 상위 호환",
-    body: "한남랭 키워드만 JS로 바뀌고 나머지는 그대로 통과합니다. ES2015 이후 문법, DOM, fetch, npm 패키지를 전부 그대로 씁니다.",
+    body: "엠지스크립트 키워드만 JS로 바뀌고 나머지는 그대로 통과합니다. ES2015 이후 문법, DOM, fetch, npm 패키지를 전부 그대로 씁니다.",
   },
   {
     icon: Globe,
     title: "브라우저와 Node 어디서나",
-    body: "출력은 ES 모듈이라 브라우저, Node, Bun에서 실행됩니다. 소스맵 덕분에 에러 스택이 .hn 원본 줄을 가리킵니다.",
+    body: "출력은 ES 모듈이라 브라우저, Node, Bun에서 실행됩니다. 소스맵 덕분에 에러 스택이 .mz 원본 줄을 가리킵니다.",
   },
   {
     icon: Blocks,
@@ -54,8 +54,8 @@ const FEATURES = [
 
 export default async function HomePage() {
   // JS 쪽은 실제 변환기 출력이다 (손으로 쓰지 않음)
-  const js = compile(HERO_CODE, { filename: "todos.hn" }).code
-  const [hnHtml, jsHtml] = await Promise.all([highlight(HERO_CODE.trimEnd(), "hn"), highlight(js.trimEnd(), "javascript")])
+  const js = compile(HERO_CODE, { filename: "todos.mz" }).code
+  const [hnHtml, jsHtml] = await Promise.all([highlight(HERO_CODE.trimEnd(), "mz"), highlight(js.trimEnd(), "javascript")])
 
   return (
     <main className="hn-home">
@@ -71,17 +71,17 @@ export default async function HomePage() {
 
         <div className="hn-container hn-hero-inner">
           <p className="hn-badge">
-            <span className="hn-badge-dot" /> JS 상위 호환 · .hn → .js
+            <span className="hn-badge-dot" /> JS 상위 호환 · .mz → .js
           </p>
           <h1 className="hn-title">
-            한남 말투로 쓰는
+            말투만 바꾼
             <br />
             <span className="hn-title-accent">진짜 JavaScript</span>
           </h1>
           <p className="hn-lead">
-            <strong className="hn-lead-strong">그냥 JavaScript입니다. 말투만 한남입니다.</strong>
+            <strong className="hn-lead-strong">그냥 JavaScript입니다. 말투만 다릅니다.</strong>
             <span className="hn-line">
-              <code>.hn</code>으로 쓰고 JS로 바꿔 브라우저와 Node에서 그대로 실행하세요.
+              <code>.mz</code>로 쓰고 JS로 바꿔 브라우저와 Node에서 그대로 실행하세요.
             </span>
             <span className="hn-line">장난처럼 보여도 풀스택 투두 앱까지 만들 수 있습니다.</span>
           </p>
@@ -94,7 +94,7 @@ export default async function HomePage() {
               <Play size={16} /> Playground에서 해 보기
             </Link>
           </div>
-          <CopyCommand command="npm i -D hannam-lang" className="hn-hero-command" />
+          <CopyCommand command="npm i -D mzscript" className="hn-hero-command" />
         </div>
 
         <div className="hn-container">
@@ -106,12 +106,12 @@ export default async function HomePage() {
                   <i />
                   <i />
                 </span>
-                todos.hn
+                todos.mz
               </figcaption>
               <div className="hn-code" dangerouslySetInnerHTML={{ __html: hnHtml }} />
             </figure>
             <div className="hn-compare-arrow" aria-hidden>
-              <span>hnc</span>
+              <span>mzc</span>
               <ArrowRight size={20} />
             </div>
             <figure className="hn-window">
@@ -133,7 +133,7 @@ export default async function HomePage() {
       <section className="hn-section" id="keywords">
         <div className="hn-container">
           <h2 className="hn-h2">
-            한남 말투 → <span className="hn-title-accent">JavaScript</span>
+            엠지스크립트 → <span className="hn-title-accent">JavaScript</span>
           </h2>
           <p className="hn-sub">
             <span className="hn-line">문장 맨 앞의 키워드만 바뀝니다.</span>
@@ -149,8 +149,8 @@ export default async function HomePage() {
                   <span className="hn-keyword-word">{m.word}</span>
                   <span className="hn-keyword-map">
                     {m.syntax.map((s) => (
-                      <span key={s.hn} className="hn-keyword-row">
-                        <code className="hn-chip-hn">{s.hn}</code>
+                      <span key={s.mz} className="hn-keyword-row">
+                        <code className="hn-chip-hn">{s.mz}</code>
                         <ArrowRight size={14} aria-hidden />
                         <code className="hn-chip-js">{s.js}</code>
                       </span>
@@ -190,15 +190,15 @@ export default async function HomePage() {
             <h2 className="hn-h2">설치는 한 줄</h2>
             <p className="hn-sub">
               <span className="hn-line">
-                <code>hannam-lang</code> 패키지 하나에 다 들어 있습니다.
+                <code>mzscript</code> 패키지 하나에 다 들어 있습니다.
               </span>
             </p>
             <ul className="hn-install-list">
               <li>
-                <code>hannam</code> 실행기: <code>.hn</code> 파일을 바로 실행합니다
+                <code>mz</code> 실행기: <code>.mz</code> 파일을 바로 실행합니다
               </li>
               <li>
-                <code>hnc</code> 컴파일러(hannam compiler): <code>.js</code> 파일로 바꿉니다
+                <code>mzc</code> 컴파일러(mzscript compiler): <code>.js</code> 파일로 바꿉니다
               </li>
               <li>런타임 헬퍼: 변환된 코드가 필요할 때만 가져갑니다</li>
             </ul>

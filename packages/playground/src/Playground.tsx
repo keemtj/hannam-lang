@@ -22,7 +22,7 @@ import { PLAYGROUND_CSS } from "./styles"
 export type PlaygroundTheme = "light" | "dark" | "system"
 
 export interface PlaygroundProps {
-  /** 처음 보여 줄 .hn 코드. 없으면 첫 번째 예제 */
+  /** 처음 보여 줄 .mz 코드. 없으면 첫 번째 예제 */
   initialCode?: string
   /** 전체 높이 (숫자는 px). 기본 560 */
   height?: number | string
@@ -142,7 +142,7 @@ export function Playground({
           ]),
           hnLanguage(),
           editorTheme,
-          EditorView.contentAttributes.of({ "aria-label": "한남랭 코드 편집기" }),
+          EditorView.contentAttributes.of({ "aria-label": "엠지스크립트 코드 편집기" }),
           EditorView.updateListener.of((update) => {
             if (update.docChanged) setCode(update.state.doc.toString())
           }),
@@ -198,7 +198,7 @@ export function Playground({
             to: Math.min(outcome.diagnostic.to, hn.state.doc.length),
             severity: "error" as const,
             message: outcome.diagnostic.message,
-            source: "hannam-lang",
+            source: "mzscript",
           },
         ]
     hn.dispatch(setDiagnostics(hn.state, diagnostics))
@@ -313,8 +313,8 @@ export function Playground({
       </div>
 
       <div className="hnpg-main">
-        <section className="hnpg-pane" aria-label="한남랭 코드">
-          <div className="hnpg-pane-title">playground.hn</div>
+        <section className="hnpg-pane" aria-label="엠지스크립트 코드">
+          <div className="hnpg-pane-title">playground.mz</div>
           <div className="hnpg-editor" ref={hnHost} data-testid="hn-editor" />
           {!outcome.ok && (
             <div className="hnpg-error-banner" role="alert" data-testid="compile-error">

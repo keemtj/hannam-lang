@@ -6,24 +6,24 @@ import { describe, expect, it } from "vitest"
 import { compile } from "../src/index.js"
 
 const todo = join(import.meta.dirname, "../../../examples/todo")
-const todoFiles = ["server/server.hn", "web/api.hn", "web/main.hn"]
+const todoFiles = ["server/server.mz", "web/api.mz", "web/main.mz"]
 
 describe("투두 예제", () => {
   it.each(todoFiles)("%s", async (file) => {
     const source = readFileSync(join(todo, file), "utf8")
     const { code } = compile(source, { filename: file, rewriteImports: true })
     expect(() => parse(code, { ecmaVersion: "latest", sourceType: "module" })).not.toThrow()
-    await expect(code).toMatchFileSnapshot(join("__snapshots__/todo", file.replace(/\.hn$/, ".js")))
+    await expect(code).toMatchFileSnapshot(join("__snapshots__/todo", file.replace(/\.mz$/, ".js")))
   })
 })
 
 describe("import", () => {
-  it("rewriteImports면 상대 경로의 .hn을 .js로 바꾼다", () => {
+  it("rewriteImports면 상대 경로의 .mz를 .js로 바꾼다", () => {
     const source = [
-      'import { a } from "./store.hn"',
-      'import "../side.hn"',
-      'export * from "./all.hn"',
-      'const m = import("./lazy.hn")',
+      'import { a } from "./store.mz"',
+      'import "../side.mz"',
+      'export * from "./all.mz"',
+      'const m = import("./lazy.mz")',
       'import http from "node:http"',
       'import data from "./data.json"',
     ].join("\n")
@@ -39,21 +39,21 @@ describe("import", () => {
     )
   })
 
-  it("기본값으로는 .hn 경로를 그대로 둔다 (Vite·로더 훅용)", () => {
-    expect(compile('import { a } from "./store.hn"').code).toBe('import { a } from "./store.hn"')
+  it("기본값으로는 .mz 경로를 그대로 둔다 (Vite·로더 훅용)", () => {
+    expect(compile('import { a } from "./store.mz"').code).toBe('import { a } from "./store.mz"')
   })
 
   it("런타임 import 경로를 바꿀 수 있다", () => {
-    const { code } = compile('아... 줴줴이야... 에러', { runtimeImport: "@hannam-lang/core/runtime" })
-    expect(code).toBe('throw __hn.toError(에러)\nimport { __hn } from "@hannam-lang/core/runtime"\n')
+    const { code } = compile('아... 줴줴이야... 에러', { runtimeImport: "@mzscript/core/runtime" })
+    expect(code).toBe('throw __mz.toError(에러)\nimport { __mz } from "@mzscript/core/runtime"\n')
   })
 })
 
 describe("소스맵", () => {
-  it("변환된 위치가 .hn 원본 위치를 가리킨다", () => {
-    const source = '엄.. 이름 = "한남"\n예? 이름 {\n  무슨 발언이세요? 이름\n}\n'
-    const { code, map } = compile(source, { filename: "app.hn" })
-    expect(map.sources).toEqual(["app.hn"])
+  it("변환된 위치가 .mz 원본 위치를 가리킨다", () => {
+    const source = '엄.. 이름 = "엠지"\n예? 이름 {\n  무슨 발언이세요? 이름\n}\n'
+    const { code, map } = compile(source, { filename: "app.mz" })
+    expect(map.sources).toEqual(["app.mz"])
     expect(map.file).toBe("app.js")
     expect(map.sourcesContent).toEqual([source])
 
@@ -74,6 +74,6 @@ describe("소스맵", () => {
   })
 
   it("셔뱅 줄은 그대로 둔다", () => {
-    expect(compile("#!/usr/bin/env hannam\n무슨 발언이세요? 1").code).toBe("#!/usr/bin/env hannam\nconsole.log(1)")
+    expect(compile("#!/usr/bin/env mz\n무슨 발언이세요? 1").code).toBe("#!/usr/bin/env mz\nconsole.log(1)")
   })
 })

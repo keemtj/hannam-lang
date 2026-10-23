@@ -1,16 +1,16 @@
 ---
 title: 투두 풀스택 만들기
-description: 프론트엔드와 서버를 모두 .hn으로 짠 할 일 앱을 따라 만듭니다.
+description: 프론트엔드와 서버를 모두 .mz로 짠 할 일 앱을 따라 만듭니다.
 ---
 
-[저장소](https://github.com/keemtj/hannam-lang/tree/main/examples/todo)의 `examples/todo`는 화면과 서버를 모두 `.hn`으로 쓴 할 일 앱입니다. 할 일 추가, 완료 토글, 삭제(확인 창), 필터, JSON 파일 저장을 지원합니다. 이 가이드는 그 코드를 파일별로 읽어 갑니다.
+[저장소](https://github.com/keemtj/mzscript/tree/main/examples/todo)의 `examples/todo`는 화면과 서버를 모두 `.mz`로 쓴 할 일 앱입니다. 할 일 추가, 완료 토글, 삭제(확인 창), 필터, JSON 파일 저장을 지원합니다. 이 가이드는 그 코드를 파일별로 읽어 갑니다.
 
 ```txt
 examples/todo/
-  server/server.hn   node:http REST 서버, JSON 파일 저장
-  web/api.hn         fetch로 서버 API 호출
-  web/main.hn        화면: 추가, 완료 토글, 삭제(confirm), 필터
-  web/index.html     <script type="module" src="./main.hn">
+  server/server.mz   node:http REST 서버, JSON 파일 저장
+  web/api.mz         fetch로 서버 API 호출
+  web/main.mz        화면: 추가, 완료 토글, 삭제(confirm), 필터
+  web/index.html     <script type="module" src="./main.mz">
   web/vite.config.js Vite 플러그인 설정
 ```
 
@@ -23,11 +23,11 @@ examples/todo/
 | PATCH | `/api/todos/:id` | 완료 토글 |
 | DELETE | `/api/todos/:id` | 삭제 (204) |
 
-## 1. 서버: `server/server.hn`
+## 1. 서버: `server/server.mz`
 
 Node 내장 모듈 `node:http`로 REST 서버를 만듭니다. 패키지 이름 import는 JS 그대로 씁니다.
 
-```hn title="server/server.hn"
+```mz title="server/server.mz"
 import http from "node:http"
 import { readFile, writeFile } from "node:fs/promises"
 
@@ -39,7 +39,7 @@ import { readFile, writeFile } from "node:fs/promises"
 
 저장 파일이 아직 없으면(`ENOENT`) 빈 목록을 돌려주고, 다른 에러는 다시 던집니다. `아... 줴줴이야... 에러`처럼 타입을 모르는 값을 던지면 런타임 헬퍼를 거칩니다. 헬퍼는 문자열이면 Error로 감싸고, 그 밖의 값(여기서는 Error 객체)은 그대로 던집니다.
 
-```hn
+```mz
 티~원 불러오기() {
   진~지? {
     아! 줴줴이야~ JSON.parse(티~원! readFile(파일, "utf8"))
@@ -56,9 +56,9 @@ import { readFile, writeFile } from "node:fs/promises"
 }
 ```
 
-요청 본문은 `for await`로 읽습니다. `for await`에는 한남랭 키워드가 없으므로 JS 그대로 씁니다.
+요청 본문은 `for await`로 읽습니다. `for await`에는 엠지스크립트 키워드가 없으므로 JS 그대로 씁니다.
 
-```hn
+```mz
 티~원 본문읽기(req) {
   엄. 본문 = ""
   for await (const 조각 of req) {
@@ -72,7 +72,7 @@ import { readFile, writeFile } from "node:fs/promises"
 
 `예???`(switch)로 HTTP 메서드를 나눕니다. 갈래마다 `아! 줴줴이야~`로 응답을 돌려주고 빠져나갑니다. `http.createServer`에 넘기는 async 화살표 함수는 JS 그대로입니다.
 
-```hn
+```mz
 엄.. 서버 = http.createServer(async (req, res) => {
   엄.. { pathname } = new URL(req.url, `http://${req.headers.host}`)
   엄.. 일치 = pathname.match(/^\/api\/todos\/(\d+)$/)
@@ -114,13 +114,13 @@ import { readFile, writeFile } from "node:fs/promises"
 })
 ```
 
-전체 코드는 저장소의 `examples/todo/server/server.hn`에 있습니다.
+전체 코드는 저장소의 `examples/todo/server/server.mz`에 있습니다.
 
-## 2. API 호출: `web/api.hn`
+## 2. API 호출: `web/api.mz`
 
 화면에서 서버를 부르는 함수 모음입니다. `export 티~원`으로 async 함수를 내보냅니다.
 
-```hn title="web/api.hn"
+```mz title="web/api.mz"
 엄.. 주소 = "/api/todos"
 
 티~원 요청(경로, 옵션 = {}) {
@@ -143,12 +143,12 @@ export 티~원 추가하기(내용) {
 }
 ```
 
-## 3. 화면: `web/main.hn`
+## 3. 화면: `web/main.mz`
 
-다른 `.hn`은 확장자까지 적어서 가져옵니다.
+다른 `.mz`는 확장자까지 적어서 가져옵니다.
 
-```hn title="web/main.hn"
-import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.hn"
+```mz title="web/main.mz"
+import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./api.mz"
 
 엄.. 목록 = document.querySelector("#목록")
 엄. 할일들 = []
@@ -157,7 +157,7 @@ import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./
 
 필터는 한 줄 갈래의 `예???`로 나눕니다. 갈래 안에서 `아! 줴줴이야~`로 바로 돌려줍니다.
 
-```hn
+```mz
 티-원 보이는할일() {
   예??? 필터 {
     "전체" { 아! 줴줴이야~ 할일들 }
@@ -170,7 +170,7 @@ import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./
 
 삭제 버튼은 `예? 예? 무슨 발언이세요?(...)`로 확인을 받은 뒤 지웁니다.
 
-```hn
+```mz
 목록.addEventListener("click", async (e) => {
   엄.. 항목 = e.target.closest("li")
   예? !항목 {
@@ -197,7 +197,7 @@ import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./
 
 마지막으로 파일 맨 아래에서 목록을 불러옵니다. ES 모듈이라 함수 밖에서도 `티~원!`을 쓸 수 있습니다.
 
-```hn
+```mz
 진~지? {
   할일들 = 티~원! 목록가져오기()
   그리기()
@@ -208,19 +208,19 @@ import { 목록가져오기, 추가하기, 토글하기, 삭제하기 } from "./
 
 ## 4. Vite로 띄우기
 
-`index.html`이 `main.hn`을 바로 불러오고, Vite 플러그인이 `.hn`을 JS로 바꿉니다. `/api/` 요청은 서버로 프록시합니다.
+`index.html`이 `main.mz`를 바로 불러오고, Vite 플러그인이 `.mz`를 JS로 바꿉니다. `/api/` 요청은 서버로 프록시합니다.
 
 ```js title="web/vite.config.js"
-import hannam from "@hannam-lang/vite-plugin"
+import mzscript from "@mzscript/vite-plugin"
 import { defineConfig } from "vite"
 
 const apiPort = Number(process.env.TODO_API_PORT ?? 3100)
 
 export default defineConfig({
-  plugins: [hannam()],
+  plugins: [mzscript()],
   server: {
     proxy: {
-      // "/api"로 쓰면 접두어 매칭이라 화면 모듈 /api.hn 요청까지 서버로 가 버린다
+      // "/api"로 쓰면 접두어 매칭이라 화면 모듈 /api.mz 요청까지 서버로 가 버린다
       "/api/": `http://localhost:${apiPort}`,
     },
   },
@@ -234,20 +234,20 @@ export default defineConfig({
 ```sh
 npm init -y
 npm pkg set type=module
-npm i -D hannam-lang @hannam-lang/vite-plugin vite
+npm i -D mzscript @mzscript/vite-plugin vite
 ```
 
 터미널 두 개를 열어 서버와 화면을 따로 띄웁니다. 서버와 Vite 프록시의 기본 포트가 모두 3100이라 그대로 실행하면 서로 연결됩니다.
 
 ```sh
-npx hannam server/server.hn   # 할 일 서버 (http://localhost:3100)
+npx mz server/server.mz   # 할 일 서버 (http://localhost:3100)
 npx vite web                  # 화면 (Vite가 알려 주는 주소로 접속)
 ```
 
 서버 포트를 바꾸려면 두 명령에 같은 값을 줍니다. 서버는 `PORT`, Vite 프록시는 `TODO_API_PORT`를 읽습니다.
 
 ```sh
-PORT=4000 npx hannam server/server.hn
+PORT=4000 npx mz server/server.mz
 TODO_API_PORT=4000 npx vite web
 ```
 

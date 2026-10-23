@@ -1,6 +1,6 @@
 # 릴리스 안내
 
-hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 관리한다. 이 문서는 메인테이너용이다. 기여자가 알아야 할 changeset 작성법은 `CONTRIBUTING.md`에 있다.
+mzscript는 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 관리한다. 이 문서는 메인테이너용이다. 기여자가 알아야 할 changeset 작성법은 `CONTRIBUTING.md`에 있다.
 
 ## 흐름
 
@@ -12,16 +12,16 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 4. 메인테이너가 Version Packages PR을 병합하면 changeset이 비고, npm에 아직 없는 버전이 생긴다. 이때 `publish` job이 돈다.
    - `main`에는 보호 규칙(Ruleset "main 보호")이 있다. Version Packages PR은 `GITHUB_TOKEN`으로 만들어져 CI가 돌지 않으므로, 관리자가 **Bypass rules and merge**로 병합한다.
 5. `publish` job은 `npm` environment를 쓴다. environment에 승인자(`keemtj`)가 걸려 있어서, job이 시작되기 전에 GitHub가 승인을 요청한다. Actions 화면이나 알림 메일에서 **Approve**를 누르면 배포가 진행된다. 배포할 수 있는 브랜치는 `main`뿐이다.
-6. 배포가 끝나면 패키지별 버전 태그(`hannam-lang@x.y.z`, `@hannam-lang/core@x.y.z`, `@hannam-lang/vite-plugin@x.y.z`)가 push되고, GitHub 릴리스가 **하나** 만들어진다. 태그는 `hannam-lang@x.y.z`, 제목은 `vx.y.z`이고, 본문은 `scripts/release-notes.mjs`가 세 패키지 CHANGELOG의 해당 버전 절을 모아 만든다.
+6. 배포가 끝나면 패키지별 버전 태그(`mzscript@x.y.z`, `@mzscript/core@x.y.z`, `@mzscript/vite-plugin@x.y.z`)가 push되고, GitHub 릴리스가 **하나** 만들어진다. 태그는 `mzscript@x.y.z`, 제목은 `vx.y.z`이고, 본문은 `scripts/release-notes.mjs`가 세 패키지 CHANGELOG의 해당 버전 절을 모아 만든다.
 
 ## 묶음 버전
 
-세 패키지(`hannam-lang`, `@hannam-lang/core`, `@hannam-lang/vite-plugin`)는 버전을 묶어서 낸다(`.changeset/config.json`의 `fixed`). changeset에 어느 패키지를 적든 세 패키지가 같은 버전으로 오르고, 사용자는 같은 버전끼리 쓰면 된다. 바뀌지 않은 패키지도 버전이 오른다.
+세 패키지(`mzscript`, `@mzscript/core`, `@mzscript/vite-plugin`)는 버전을 묶어서 낸다(`.changeset/config.json`의 `fixed`). changeset에 어느 패키지를 적든 세 패키지가 같은 버전으로 오르고, 사용자는 같은 버전끼리 쓰면 된다. 바뀌지 않은 패키지도 버전이 오른다.
 
 ## 배포 설정 (현재 상태)
 
 - 저장소 변수 `NPM_PUBLISH_ENABLED` = `true`. `publish` job은 이 값이 정확히 `'true'`일 때만 돈다. 배포를 멈추려면 변수를 지우거나 다른 값으로 바꾼다.
-- 인증은 **npm trusted publishing(OIDC)**이다. 세 패키지 모두 npmjs.com의 Trusted Publisher에 GitHub Actions(`keemtj/hannam-lang`, `release.yml`, environment `npm`, direct publish 허용)가 등록되어 있다. 토큰을 저장하지 않으며 provenance(출처 증명)가 함께 붙는다.
+- 인증은 **npm trusted publishing(OIDC)**이다. 세 패키지 모두 npmjs.com의 Trusted Publisher에 GitHub Actions(`keemtj/mzscript`, `release.yml`, environment `npm`, direct publish 허용)가 등록되어 있다. 토큰을 저장하지 않으며 provenance(출처 증명)가 함께 붙는다.
 - `NPM_TOKEN` 시크릿은 두지 않는다. 시크릿이 없으면 `NODE_AUTH_TOKEN`이 빈 값이 되어 OIDC로 인증한다.
 - 세 패키지의 Publishing access는 "Require two-factor authentication and disallow bypass 2fa tokens"이다. 사람이 배포할 때는 2FA가 필요하고, 2FA를 건너뛰는 토큰은 쓸 수 없다. trusted publishing은 이 설정과 상관없이 동작한다.
 - `changeset publish`는 pnpm 워크스페이스에서 `pnpm publish`를 호출하고, pnpm은 내부에서 npm CLI로 업로드한다. trusted publishing에는 npm 11.5.1 이상이 필요해서 `publish` job은 npm 11이 들어 있는 Node 24를 쓴다.
@@ -38,7 +38,7 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
   ```json
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<owner>/hannam-lang.git",
+    "url": "git+https://github.com/<owner>/mzscript.git",
     "directory": "packages/core"
   }
   ```
@@ -61,6 +61,6 @@ bash scripts/install-matrix.sh # 전역 설치 매트릭스 (로컬 임시 레�
 
 ## changelog와 GitHub 토큰
 
-changelog는 `@changesets/changelog-github`(`keemtj/hannam-lang`)로 만든다. 커밋·PR 링크를 GitHub API에서 가져오므로 `pnpm version-packages`에는 `GITHUB_TOKEN`이 필요하다. CI에서는 워크플로가 넘겨 주고, 로컬에서 직접 돌릴 때는 `GITHUB_TOKEN=$(gh auth token) pnpm version-packages`처럼 실행한다.
+changelog는 `@changesets/changelog-github`(`keemtj/mzscript`)로 만든다. 커밋·PR 링크를 GitHub API에서 가져오므로 `pnpm version-packages`에는 `GITHUB_TOKEN`이 필요하다. CI에서는 워크플로가 넘겨 주고, 로컬에서 직접 돌릴 때는 `GITHUB_TOKEN=$(gh auth token) pnpm version-packages`처럼 실행한다.
 
-첫 공개 버전은 `.changeset/first-public-release.md`로 `@hannam-lang/core`, `hannam-lang`, `@hannam-lang/vite-plugin`을 0.1.0으로 올린다. 사이트, Playground, 예제는 배포하지 않으므로 changeset 대상에서 뺐다(`ignore`).
+첫 공개 버전은 `.changeset/first-public-release.md`로 `@mzscript/core`, `mzscript`, `@mzscript/vite-plugin`을 0.1.0으로 올린다. 사이트, Playground, 예제는 배포하지 않으므로 changeset 대상에서 뺐다(`ignore`).

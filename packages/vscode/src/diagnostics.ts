@@ -1,4 +1,4 @@
-import { HannamSyntaxError, compile } from "@hannam-lang/core"
+import { MzScriptSyntaxError, compile } from "@mzscript/core"
 
 // vscode API에 기대지 않는 진단 계산. 확장(extension.ts)이 이 결과를 vscode.Diagnostic으로 옮긴다
 export interface HnDiagnostic {
@@ -17,7 +17,7 @@ export function collectDiagnostics(source: string, filename?: string): HnDiagnos
     const { warnings } = compile(source, { filename })
     return warnings.map((w) => at(source, "warning", w.message, w.line, w.column))
   } catch (e) {
-    if (e instanceof HannamSyntaxError) return [at(source, "error", e.rawMessage, e.line, e.column)]
+    if (e instanceof MzScriptSyntaxError) return [at(source, "error", e.rawMessage, e.line, e.column)]
     throw e
   }
 }
