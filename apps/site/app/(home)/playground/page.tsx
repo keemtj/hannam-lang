@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import { ThemedPlayground } from "@/components/playground-client"
+import { pageMetadata } from "@/lib/metadata"
 import { version } from "@/lib/version"
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Playground",
-  description: ".hn 코드를 쓰면 바로 JS로 바꿔 보여 주고 브라우저 샌드박스에서 실행한다.",
-}
+  description: ".hn 코드를 쓰면 바로 JS로 바꿔 보여 주고 브라우저 샌드박스에서 실행합니다.",
+  path: "/playground",
+})
 
 export default function PlaygroundPage() {
   return (

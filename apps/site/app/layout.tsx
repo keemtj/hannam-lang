@@ -2,6 +2,8 @@ import { RootProvider } from "fumadocs-ui/provider/next"
 import type { Metadata } from "next"
 import { Black_Han_Sans } from "next/font/google"
 import { koTranslations } from "@/lib/i18n-ko"
+import { pageMetadata } from "@/lib/metadata"
+import { appName, siteDescription, siteUrl } from "@/lib/shared"
 // 본문 글꼴. 페이지에 쓰인 글자 범위의 파일만 내려받는 dynamic subset 판이다
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css"
 import "./global.css"
@@ -14,11 +16,15 @@ const display = Black_Han_Sans({
 })
 
 export const metadata: Metadata = {
+  ...pageMetadata({ description: siteDescription, path: "/" }),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "한남랭 (hannam-lang)",
-    template: "%s | 한남랭",
+    default: `${appName} (hannam-lang)`,
+    template: `%s | ${appName}`,
   },
-  description: "그냥 JavaScript입니다. 말투만 한남입니다. .hn으로 쓰고 JS로 바꿔 브라우저와 Node에서 실행합니다.",
+  description: siteDescription,
+  applicationName: appName,
+  keywords: ["한남랭", "hannam-lang", "JavaScript", "컴파일러", "트랜스파일러", "Vite 플러그인", "Node", "Bun"],
 }
 
 export default function Layout({ children }: LayoutProps<"/">) {
