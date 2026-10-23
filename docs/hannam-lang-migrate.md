@@ -1,6 +1,6 @@
-# JS → hannam-lang 역변환 명세 (초안)
+# JS → hannam-lang 역변환 명세
 
-> 상태: 설계 초안. 구현 전 검토용. 문법 자체는 `hannam-lang-syntax.md`가 기준이고, 이 문서는 기존 JS를 `.hn`으로 옮기는 도구의 규칙만 다룬다.
+> 상태: 0.1.1에서 구현 (`@hannam-lang/core/migrate`, `hnc --from-js`, Playground의 JS 가져오기). 문법 자체는 `hannam-lang-syntax.md`가 기준이고, 이 문서는 기존 JS를 `.hn`으로 옮기는 도구의 규칙만 다룬다.
 
 ## 목적
 이미 있는 JS 코드베이스를 한남랭 키워드로 옮긴다. "내 코드를 한남랭으로 바꿔 보세요"를 한 번의 명령으로 할 수 있게 하는 것이 목표.
@@ -43,21 +43,21 @@
 | `for (const x of 목록) {` | `요이~ x 목록 {` | 선언이 `const`일 때만 (`요이~`는 `const`로 컴파일됨). `let`이나 선언 없는 형태는 제외 |
 | `for (const k in 객체) {` | `요히~ k 객체 {` | 위와 같음 |
 | `for (let i = a; i < b; i++) {` | `요이~ i a..b {` | 선언자 하나, 비교가 같은 변수의 `<`, 증가가 `i++`일 때만 |
-| `switch (값) { … }` | `예??? 값 { … }` | 모든 `case`가 마지막 문장 `break`로 끝나고, 그 밖의 `break`(switch를 빠져나가는 것)가 없고, `default`가 마지막일 때. 빈 `case`가 이어지면 `"a", "b" {`로 묶음 |
+| `switch (값) { … }` | `예??? 값 { … }` | 모든 `case`가 `break`·`return`·`throw`·`continue`·레이블 `break`로 끝나고(마지막 case는 예외), 그 밖에 switch를 빠져나가는 `break`가 없고, `default`가 마지막일 때. 끝의 `break`는 `}`로 바꾸고, 빈 `case`가 이어지면 `"a",` / `"b" {`로 묶음. 블록으로 감싼 case, 한 case에서 선언한 이름을 다른 case에서 쓰는 경우는 제외 |
 | `throw new X(…)` | `아... 줴줴이야... new X(…)` | `new`로 만든 값을 던질 때만. 문자열·식별자를 던지면 컴파일 결과가 `new Error(…)`·`__hn.toError(…)`로 바뀌어 동작이 달라지므로 제외 |
 | `confirm(질문)`, `window.confirm(질문)` | `예? 무슨 발언이세요?(질문)` | 전역 `confirm`일 때만 (지역 변수로 가려진 경우 제외) |
-| 여러 줄 `console.log(…)` | `무슨 발언이세요? a,` + 다음 줄 | 첫 인자가 같은 줄에서 시작하고 끝에 쉼표가 없을 때. 괄호로 감싸면 쉼표 연산자로 읽혀 컴파일 에러이므로 괄호를 벗김 |
 
 ### 바꾸지 않는 것
 - 대응하는 키워드가 없는 문법: `do...while`, 레이블 문, `for await`, 제너레이터, `finally`, 화살표 함수, 메서드, 함수·클래스 표현식, 일반 `for` 문
 - 본문이 블록이 아닌 `if`/`while`/`for` (`if (a) b()`)
+- 여러 줄에 걸친 `console.log(…)`, 인자 끝에 쉼표가 있는 `console.log(…)` (다음 버전 후보)
 - 주석: `//`, `/* */` 모두 그대로. `//` → `엄...` 변환은 옵션으로만 제공하고 기본값은 끔. 블록 주석을 `엄...` 여러 줄로 바꾸는 것은 범위 밖
 
 ## 이름 충돌
 문장 맨 앞에 키워드와 같은 이름이 오는 JS는 `.hn`에서 키워드로 읽혀 그대로 둘 수 없다 (예: 변수 `아뇨`, `줴줴이야`에 값을 대입하는 문장). 변환으로 해결할 수 없으므로 파일 단위 오류로 보고하고, 이름을 바꾸라고 안내한다.
 
 ## 파일 단위 규칙
-- 대상: `.js`, `.mjs`. `.cjs`, `*.min.js`, 한 줄이 지나치게 긴 파일, `node_modules`, `.gitignore`에 든 파일은 제외
+- 대상: `.js`, `.mjs`. `.cjs`, `*.min.js`, 한 줄이 1000자를 넘는 파일, `node_modules`, 점으로 시작하는 폴더, `.gitignore`에 든 파일(git 저장소 안일 때)은 제외
 - CommonJS(`require`, `module.exports`, `exports.x`, `__dirname`)를 쓰는 파일은 `.hn`에서 실행되지 않으므로 건너뛰고 이유를 보고
 - import 경로: 함께 옮기는 파일을 가리키는 상대 경로의 `.js`는 `.hn`으로 바꾼다. 확장자 없는 경로와 패키지 이름은 그대로
 
@@ -65,6 +65,8 @@
 ```ts
 interface MigrateResult {
   code: string
+  /** 실제로 적용한 변환 수 */
+  changes: number
   /** 바꾸지 않고 JS로 남긴 곳 */
   skipped: { line: number; column: number; kind: string; reason: string }[]
 }
@@ -78,19 +80,21 @@ interface MigrateResult {
 ## 검증 계획
 - 단위 테스트: 위 규칙마다 "바꾸는 경우 / 조건이 안 맞아 남기는 경우" fixture 쌍
 - 왕복 테스트: 상위 호환 테스트와 같은 corpus(acorn, magic-string, lodash-es의 JS 648개)를 변환 → 다시 컴파일 → AST 비교. 의미가 달라진 파일 0개가 통과 기준
+- 0.1.1 기준 결과: 648개 모두 변환, 7,117곳을 바꿨고, 검증에서 걸러진 곳 0곳
 
 ## 제공 형태
 1. **API**: `migrate(js, options) → MigrateResult`
 2. **CLI**: `hnc --from-js <파일|디렉터리>`. 기본은 바뀔 내용만 보여 주고(diff), `--write`를 줘야 `.hn` 파일을 만든다
-3. **Playground**: JS를 붙여 넣으면 `.hn`으로 바꿔 보여 주는 방향 전환
+3. **Playground**: 툴바의 "JS 가져오기"에 붙여 넣으면 `.hn`으로 바꿔 편집기에 넣는다 (주석도 `엄...`으로 바꿈)
 
 ## 패키지 배치
 새 패키지를 만들지 않고 기존 패키지에 넣는다.
 - API는 `@hannam-lang/core`의 별도 진입점 `@hannam-lang/core/migrate`로 둔다. `compile`만 쓰는 쪽(Vite 플러그인, 로더 훅)은 파서를 불러오지 않는다.
 - acorn이 `@hannam-lang/core`의 의존성으로 추가된다 (지금은 테스트용 devDependency).
-- CLI는 `hannam-lang` 패키지의 `hnc`에 옵션으로 추가한다.
+- CLI는 `hannam-lang` 패키지의 `hnc`에 옵션으로 추가한다. 파서는 `--from-js`를 줄 때만 불러온다.
+- `hannam-lang/migrate`로도 같은 API를 내보낸다. pnpm처럼 직접 설치하지 않은 패키지를 막는 환경에서도 쓸 수 있게 하려는 것이다.
 
-## 정할 것
-- `--write`로 `.hn`을 만든 뒤 원래 `.js`를 지울지, 남길지
-- `//` → `엄...` 옵션의 이름과 기본값
-- 여러 줄 `console.log` 변환을 처음 버전에 넣을지
+## 결정한 것
+- `--write` 뒤 원래 `.js`는 지우지 않고 남긴다. 이미 있는 `.hn`은 덮어쓰지 않는다
+- `//` → `엄...`은 `--comments`(API는 `comments: true`)로만 켠다. 기본값은 끔
+- 여러 줄 `console.log` 변환은 첫 버전에서 뺀다

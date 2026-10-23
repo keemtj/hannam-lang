@@ -1,4 +1,8 @@
 {
   "title": "가이드",
-  "pages": ["todo-fullstack", "from-javascript"]
+  "pages": [
+    "todo-fullstack",
+    "from-javascript",
+    "migrate"
+  ]
 }

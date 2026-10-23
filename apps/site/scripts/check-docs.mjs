@@ -1,10 +1,12 @@
 // 문서와 README의 ```hn 블록, <TryIt code={...}> 코드가 실제로 컴파일되는지 확인한다.
 // ```hn 바로 다음에 ```js 블록이 오면 변환 결과와 같은지도 비교한다.
+// 반대로 ```js 다음의 ```hn 블록에 migrate가 붙어 있으면, js를 역변환(migrate)한 결과와 같은지 비교한다.
 // 사용법: node scripts/check-docs.mjs
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs"
 import { join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
 import { compile } from "@hannam-lang/core"
+import { migrate } from "@hannam-lang/core/migrate"
 
 const root = fileURLToPath(new URL("../content/docs", import.meta.url))
 const repoRoot = fileURLToPath(new URL("../../..", import.meta.url))
@@ -82,6 +84,15 @@ for (const file of [...walk(root), ...readmes]) {
       failures++
       console.error(`✗ ${name} hn 블록 #${i}: 에러가 나야 하는데 컴파일됨`)
       return
+    }
+    const prev = blocks[i - 1]
+    if (block.meta.includes("migrate")) {
+      compared++
+      const migrated = prev?.lang === "js" ? migrate(prev.code).code : undefined
+      if (migrated === undefined || normalize(migrated) !== normalize(block.code)) {
+        failures++
+        console.error(`✗ ${name} hn 블록 #${i}: 앞의 js 블록을 역변환한 결과와 다름\n--- 역변환 결과\n${migrated}\n--- 문서\n${block.code}`)
+      }
     }
     const next = blocks[i + 1]
     if (next?.lang === "js" && isPair(block.meta, next.meta)) {

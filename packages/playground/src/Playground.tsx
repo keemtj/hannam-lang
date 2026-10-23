@@ -10,10 +10,11 @@ import {
   keymap,
   lineNumbers,
 } from "@codemirror/view"
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from "react"
+import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState, type CSSProperties } from "react"
 import { compileSource, type CompileOutcome } from "./compileSource"
 import { editorTheme, hnLanguage, jsHighlighting } from "./editor/hnLanguage"
 import { DEFAULT_CODE, EXAMPLES } from "./examples"
+import { importJs, importNotice } from "./importJs"
 import { initialRunState, runReducer, type RunStatus } from "./sandbox/consoleLog"
 import { startRun, type RunHandle } from "./sandbox/runner"
 import { decodeHash, encodeHash } from "./share"
@@ -68,6 +69,12 @@ export function Playground({
   const resolvedTheme = themeChoice === "system" ? (systemDark ? "dark" : "light") : themeChoice
   const [shareLabel, setShareLabel] = useState("공유 링크 복사")
   const [exampleId, setExampleId] = useState("")
+  // JS 가져오기: 창이 열려 있는지, 붙여 넣은 JS, 바꾸지 못한 이유, 바꾼 뒤 안내(그 코드를 고치기 전까지만 보임)
+  const importId = useId()
+  const [importOpen, setImportOpen] = useState(false)
+  const [importText, setImportText] = useState("")
+  const [importError, setImportError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<{ text: string; code: string } | null>(null)
 
   const hnHost = useRef<HTMLDivElement>(null)
   const jsHost = useRef<HTMLDivElement>(null)
@@ -248,6 +255,20 @@ export function Playground({
     setTimeout(() => setShareLabel("공유 링크 복사"), 1800)
   }, [code, shareBaseUrl])
 
+  const convertImport = useCallback(async () => {
+    const outcome = await importJs(importText)
+    if (!outcome.ok) {
+      setImportError(outcome.message)
+      return
+    }
+    replaceCode(outcome.code)
+    setNotice({ text: importNotice(outcome), code: outcome.code })
+    setExampleId("")
+    setImportOpen(false)
+    setImportText("")
+    setImportError(null)
+  }, [importText, replaceCode])
+
   // ── 콘솔 자동 스크롤 ──
   useEffect(() => {
     const el = consoleBody.current
@@ -297,6 +318,17 @@ export function Playground({
             ))}
           </select>
         )}
+        <button
+          type="button"
+          className="hnpg-btn"
+          aria-expanded={importOpen}
+          onClick={() => {
+            setImportOpen((open) => !open)
+            setImportError(null)
+          }}
+        >
+          JS 가져오기
+        </button>
         <span className="hnpg-spacer" />
         <button type="button" className="hnpg-btn" onClick={share}>
           {shareLabel}
@@ -312,9 +344,49 @@ export function Playground({
         </button>
       </div>
 
+      {importOpen && (
+        <div className="hnpg-import" role="dialog" aria-label="JS를 한남랭으로 바꾸기">
+          <label className="hnpg-import-label" htmlFor={importId}>
+            JavaScript를 붙여 넣으면 한남랭으로 바꿔서 편집기에 넣습니다. 의미가 달라질 수 있는 곳은 JS 그대로 둡니다.
+          </label>
+          <textarea
+            id={importId}
+            className="hnpg-import-text"
+            spellCheck={false}
+            value={importText}
+            placeholder={'const name = "철수"\nif (name) {\n  console.log(`안녕, ${name}`)\n}'}
+            onChange={(e) => setImportText(e.target.value)}
+            data-testid="import-text"
+          />
+          {importError && (
+            <div className="hnpg-import-error" role="alert">
+              {importError}
+            </div>
+          )}
+          <div className="hnpg-import-actions">
+            <button type="button" className="hnpg-btn" onClick={() => setImportOpen(false)}>
+              닫기
+            </button>
+            <button
+              type="button"
+              className="hnpg-btn hnpg-btn-primary"
+              onClick={convertImport}
+              disabled={importText.trim() === ""}
+            >
+              한남랭으로 바꾸기
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="hnpg-main">
         <section className="hnpg-pane" aria-label="한남랭 코드">
           <div className="hnpg-pane-title">playground.hn</div>
+          {notice && notice.code === code && (
+            <div className="hnpg-notice" role="status" data-testid="import-notice">
+              {notice.text}
+            </div>
+          )}
           <div className="hnpg-editor" ref={hnHost} data-testid="hn-editor" />
           {!outcome.ok && (
             <div className="hnpg-error-banner" role="alert" data-testid="compile-error">

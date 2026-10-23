@@ -711,3 +711,18 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
 }
+
+/* JS → 한남랭 소개: 위 문단과 가깝게 붙이고, 버튼은 왼쪽 정렬 */
+.hn-compare-tight {
+  margin-top: 2.25rem;
+}
+
+.hn-migrate-actions {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.hn-migrate-actions .hn-command {
+  max-width: 28rem; /* npx -p hannam-lang hnc --from-js src가 한 줄에 다 보이게 */
+  margin: 0;
+}
