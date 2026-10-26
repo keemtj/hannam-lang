@@ -2,7 +2,7 @@ name: Release
 
 # main에 changeset이 쌓이면 "Version Packages" PR을 만들거나 갱신한다.
 # npm 배포는 기본으로 꺼져 있다. 저장소 변수 NPM_PUBLISH_ENABLED가 'true'일 때만 publish job이 돈다.
-# 켜는 방법과 토큰 선택(npm trusted publishing 또는 NPM_TOKEN)은 .github/RELEASING.md 참고.
+# 켜는 방법과 인증(npm trusted publishing)은 .github/RELEASING.md 참고.
 
 on:
   push:
@@ -103,9 +103,10 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          # trusted publishing에는 npm 11.5.1 이상이 필요해서 npm 11이 들어 있는 Node 24를 쓴다
+          # trusted publishing에는 npm 11.5.1 이상이 필요해서 npm 11이 들어 있는 Node 24를 쓴다.
+          # registry-url은 주지 않는다. 주면 .npmrc에 _authToken=${NODE_AUTH_TOKEN} 줄이 생기는데,
+          # 토큰이 없을 때 pnpm publish가 이 줄 때문에 OIDC로 넘어가지 못하고 ENEEDAUTH로 끝났다 (0.1.1 첫 시도)
           node-version: 24
-          registry-url: https://registry.npmjs.org
 
       - name: 의존성 설치
         run: pnpm install --frozen-lockfile
@@ -120,8 +121,7 @@ jobs:
           create-github-releases: false
           push-git-tags: true
         env:
-          # NPM_TOKEN 시크릿이 없으면 빈 값이 되고, 그때는 trusted publishing(OIDC)으로 인증한다
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # 인증은 trusted publishing(OIDC)만 쓴다. NODE_AUTH_TOKEN은 빈 값으로도 두지 않는다
           NPM_CONFIG_PROVENANCE: "true"
 
       # 세 패키지의 CHANGELOG에서 이번 버전 절을 모아 GitHub 릴리스를 하나 만든다

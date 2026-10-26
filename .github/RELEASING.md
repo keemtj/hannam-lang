@@ -22,7 +22,7 @@ hannam-lang은 [changesets](https://changesets.dev)로 버전과 CHANGELOG를 �
 
 - 저장소 변수 `NPM_PUBLISH_ENABLED` = `true`. `publish` job은 이 값이 정확히 `'true'`일 때만 돈다. 배포를 멈추려면 변수를 지우거나 다른 값으로 바꾼다.
 - 인증은 **npm trusted publishing(OIDC)**이다. 세 패키지 모두 npmjs.com의 Trusted Publisher에 GitHub Actions(`keemtj/hannam-lang`, `release.yml`, environment `npm`, direct publish 허용)가 등록되어 있다. 토큰을 저장하지 않으며 provenance(출처 증명)가 함께 붙는다.
-- `NPM_TOKEN` 시크릿은 두지 않는다. 시크릿이 없으면 `NODE_AUTH_TOKEN`이 빈 값이 되어 OIDC로 인증한다.
+- 토큰은 쓰지 않는다. `NPM_TOKEN` 시크릿을 두지 않고, 배포 작업에는 `NODE_AUTH_TOKEN`도 `setup-node`의 `registry-url`도 주지 않는다. 0.1.1 첫 시도에서 빈 `NODE_AUTH_TOKEN`과 `registry-url`이 만든 `.npmrc` 때문에 `pnpm publish`가 OIDC로 넘어가지 못하고 `ENEEDAUTH`로 실패했다.
 - 세 패키지의 Publishing access는 "Require two-factor authentication and disallow bypass 2fa tokens"이다. 사람이 배포할 때는 2FA가 필요하고, 2FA를 건너뛰는 토큰은 쓸 수 없다. trusted publishing은 이 설정과 상관없이 동작한다.
 - `changeset publish`는 pnpm 워크스페이스에서 `pnpm publish`를 호출하고, pnpm은 내부에서 npm CLI로 업로드한다. trusted publishing에는 npm 11.5.1 이상이 필요해서 `publish` job은 npm 11이 들어 있는 Node 24를 쓴다.
 - 0.1.0은 trusted publisher를 등록하기 전이라 메인테이너가 로컬에서 직접 배포했다(`pnpm release`, 2026-10-22). OIDC 배포는 0.1.1부터 처음 돌므로, 그때 Actions 로그에서 인증과 provenance를 한 번 확인한다.
