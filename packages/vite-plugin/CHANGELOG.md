@@ -1,5 +1,12 @@
 # @hannam-lang/vite-plugin
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`2c811e4`](https://github.com/keemtj/hannam-lang/commit/2c811e47c26a664a29ddaab5432c18146df4b394)]:
+  - @hannam-lang/core@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
