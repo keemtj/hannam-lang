@@ -76,7 +76,11 @@ if (fromJs) {
   if (inputs.length === 0) usageError("옮길 .js 파일이나 디렉터리를 주세요")
   // 파서(acorn)는 이 모드에서만 불러온다
   const { runMigrate } = await import("../src/migrate-cli.js")
-  process.exit(runMigrate(inputs, { write, comments }))
+  const code = runMigrate(inputs, { write, comments })
+  // 파이프로 넘긴 stdout은 비동기라 바로 exit하면 뒤쪽 출력이 잘린다. 앞서 쓴 내용이 다 나간 뒤에 끝낸다
+  await new Promise((done) => process.stdout.write("", done))
+  await new Promise((done) => process.stderr.write("", done))
+  process.exit(code)
 }
 if (write || comments) usageError("--write, --comments는 --from-js와 함께 씁니다")
 if (inputs.length === 0) usageError("컴파일할 파일이나 디렉터리를 주세요")

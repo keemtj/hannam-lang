@@ -255,8 +255,30 @@ export function Playground({
     setTimeout(() => setShareLabel("공유 링크 복사"), 1800)
   }, [code, shareBaseUrl])
 
+  // 파서를 처음 불러오는 동안 창을 닫거나 다시 누르면, 늦게 끝난 변환이 편집기를 덮어쓰지 않게 번호로 구분한다
+  const importRequest = useRef(0)
+  const [importing, setImporting] = useState(false)
+  const closeImport = useCallback(() => {
+    importRequest.current++
+    setImporting(false)
+    setImportOpen(false)
+  }, [])
+
   const convertImport = useCallback(async () => {
-    const outcome = await importJs(importText)
+    const id = ++importRequest.current
+    setImporting(true)
+    let outcome: Awaited<ReturnType<typeof importJs>>
+    try {
+      outcome = await importJs(importText)
+    } catch (e) {
+      if (id === importRequest.current) {
+        setImporting(false)
+        setImportError(`바꾸는 중에 문제가 생겼습니다: ${e instanceof Error ? e.message : String(e)}`)
+      }
+      return
+    }
+    if (id !== importRequest.current) return
+    setImporting(false)
     if (!outcome.ok) {
       setImportError(outcome.message)
       return
@@ -323,7 +345,8 @@ export function Playground({
           className="hnpg-btn"
           aria-expanded={importOpen}
           onClick={() => {
-            setImportOpen((open) => !open)
+            if (importOpen) closeImport()
+            else setImportOpen(true)
             setImportError(null)
           }}
         >
@@ -364,16 +387,16 @@ export function Playground({
             </div>
           )}
           <div className="hnpg-import-actions">
-            <button type="button" className="hnpg-btn" onClick={() => setImportOpen(false)}>
+            <button type="button" className="hnpg-btn" onClick={closeImport}>
               닫기
             </button>
             <button
               type="button"
               className="hnpg-btn hnpg-btn-primary"
               onClick={convertImport}
-              disabled={importText.trim() === ""}
+              disabled={importing || importText.trim() === ""}
             >
-              한남랭으로 바꾸기
+              {importing ? "바꾸는 중…" : "한남랭으로 바꾸기"}
             </button>
           </div>
         </div>

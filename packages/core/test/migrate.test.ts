@@ -148,6 +148,21 @@ describe("migrate: 조건이 맞을 때만 바꾸는 것", () => {
     )
   })
 
+  it("switch: case 조건이 case 안에서 선언한 이름을 쓰면 그대로 (스코프가 달라짐)", () => {
+    // 끌어올린 function: JS에서는 case 조건의 f()가 case 2의 f를 부른다
+    const hoisted = 'function g(v) {\n  switch (v) {\n    case f():\n      a()\n      break\n    case 2:\n      function f() { return 2 }\n      b()\n      break\n  }\n}'
+    expect(code(hoisted)).toContain("switch (v)")
+    // TDZ: JS에서는 case a가 아직 초기화되지 않은 case 1의 a를 봐서 ReferenceError가 난다
+    const tdz = "function g(v) {\n  switch (v) {\n    case 1:\n      const a = 5\n      f(a)\n      break\n    case a:\n      h()\n      break\n  }\n}"
+    expect(code(tdz)).toContain("switch (v)")
+  })
+
+  it("switch: 마지막 case 뒤에 넣는 }도 CRLF를 따른다", () => {
+    expect(code("switch (x) {\r\n  case 1:\r\n    f()\r\n    break\r\n  default:\r\n    g()\r\n}\r\n")).toBe(
+      "예??? x {\r\n  1 {\r\n    f()\r\n  }\r\n  아뇨아뇨아뇨아뇨 {\r\n    g()\r\n  }\r\n}\r\n",
+    )
+  })
+
   it("switch 안의 반복문 break는 따로 바꾼다", () => {
     const js = "switch (f) {\n  case 1:\n    while (x) {\n      break\n    }\n    break\n}"
     expect(code(js)).toBe("예??? f {\n  1 {\n    요이이이~ x {\n      줴줴이야\n    }\n  }\n}")
@@ -176,6 +191,19 @@ describe("migrate: 바꾸지 않는 것", () => {
     expect(code("function f(confirm) {\n  confirm(1)\n}")).toBe("티-원 f(confirm) {\n  confirm(1)\n}")
   })
 
+  it("__hn으로 시작하는 이름이 있으면 confirm과 switch를 바꾸지 않는다 (런타임 헬퍼·임시 변수와 겹침)", () => {
+    expect(code('function f(__hn) {\n  return confirm("q")\n}')).toBe('티-원 f(__hn) {\n  아! 줴줴이야~ confirm("q")\n}')
+    expect(code("const __hn_s0 = 1\nswitch (x) {\n  case 1:\n    f()\n    break\n}")).toContain("switch (x)")
+  })
+
+  it("인자 없는 confirm()은 그대로 (헬퍼가 undefined 문구를 띄움)", () => {
+    expect(code("const ok = confirm()")).toBe("엄.. ok = confirm()")
+  })
+
+  it("BigInt 리터럴이 있어도 동작한다", () => {
+    expect(code("const x = 1n\nif (x > 0n) {\n  f()\n}")).toBe("엄.. x = 1n\n예? x > 0n {\n  f()\n}")
+  })
+
   it("문장 맨 앞이 아닌 문장 키워드", () => {
     expect(code("function f() {\n  if (a) return\n}")).toBe("티-원 f() {\n  if (a) return\n}")
   })
@@ -199,6 +227,10 @@ describe("migrate: 주석", () => {
     )
   })
 
+  it("comments 옵션도 파일 맨 앞의 #!는 건드리지 않는다", () => {
+    expect(code("#!node\nconsole.log(1)", { comments: true })).toBe("#!node\n무슨 발언이세요? 1")
+  })
+
   it("식 중간 줄의 주석이 .hn에서 깨지면 그 주석만 남긴다", () => {
     const r = migrate("const a = 1 +\n  // 중간\n  2", { comments: true })
     expect(() => compile(r.code)).not.toThrow()
@@ -216,6 +248,19 @@ describe("migrate: import 경로", () => {
   })
 })
 
+describe("migrate: 이미 컴파일된 JS", () => {
+  // fixtures/*.js는 컴파일러 출력이라 런타임 import와 __hn 헬퍼 호출이 들어 있다
+  const dir = join(import.meta.dirname, "fixtures")
+  for (const name of readdirSync(dir).filter((f) => f.endsWith(".js"))) {
+    it(name, () => {
+      const source = readFileSync(join(dir, name), "utf8")
+      const result = migrate(source, { filename: name })
+      expect(result.changes).toBeGreaterThan(0)
+      expect(shape(compile(result.code).code)).toBe(shape(source))
+    })
+  }
+})
+
 describe("migrate: 파일째 옮길 수 없는 경우", () => {
   it("JS로 읽을 수 없으면 MigrateError", () => {
     expect(() => migrate("const a = <div />", { filename: "a.js" })).toThrow(MigrateError)
@@ -231,6 +276,7 @@ describe("migrate: 파일째 옮길 수 없는 경우", () => {
 
   it("문장 맨 앞에 키워드와 같은 이름이 있으면 MigrateError", () => {
     expect(() => migrate("let 아뇨 = 0\n아뇨 = 1")).toThrow(/그대로 \.hn이 될 수 없습니다/)
+    expect(() => migrate("let 아뇨 = 0\n아뇨 = 1", { filename: "x.js" })).toThrow(/\(x\.js\)$/)
   })
 })
 

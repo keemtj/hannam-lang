@@ -40,7 +40,8 @@ export class MigrateError extends Error {
   readonly filename: string | undefined
 
   constructor(message: string, filename?: string, pos?: { line: number; column: number }) {
-    super(pos ? `${message} (${filename ?? "<입력>"}:${pos.line}:${pos.column + 1})` : message)
+    const where = pos ? `${filename ?? "<입력>"}:${pos.line}:${pos.column + 1}` : filename
+    super(where ? `${message} (${where})` : message)
     this.name = "MigrateError"
     this.line = pos?.line
     this.column = pos?.column
@@ -61,8 +62,9 @@ interface Unit {
   kind: string
   pos: number
   edits: Edit[]
-  /** 컴파일 결과의 모양이 원래 JS와 달라지는 변환(switch)은 기대 AST를 만들 때 쓴다 */
+  /** 컴파일 결과의 모양이 원래 JS와 달라지는 변환(switch, confirm)은 기대 AST를 만들 때 쓴다 */
   switchStart?: number
+  confirmStart?: number
 }
 
 const PARSE_OPTIONS: Options = { ecmaVersion: "latest", sourceType: "module", allowHashBang: true }
@@ -105,6 +107,9 @@ class Migrator {
   /** switch 변환이 가져간 break (따로 줴줴이야로 바꾸지 않는다) */
   private readonly claimed = new Set<number>()
   private readonly shadowed: Set<string>
+  /** 컴파일러가 만드는 이름(__hn, __hn_s0 …)과 겹칠 수 있는 이름이 파일에 있는지. 있으면 switch·confirm을 바꾸지 않는다 */
+  private readonly usesHnNames: boolean
+  private readonly eol: string
 
   constructor(
     private readonly src: string,
@@ -114,6 +119,12 @@ class Migrator {
     private readonly opts: MigrateOptions,
   ) {
     this.shadowed = declaredNames(ast, new Set(["console", "confirm", "window", "require", "module", "exports"]))
+    let usesHnNames = false
+    walk(ast, (node) => {
+      if (node.type === "Identifier" && node.name.startsWith("__hn")) usesHnNames = true
+    })
+    this.usesHnNames = usesHnNames
+    this.eol = src.includes("\r\n") ? "\r\n" : "\n"
   }
 
   // ── 파일 단위 검사 ──
@@ -311,6 +322,17 @@ class Migrator {
         if (clash) return fail("한 case에서 선언한 이름을 다른 case에서 씁니다")
       }
     }
+    // case 조건은 switch 블록 안에서 평가되어 case에서 선언한 이름(TDZ, 끌어올린 function)을 본다.
+    // .hn에서는 조건이 블록 밖 if 조건이 되므로, 그런 이름을 쓰는 조건이 있으면 바꾸지 않는다
+    for (const c of cases) {
+      if (!c.test) continue
+      let uses = false
+      walk(c.test, (n) => {
+        if (n.type === "Identifier" && declared.has(n.name)) uses = true
+      })
+      if (uses) return fail("case 조건이 case 안에서 선언한 이름을 씁니다")
+    }
+    if (this.usesHnNames) return fail("__hn으로 시작하는 이름이 있어 컴파일러의 임시 이름과 겹칠 수 있습니다")
 
     const edits = this.header(node.start, node.start + 6, node.discriminant, this.findToken(node.discriminant.end, node.end, (t) => t.type === tokTypes.braceL)!.start, "예???")
     const claimed: number[] = []
@@ -338,7 +360,7 @@ class Migrator {
         const ownLine = indent !== undefined && /^[ \t]*$/.test(this.src.slice(lineStart, tail.start))
         edits.push(ownLine ? { start: lineStart, end: tail.end, text: `${indent}}` } : { start: tail.start, end: tail.end, text: "}" })
       } else {
-        edits.push({ start: tail.end, end: tail.end, text: indent !== undefined ? `\n${indent}}` : " }" })
+        edits.push({ start: tail.end, end: tail.end, text: indent !== undefined ? `${this.eol}${indent}}` : " }" })
       }
     }
     for (const b of claimed) this.claimed.add(b)
@@ -439,7 +461,15 @@ class Migrator {
       !this.shadowed.has("window") &&
       callee.property.name === "confirm"
     if (!isGlobal && !isWindow) return
-    this.add("confirm", node.start, [{ start: callee.start, end: callee.end, text: "예? 무슨 발언이세요?" }])
+    // 인자 없는 confirm()은 빈 확인 창이지만, 런타임 헬퍼는 String(undefined)를 띄운다
+    if (node.arguments.length === 0) return this.skip(node, "confirm", "인자 없는 confirm()은 바꾸지 않습니다")
+    if (this.usesHnNames) return this.skip(node, "confirm", "__hn으로 시작하는 이름이 있어 런타임 헬퍼와 겹칠 수 있습니다")
+    this.units.push({
+      kind: "confirm",
+      pos: node.start,
+      edits: [{ start: callee.start, end: callee.end, text: "예? 무슨 발언이세요?" }],
+      confirmStart: node.start,
+    })
   }
 
   private importPath(node: Node): void {
@@ -455,6 +485,8 @@ class Migrator {
   private lineComments(): void {
     for (const c of this.comments) {
       if (c.type !== "Line") continue
+      // acorn은 파일 맨 앞의 #!도 줄 주석으로 넘긴다
+      if (c.start === 0 && this.src.startsWith("#!")) continue
       if (!/^[ \t]*$/.test(this.src.slice(this.lineStart(c.start), c.start))) continue
       // 도구가 읽는 주석은 그대로 둔다 (///, //#, //@, eslint, prettier 등)
       if (/^(\/|#|@|\s*(eslint|prettier|biome-|istanbul|c8|jshint|global\b|ts-))/.test(c.value)) continue
@@ -481,8 +513,13 @@ class Migrator {
     } catch (e) {
       return `컴파일 결과가 올바른 JS가 아닙니다: ${(e as Error).message}`
     }
-    const switches = new Set(units.flatMap((u) => (u.switchStart === undefined ? [] : [u.switchStart])))
-    return canonical(this.ast, switches, false) === canonical(out, new Set(), true) || "변환 결과의 의미가 원래 JS와 다릅니다"
+    const expected = {
+      switches: new Set(units.flatMap((u) => (u.switchStart === undefined ? [] : [u.switchStart]))),
+      confirms: new Set(units.flatMap((u) => (u.confirmStart === undefined ? [] : [u.confirmStart]))),
+    }
+    // __hn 계열 이름이 원래 코드에 있으면 switch를 바꾸지 않으므로, 컴파일 결과의 그 이름은 사용자 것이라 그대로 비교한다
+    const output = { renameTemps: !this.usesHnNames }
+    return canonical(this.ast, expected, null) === canonical(out, null, output) || "변환 결과의 의미가 원래 JS와 다릅니다"
   }
 
   /** 모든 변환을 한꺼번에 검증하고, 실패하면 반으로 나눠 가며 문제가 되는 변환만 뺀다 */
@@ -746,19 +783,27 @@ const CONFIRM: Node = {
 
 /**
  * 비교용 정규형. 위치·주석·raw를 빼고 키를 정렬해 문자열로 만든다.
- * - 원래 JS 쪽: 바꾼 switch는 .hn이 컴파일되는 모양(if-else)으로 바꿔 놓는다
- * - 컴파일 결과 쪽: 런타임 import를 빼고, `__hn_s0` 같은 switch 임시 변수 이름의 번호를 없앤다
- * - 양쪽 모두: confirm(x), window.confirm(x), __hn.confirm(x)를 같은 것으로 본다
+ * - 원래 JS 쪽: 바꾼 switch는 .hn이 컴파일되는 모양(if-else)으로, 바꾼 confirm 호출은 __hn.confirm으로 바꿔 놓는다
+ * - 양쪽 모두: 런타임 import(hannam-lang/runtime)를 뺀다
+ * - 컴파일 결과 쪽: `__hn_s0` 같은 switch 임시 변수 이름의 번호를 없앤다
+ *   (__hn으로 시작하는 이름이 원래 코드에 있으면 switch·confirm을 바꾸지 않고, 이름도 바꾸지 않는다)
  */
-function canonical(ast: Node, switches: Set<number>, compiled: boolean): string {
+function canonical(
+  ast: Node,
+  expected: { switches: Set<number>; confirms: Set<number> } | null,
+  compiled: { renameTemps: boolean } | null,
+): string {
   const norm = (value: unknown): unknown => {
     if (Array.isArray(value)) return value.map(norm)
+    // acorn은 BigInt 리터럴의 값을 bigint로 넣는데, JSON.stringify가 다루지 못한다
+    if (typeof value === "bigint") return `${value}n`
     if (!value || typeof value !== "object") return value
     let node = value as Node
-    if (node.type === "SwitchStatement" && switches.has(node.start)) node = desugarSwitch(node)
-    if (node.type === "CallExpression" && isConfirmCallee(node.callee)) node = { ...node, callee: CONFIRM }
-    if (compiled && node.type === "Identifier" && /^__hn_s\d+$/.test(node.name)) node = { ...node, name: "__hn_s" }
-    if (compiled && node.type === "Program") {
+    if (expected && node.type === "SwitchStatement" && expected.switches.has(node.start)) node = desugarSwitch(node)
+    if (expected && node.type === "CallExpression" && expected.confirms.has(node.start)) node = { ...node, callee: CONFIRM }
+    if (compiled?.renameTemps && node.type === "Identifier" && /^__hn_s\d+$/.test(node.name)) node = { ...node, name: "__hn_s" }
+    // 런타임 import는 양쪽에서 뺀다 (이미 컴파일된 JS를 옮길 때 원래 코드에도 들어 있다)
+    if (node.type === "Program") {
       node = { ...node, body: node.body.filter((s: Node) => !(s.type === "ImportDeclaration" && s.source.value === RUNTIME)) }
     }
     const out: Record<string, unknown> = {}
@@ -769,17 +814,6 @@ function canonical(ast: Node, switches: Set<number>, compiled: boolean): string 
     return out
   }
   return JSON.stringify(norm(ast))
-}
-
-function isConfirmCallee(callee: Node): boolean {
-  if (callee.type === "Identifier") return callee.name === "confirm"
-  return (
-    callee.type === "MemberExpression" &&
-    !callee.computed &&
-    callee.object.type === "Identifier" &&
-    (callee.object.name === "window" || callee.object.name === "__hn") &&
-    callee.property.name === "confirm"
-  )
 }
 
 /** switch를 .hn의 예???가 컴파일되는 모양으로: `{ const __hn_s = 값; if (__hn_s === a || …) {…} else {…} }` */
