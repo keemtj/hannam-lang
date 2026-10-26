@@ -51,6 +51,22 @@ hnc src --out-dir dist --source-map
 - 런타임 헬퍼가 필요한 파일은 맨 끝에 `import { __hn } from "hannam-lang/runtime"`이 붙습니다. 출력물을 실행할 프로젝트에 `hannam-lang`을 의존성으로 설치해 주세요. 자세한 내용은 [런타임](/docs/syntax/runtime)에 있습니다.
 - 출력은 ES 모듈입니다. Node로 실행한다면 `package.json`에 `"type": "module"`을 넣어 `.js`를 ES 모듈로 읽게 합니다.
 
+## hnc --from-js: JS를 .hn으로 옮기기
+
+반대로 이미 있는 `.js`를 `.hn`으로 바꿉니다(0.1.1부터).
+
+```sh
+hnc --from-js <파일|디렉터리...> [--write] [--comments]
+```
+
+| 옵션 | 설명 |
+| --- | --- |
+| `--from-js` | `.js`, `.mjs`를 한남랭으로 바꿉니다. 이 옵션만 주면 바뀔 내용만 보여 줍니다 |
+| `--write` | 원본 옆에 `.hn` 파일을 만듭니다. 원본 `.js`는 그대로 둡니다 |
+| `--comments` | 줄 맨 앞의 `//` 주석도 `엄...`으로 바꿉니다 |
+
+무엇을 바꾸고 무엇을 JS 그대로 두는지는 [JS에서 자동으로 옮기기](/docs/guides/migrate)에 있습니다.
+
 ## 변환기 API
 
 빌드 도구를 직접 만들 때는 변환기를 함수로 부를 수 있습니다.

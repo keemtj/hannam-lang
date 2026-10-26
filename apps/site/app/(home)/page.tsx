@@ -1,4 +1,5 @@
 import { compile } from "@hannam-lang/core"
+import { migrate } from "@hannam-lang/core/migrate"
 import { ArrowRight, Blocks, Globe, Play, ShieldCheck } from "lucide-react"
 import Link from "next/link"
 import type { CSSProperties } from "react"
@@ -23,6 +24,20 @@ const HERO_CODE = `티~원 할일불러오기() {
     아뇨
   }
   무슨 발언이세요? \`□ \${할일.내용}\`
+}
+`
+
+// 반대 방향 예시: 평범한 JS를 hnc --from-js로 옮긴 결과를 보여 준다
+const MIGRATE_JS = `function greet(hour) {
+  if (hour < 12) {
+    return "좋은 아침"
+  } else {
+    return "안녕하세요"
+  }
+}
+
+for (const name of ["철수", "영희"]) {
+  console.log(\`\${greet(9)}, \${name}\`)
 }
 `
 
@@ -55,7 +70,14 @@ const FEATURES = [
 export default async function HomePage() {
   // JS 쪽은 실제 변환기 출력이다 (손으로 쓰지 않음)
   const js = compile(HERO_CODE, { filename: "todos.hn" }).code
-  const [hnHtml, jsHtml] = await Promise.all([highlight(HERO_CODE.trimEnd(), "hn"), highlight(js.trimEnd(), "javascript")])
+  // .hn 쪽은 실제 역변환 결과다
+  const migrated = migrate(MIGRATE_JS, { filename: "greet.js" }).code
+  const [hnHtml, jsHtml, fromJsHtml, toHnHtml] = await Promise.all([
+    highlight(HERO_CODE.trimEnd(), "hn"),
+    highlight(js.trimEnd(), "javascript"),
+    highlight(MIGRATE_JS.trimEnd(), "javascript"),
+    highlight(migrated.trimEnd(), "hn"),
+  ])
 
   return (
     <main className="hn-home">
@@ -211,6 +233,62 @@ export default async function HomePage() {
             </p>
           </div>
           <InstallTabs />
+        </div>
+      </section>
+
+      {/* JS → 한남랭 */}
+      <section className="hn-section hn-section-alt" id="from-js">
+        <div className="hn-container">
+          <h2 className="hn-h2">
+            멀쩡한 JavaScript도 <span className="hn-title-accent">한남랭</span>으로
+          </h2>
+          <p className="hn-sub">
+            <span className="hn-line">이미 짠 코드를 처음부터 다시 쓸 필요는 없습니다. 붙여 넣거나 폴더째 넘기면 키워드만 한남랭으로 바꿉니다.</span>
+            <span className="hn-line">
+              바꾼 코드는 다시 JS로 컴파일해서 원래 코드와 같은지 하나하나 확인하고, 의미가 달라질 수 있는 곳은 JS 그대로 둡니다.
+            </span>
+          </p>
+          <div className="hn-compare hn-compare-tight">
+            <figure className="hn-window">
+              <figcaption>
+                <span className="hn-dots" aria-hidden>
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                greet.js
+              </figcaption>
+              <div className="hn-code" dangerouslySetInnerHTML={{ __html: fromJsHtml }} />
+            </figure>
+            <div className="hn-compare-arrow" aria-hidden>
+              <span>--from-js</span>
+              <ArrowRight size={20} />
+            </div>
+            <figure className="hn-window">
+              <figcaption>
+                <span className="hn-dots" aria-hidden>
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                greet.hn
+              </figcaption>
+              <div className="hn-code" dangerouslySetInnerHTML={{ __html: toHnHtml }} />
+            </figure>
+          </div>
+          <div className="hn-hero-actions hn-migrate-actions">
+            <Link href="/playground" className="hn-btn hn-btn-primary">
+              <Play size={16} /> Playground에서 JS 가져오기
+            </Link>
+            <CopyCommand command="npx -p hannam-lang hnc --from-js src" />
+          </div>
+          <p className="hn-sub hn-small">
+            원래 <code>.js</code>는 그대로 두고 옆에 <code>.hn</code>을 만듭니다. 바꾸는 규칙은{" "}
+            <Link href="/docs/guides/migrate" className="hn-link">
+              JS에서 자동으로 옮기기
+            </Link>
+            에 있습니다.
+          </p>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
-import { HNC, cleanup, node, project } from "./helpers.js"
+import { HANNAM, HNC, cleanup, node, project } from "./helpers.js"
 
 afterEach(cleanup)
 
@@ -131,5 +131,122 @@ describe("hnc", () => {
     const help = node([HNC, "--help"])
     expect(help.status).toBe(0)
     expect(help.stdout).toContain("--out-dir")
+  })
+})
+
+describe("hnc --from-js", () => {
+  const MAIN_JS = `import { add } from "./store.js"\n\nconst name = "한남"\nif (name) {\n  add(name)\n}\nconsole.log("ok")\n`
+  const STORE_JS = `export const items = []\nexport function add(x) {\n  items.push(x)\n}\n`
+
+  it("기본은 바뀔 내용만 보여 주고 파일을 만들지 않는다", () => {
+    const root = project({ "main.js": MAIN_JS, "store.js": STORE_JS })
+    const r = node([HNC, "--from-js", "."], root)
+    expect(r.status).toBe(0)
+    expect(r.stdout).toContain("main.js → main.hn (변환 4곳")
+    expect(r.stdout).toContain(`  - if (name) {\n`)
+    expect(r.stdout).toContain(`  + 예? name {\n`)
+    expect(r.stdout).toContain("--write를 주면")
+    expect(existsSync(join(root, "main.hn"))).toBe(false)
+  })
+
+  it("--write는 .hn을 만들고 .js는 남긴다. 함께 옮긴 파일의 import는 .hn으로 바꾼다", () => {
+    const root = project({ "main.js": MAIN_JS, "store.js": STORE_JS })
+    const r = node([HNC, "--from-js", "main.js", "store.js", "--write"], root)
+    expect(r.status).toBe(0)
+    expect(existsSync(join(root, "main.js"))).toBe(true)
+    const main = readFileSync(join(root, "main.hn"), "utf8")
+    expect(main).toContain(`import { add } from "./store.hn"`)
+    expect(main).toContain(`무슨 발언이세요? "ok"`)
+    expect(node([HANNAM, "main.hn"], root).stdout).toBe("ok\n")
+  })
+
+  it("함께 옮기지 않는 파일의 import는 .js 그대로 둔다", () => {
+    const root = project({ "main.js": MAIN_JS, "store.js": STORE_JS })
+    node([HNC, "--from-js", "main.js", "--write"], root)
+    expect(readFileSync(join(root, "main.hn"), "utf8")).toContain(`from "./store.js"`)
+  })
+
+  it("--comments는 줄 맨 앞의 // 주석을 엄...으로 바꾼다", () => {
+    const root = project({ "a.js": "// 설명\nconst a = 1\n" })
+    node([HNC, "--from-js", "a.js", "--write", "--comments"], root)
+    expect(readFileSync(join(root, "a.hn"), "utf8")).toBe("엄... 설명\n엄.. a = 1\n")
+  })
+
+  it("이미 있는 .hn은 덮어쓰지 않는다", () => {
+    const root = project({ "a.js": "const a = 1\n", "a.hn": "원래 내용" })
+    const r = node([HNC, "--from-js", "a.js", "--write"], root)
+    expect(r.status).toBe(1)
+    expect(r.stderr).toContain("이미 있어서 덮어쓰지 않았습니다")
+    expect(readFileSync(join(root, "a.hn"), "utf8")).toBe("원래 내용")
+  })
+
+  it("CommonJS 파일은 건너뛰고 종료 코드 1, 나머지는 옮긴다", () => {
+    const root = project({ "old.js": "module.exports = 1\n", "new.js": "const a = 1\n" })
+    const r = node([HNC, "--from-js", ".", "--write"], root)
+    expect(r.status).toBe(1)
+    expect(r.stderr).toMatch(/CommonJS\(module\).*old\.js:1:1/)
+    expect(existsSync(join(root, "new.hn"))).toBe(true)
+    expect(existsSync(join(root, "old.hn"))).toBe(false)
+  })
+
+  it("node_modules와 *.min.js는 대상에서 뺀다", () => {
+    const root = project({ "a.js": "const a = 1\n", "node_modules/x/i.js": "const b = 1\n", "lib.min.js": "const c = 1\n" })
+    const r = node([HNC, "--from-js", "."], root)
+    expect(r.stdout).toContain("파일 1개")
+  })
+
+  it("옵션을 잘못 섞으면 종료 코드 1", () => {
+    const root = project({ "a.js": "" })
+    expect(node([HNC, "--write", "a.js"], root).status).toBe(1)
+    expect(node([HNC, "--from-js", "a.js", "--out-dir", "out"], root).status).toBe(1)
+    expect(node([HNC, "--from-js"], root).status).toBe(1)
+    expect(node([HNC, "--from-js", "a.txt"], root).status).toBe(1)
+  })
+})
+
+describe("hnc --from-js: 옮기지 못한 파일", () => {
+  it("옮기지 못한 파일(CommonJS, 압축, 이미 있는 .hn)을 가리키는 import는 .js 그대로 둔다", () => {
+    const root = project({
+      "main.js": 'import { a } from "./cjs.js"\nimport { b } from "./big.js"\nimport { c } from "./exists.js"\nimport { d } from "./ok.js"\n',
+      "cjs.js": "module.exports = 1\n",
+      "big.js": `export const b = "${"x".repeat(1200)}"\n`,
+      "exists.js": "export const c = 1\n",
+      "exists.hn": "엄.. c = 0\n",
+      "ok.js": "export const d = 1\n",
+    })
+    const r = node([HNC, "--from-js", ".", "--write"], root)
+    expect(r.status).toBe(1)
+    const main = readFileSync(join(root, "main.hn"), "utf8")
+    expect(main).toContain(`from "./cjs.js"`)
+    expect(main).toContain(`from "./big.js"`)
+    expect(main).toContain(`from "./exists.js"`)
+    expect(main).toContain(`from "./ok.hn"`)
+    expect(r.stdout).toContain("파일 2개")
+  })
+
+  it("같은 .hn으로 바뀌는 a.js와 a.mjs는 둘 다 옮기지 않는다", () => {
+    const root = project({ "a.js": "const a = 1\n", "a.mjs": "const a = 2\n" })
+    const r = node([HNC, "--from-js", ".", "--write"], root)
+    expect(r.status).toBe(1)
+    expect(r.stderr).toContain("같은 .hn으로 바뀌는 파일이 여럿입니다")
+    expect(existsSync(join(root, "a.hn"))).toBe(false)
+  })
+
+  it("직접 지정한 *.min.js도 옮기지 않는다", () => {
+    const root = project({ "lib.min.js": "const a = 1\n" })
+    const r = node([HNC, "--from-js", "lib.min.js", "--write"], root)
+    expect(r.stdout).toContain("압축된 파일")
+    expect(existsSync(join(root, "lib.min.hn"))).toBe(false)
+  })
+
+  it("출력을 파이프로 넘겨도 끝까지 나온다", () => {
+    const files = Object.fromEntries(
+      Array.from({ length: 20 }, (_, i) => [`f${i}.js`, Array.from({ length: 400 }, (_, j) => `const v${j} = ${j}`).join("\n")]),
+    )
+    const root = project(files)
+    // spawnSync의 stdout은 파이프다
+    const r = node([HNC, "--from-js", "."], root)
+    expect(r.stdout.length).toBeGreaterThan(65536)
+    expect(r.stdout).toContain("파일 20개")
   })
 })

@@ -16,7 +16,15 @@ const HELP = `hnc: hannam compiler
   -o, --out-dir <dir>  출력 디렉터리. 디렉터리 인자는 그 안의 구조를 유지합니다
   --source-map         .js.map 파일을 함께 만듭니다
   -h, --help           이 도움말을 출력합니다
-  -v, --version        버전을 출력합니다`
+  -v, --version        버전을 출력합니다
+
+JS를 .hn으로 옮기기:
+  hnc --from-js <파일|디렉터리...> [--write] [--comments]
+
+  --from-js            .js와 .mjs를 .hn으로 바꿉니다. 기본은 바뀔 내용만 보여 줍니다
+                       (node_modules, 점으로 시작하는 폴더, *.min.js, .gitignore에 든 파일 제외)
+  --write              원본 옆에 .hn 파일을 만듭니다. 원본 .js는 그대로 둡니다
+  --comments           줄 맨 앞의 // 주석도 엄...으로 바꿉니다`
 
 /** @param {string} message */
 function usageError(message) {
@@ -29,6 +37,9 @@ const inputs = []
 /** @type {string | undefined} */
 let outDir
 let sourceMap = false
+let fromJs = false
+let write = false
+let comments = false
 
 const args = process.argv.slice(2)
 for (let i = 0; i < args.length; i++) {
@@ -47,12 +58,31 @@ for (let i = 0; i < args.length; i++) {
     if (!outDir) usageError("--out-dir 뒤에 디렉터리가 필요합니다")
   } else if (arg === "--source-map") {
     sourceMap = true
+  } else if (arg === "--from-js") {
+    fromJs = true
+  } else if (arg === "--write") {
+    write = true
+  } else if (arg === "--comments") {
+    comments = true
   } else if (arg.startsWith("-")) {
     usageError(`알 수 없는 옵션 '${arg}'`)
   } else {
     inputs.push(arg)
   }
 }
+
+if (fromJs) {
+  if (outDir || sourceMap) usageError("--from-js에는 --out-dir, --source-map을 함께 쓸 수 없습니다")
+  if (inputs.length === 0) usageError("옮길 .js 파일이나 디렉터리를 주세요")
+  // 파서(acorn)는 이 모드에서만 불러온다
+  const { runMigrate } = await import("../src/migrate-cli.js")
+  const code = runMigrate(inputs, { write, comments })
+  // 파이프로 넘긴 stdout은 비동기라 바로 exit하면 뒤쪽 출력이 잘린다. 앞서 쓴 내용이 다 나간 뒤에 끝낸다
+  await new Promise((done) => process.stdout.write("", done))
+  await new Promise((done) => process.stderr.write("", done))
+  process.exit(code)
+}
+if (write || comments) usageError("--write, --comments는 --from-js와 함께 씁니다")
 if (inputs.length === 0) usageError("컴파일할 파일이나 디렉터리를 주세요")
 
 /** @type {string[]} */

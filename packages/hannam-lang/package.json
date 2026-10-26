@@ -26,6 +26,10 @@
       "types": "./src/runtime.d.ts",
       "default": "./src/runtime.js"
     },
+    "./migrate": {
+      "types": "./src/migrate.d.ts",
+      "default": "./src/migrate.js"
+    },
     "./register": "./src/register.js",
     "./bun": "./src/bun.js",
     "./package.json": "./package.json"

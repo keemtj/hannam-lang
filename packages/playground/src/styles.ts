@@ -140,6 +140,48 @@ export const PLAYGROUND_CSS = `
   overflow: auto;
 }
 
+.hnpg-notice {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--hnpg-border);
+  color: var(--hnpg-info);
+  font-size: 12px;
+}
+
+.hnpg-import {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--hnpg-border);
+  background: var(--hnpg-panel-bg);
+}
+.hnpg-import-label { font-size: 13px; color: var(--hnpg-fg); }
+.hnpg-import-text {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  padding: 8px 10px;
+  border: 1px solid var(--hnpg-border);
+  border-radius: 6px;
+  background: var(--hnpg-editor-bg);
+  color: var(--hnpg-fg);
+  font-family: var(--hnpg-mono);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.hnpg-import-text:focus-visible { outline: 2px solid var(--hnpg-accent); outline-offset: 1px; }
+.hnpg-import-error {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--hnpg-error-bg);
+  color: var(--hnpg-error);
+  font-family: var(--hnpg-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+.hnpg-import-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
 .hnpg-console {
   height: 32%;
   min-height: 90px;
